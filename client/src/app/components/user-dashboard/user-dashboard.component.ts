@@ -27,6 +27,7 @@ export class UserDashboardComponent implements OnInit {
   completedProjects: any[] = [];
   userProgress: any = 'userProgress';
   ratingSum: any = 0;
+  ratingCount: any = 0;
   activeDays: any[] = [];
   contributionCount: any[] = [];
   overAllRating: any = 0;
@@ -179,12 +180,14 @@ export class UserDashboardComponent implements OnInit {
               teamMember.rating == undefined
             ) {
               this.ratingSum += 0;
+              this.ratingCount++;
             }
             if (
               teamMember.userName == this.currentUser['userName'] &&
               teamMember.rating != undefined
             ) {
               this.ratingSum += teamMember.rating;
+              this.ratingCount++;
             }
             if (
               teamMember.userName == this.currentUser['userName'] &&
@@ -271,7 +274,7 @@ export class UserDashboardComponent implements OnInit {
           };
           this.contributionCount.push(scatterPlotData);
         });
-        this.overAllRating = this.ratingSum / data.projectDetails.length;
+        this.overAllRating = this.ratingSum / this.ratingCount;
 
         setTimeout(() => {
           this.getPieChart();

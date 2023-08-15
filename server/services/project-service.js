@@ -118,7 +118,6 @@ const mailServiceForProject = (
   });
 };
 const getMailData = (projectDetailsArr) => {
-  console.log(projectDetailsArr);
   var decryptedPassKey = encryptor.decrypt(projectDetailsArr.passKey);
   var mailList = [],
     processedPersonName = "",
@@ -772,7 +771,6 @@ module.exports.deleteTaskService = (taskDetails) => {
           true
         )
         .then((result, error) => {
-          console.log(result);
           if (error) {
             reject({
               status: false,
