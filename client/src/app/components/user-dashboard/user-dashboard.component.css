@@ -1,0 +1,154 @@
+.user-dashboard-container {
+  margin-left: 7em;
+  margin-top: 5em;
+  margin-right: 3em;
+  padding-bottom: 4em;
+}
+.user-dashboard {
+  margin-top: 1em;
+}
+.user-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.over-all-rating {
+  padding: 9px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.user-dashboard-div {
+  margin-top: 2em;
+}
+.task-count-card,
+.project-count-card {
+  margin-top: 0.5em;
+}
+.task-count,
+.task-count-text,
+.project-count,
+.project-count-text,
+.active-days-count,
+.active-days-count-text {
+  text-align: center;
+  font-size: 2em;
+  padding: 0.33em;
+}
+.pie-chart-container,
+.multi-bar-chart-container {
+  height: 280px;
+}
+.user-dashboard-section-two {
+  margin-top: 0.5em;
+}
+.active-days-card-container {
+  margin-bottom: 0.5em;
+}
+.scatter-chart-container {
+  height: 365px;
+}
+
+.user-dashboard-section-three {
+  margin-top: 0.3em;
+}
+.current-tasks-header {
+  margin-bottom: 1em;
+}
+.current-tasks-header hr {
+  border: 1px solid rgb(234, 234, 234);
+}
+.current-tasks-content {
+  height: 400px;
+  overflow: auto;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding-top: 1em;
+}
+.current-tasks-content::-webkit-scrollbar {
+  display: none;
+}
+.current-task-card {
+  border-left: 5px solid orange;
+  margin-bottom: 1em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+.task-deadline-ended,
+.project-deadline-ended {
+  background-color: rgb(252, 240, 240);
+}
+
+.current-task-card-header {
+  display: flex;
+  justify-content: space-between;
+}
+.current-task-card-header i,
+.completed-projects-header i {
+  cursor: pointer;
+}
+
+.current-projects-header hr,
+.completed-projects-header hr {
+  border: 1px solid rgb(234, 234, 234);
+}
+
+.current-projects-header h2 i {
+  color: orange;
+  border: 3px solid orange;
+  border-radius: 50%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 0.8px;
+  padding-bottom: 0.5px;
+  font-size: 15px;
+}
+.completed-projects-header h2 i {
+  color: green;
+}
+.current-task-side-menu,
+.current-project-side-menu {
+  display: flex;
+  align-items: baseline;
+}
+.current-task-side-menu i,
+.current-project-side-menu i {
+  margin-left: 0.5em;
+}
+.deadline-ended-text {
+  color: red;
+}
+.current-projects-content,
+.completed-projects-content {
+  min-height: 400px;
+  max-height: 600px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding-top: 1em;
+}
+.current-projects-content::-webkit-scrollbar,
+.completed-projects-content::-webkit-scrollbar {
+  display: none;
+}
+.current-project-card {
+  border-left: 5px solid rgb(100, 100, 255);
+  margin-bottom: 0.5em;
+}
+.completed-project-card {
+  border-left: 5px solid rgb(48, 168, 48);
+  margin-bottom: 0.5em;
+}
+.project-image {
+  height: 50px;
+  width: 50px;
+}
+.project-header-container {
+  display: flex;
+  justify-content: space-between;
+}
+.project-header-container i {
+  cursor: pointer;
+}
+.custom-date-class {
+  background: orange !important;
+  border-radius: 100% !important;
+}

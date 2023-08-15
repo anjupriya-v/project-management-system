@@ -1,0 +1,38 @@
+<app-navbar
+  [filledNav]="filledNav"
+  [filledNavUserContentColor]="filledNavUserContentColor"
+></app-navbar>
+<div class="calendar-container">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Home</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/calendar']">Calendar</a></nz-breadcrumb-item
+    >
+  </nz-breadcrumb>
+  <div class="calendar-header">
+    <h2>Calendar - Deadlines</h2>
+    <div class="calendar-indicators">
+      <div>
+        <div class="task-deadline"></div>
+        <span> Task Deadline</span>
+      </div>
+      <div>
+        <div class="project-deadline"></div>
+        <span> Project Deadline</span>
+      </div>
+      <div>
+        <div class="task-deadline-ended"></div>
+        <span>Task Deadline Ended</span>
+      </div>
+      <div>
+        <div class="project-deadline-ended"></div>
+        <span> Project Deadline Ended</span>
+      </div>
+    </div>
+  </div>
+  <div class="calendar">
+    <full-calendar [options]="calendarOptions"></full-calendar>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+<form
+  id="create-task-form"
+  (ngSubmit)="submitTaskDetails($event)"
+  [formGroup]="requiredForm"
+>
+  <fieldset class="create-task-fieldset">
+    <h1 class="create-task-heading">Assign Task</h1>
+    <div>
+      <label for="taskName" id="task-name-label" class="create-task-label"
+        >Task Name</label
+      >
+      <input
+        id="task"
+        name="taskName"
+        type="text"
+        placeholder="Enter Task Name"
+        formControlName="taskName"
+        class="create-task-input"
+      />
+      <div
+        *ngIf="
+          submitted &&
+          requiredForm.controls['taskName'].errors &&
+          requiredForm.controls['taskName'].errors['required']
+        "
+        class="error-text"
+      >
+        Task Name is required*
+      </div>
+    </div>
+    <div>
+      <label for="assignee" id="assignee-label" class="create-task-label"
+        >Assignee</label
+      >
+      <select
+        name="languages"
+        id="lang"
+        formControlName="assignee"
+        class="create-task-select"
+      >
+        <option value="" disabled selected>Choose Assignee</option>
+        <option
+          *ngFor="let teamMember of teamMembers"
+          [value]="teamMember.userName"
+        >
+          {{ teamMember.fullName }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+          submitted &&
+          requiredForm.controls['assignee'].errors &&
+          requiredForm.controls['assignee'].errors['required']
+        "
+        class="error-text"
+      >
+        Assignee Name is required*
+      </div>
+    </div>
+    <div>
+      <label for="deadline" class="create-task-label">Deadline</label>
+      <input
+        id="deadline"
+        name="deadline"
+        onfocus="(this.type='date')"
+        type="text"
+        placeholder="Choose the deadline"
+        formControlName="deadline"
+        class="create-task-input"
+        [min]="getTodaysDate()"
+        [max]="deadline"
+      />
+      <div
+        *ngIf="
+          submitted &&
+          requiredForm.controls['deadline'].errors &&
+          requiredForm.controls['deadline'].errors['required']
+        "
+        class="error-text"
+      >
+        Deadline is required*
+      </div>
+    </div>
+    <div>
+      <label for="priority" id="priority-label" class="create-task-label"
+        >Priority </label
+      ><select
+        name="languages"
+        id="lang"
+        formControlName="priority"
+        class="create-task-select"
+      >
+        <option value="" disabled selected>Set Priority</option>
+        <option value="High Priority">High Priority</option>
+        <option value="Medium Priority">Medium Priority</option>
+        <option value="Low Priority">Low Priority</option>
+      </select>
+      <div
+        *ngIf="
+          submitted &&
+          requiredForm.controls['priority'].errors &&
+          requiredForm.controls['priority'].errors['required']
+        "
+        class="error-text"
+      >
+        Priority is required*
+      </div>
+    </div>
+  </fieldset>
+
+  <input
+    class="task-submit-button"
+    type="submit"
+    [class]="btnLoading ? 'AssigningTask' : ''"
+    [value]="btnLoading ? 'Assigning...' : 'Assign'"
+  />
+</form>

@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/ng-zorro-antd/ng-zorro-antd.min.css";
+@import "../node_modules/ng-zorro-antd/style/index.min.css"; /* Import base styles */
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f7f7f7 !important;
+  position: absolute;
+  top: 0px;
+}
+a {
+  color: black;
+}

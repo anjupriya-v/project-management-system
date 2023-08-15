@@ -1,0 +1,99 @@
+<app-navbar [filledNav]="filledNav"></app-navbar>
+<div class="login-container">
+  <section class="login-section">
+    <div class="content">
+      <div class="left">
+        <img src="../../../assets/images/Logo.ico" alt="icon" />
+        <h1>PMS</h1>
+      </div>
+
+      <div class="right">
+        <div class="title">
+          <h2>Login</h2>
+        </div>
+        <div class="form">
+          <form (ngSubmit)="submitLoginForm($event)" [formGroup]="requiredForm">
+            <div class="inputbox">
+              <label>Email</label>
+              <input
+                type="email"
+                class="login-input"
+                placeholder="Enter your Email ID"
+                formControlName="email"
+              />
+              <div
+                *ngIf="
+                  submitted &&
+                  requiredForm.controls['email'].errors &&
+                  requiredForm.controls['email'].errors['required']
+                "
+                class="error-text"
+              >
+                Email is required*
+              </div>
+              <div
+                *ngIf="
+                  submitted &&
+                  requiredForm.controls['email'].errors &&
+                  requiredForm.controls['email'].errors['pattern']
+                "
+                class="error-text"
+              >
+                Enter Valid email address
+              </div>
+            </div>
+            <div class="inputbox">
+              <label>Password</label>
+              <input
+                type="password"
+                class="login-input"
+                placeholder="Enter your Password"
+                formControlName="password"
+              />
+              <div
+                *ngIf="
+                  submitted &&
+                  requiredForm.controls['password'].errors &&
+                  requiredForm.controls['password'].errors['required']
+                "
+                class="error-text"
+              >
+                Password is required*
+              </div>
+              <div
+                *ngIf="
+                  submitted &&
+                  requiredForm.controls['password'].errors &&
+                  requiredForm.controls['password'].errors['pattern']
+                "
+                class="error-text"
+              >
+                Password must contain at least one number, one uppercase , one
+                lower case, one special character (@$!%*#?&^_-) and at least 8
+                characters<br />Password cannot contain whitespace
+              </div>
+            </div>
+            <div class="login-error-text">
+              <nz-alert
+                *ngIf="loginStatus == false"
+                nzType="error"
+                nzCloseable
+                nzMessage="{{ loginMsg }}"
+              ></nz-alert>
+            </div>
+            <div class="login">
+              <button
+                type="submit"
+                class="login-submit-button"
+                [disabled]="isLoggingIn ? true : null"
+                [class]="isLoggingIn ? 'isLoggingIn' : ''"
+              >
+                {{ isLoggingIn ? "Logging in..." : "Login" }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

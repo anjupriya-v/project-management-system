@@ -1,0 +1,148 @@
+<div class="navbar-container">
+  <div
+    class="side-nav-container"
+    [class]="isOpen ? 'extend-side-nav-width' : ''"
+  >
+    <div class="side-nav-header">
+      <div class="logo-container">
+        <img
+          src="../../../assets/images/Logo.ico"
+          alt="Logo"
+          class="logo-image"
+        />
+        <span class="logo-text" [class]="isOpen ? 'show-logo-text' : ''"
+          >PMS</span
+        >
+      </div>
+      <i
+        class="fa fa-angle-double-left double-left-arrow"
+        aria-hidden="true"
+        [class]="isOpen ? 'show-double-left-arrow' : ''"
+        (click)="handleSideNav()"
+      ></i>
+    </div>
+    <div class="nav-section" [class]="isOpen ? 'nav-section-extended' : ''">
+      <div class="top-nav-links-div">
+        <div class="nav-links-container">
+          <div
+            class="nav-link"
+            routerLink="/"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <i class="fa fa-home" aria-hidden="true"></i
+            ><span [class]="isOpen ? 'show-text-menu' : ''">Home</span>
+          </div>
+
+          <div
+            class="nav-link"
+            routerLink="/projects"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <i class="fa fa-list-alt" aria-hidden="true"></i
+            ><span [class]="isOpen ? 'show-text-menu' : ''">Projects</span>
+          </div>
+          <div
+            class="nav-link"
+            routerLink="/projects/create-project"
+            routerLinkActive="active-link"
+            *ngIf="
+              auth.isLoggedIn() != null &&
+              auth.isLoggedIn() != undefined &&
+              (currentUser['role'] == 'Admin' ||
+                currentUser['role'] == 'Team Lead')
+            "
+          >
+            <i class="fa fa-plus-square" aria-hidden="true"></i
+            ><span [class]="isOpen ? 'show-text-menu' : ''">Create</span>
+          </div>
+          <div
+            class="nav-link"
+            routerLink="/registered-users"
+            routerLinkActive="active-link"
+            *ngIf="
+              auth.isLoggedIn() != null &&
+              auth.isLoggedIn() != undefined &&
+              currentUser['role'] == 'Admin'
+            "
+          >
+            <i class="fa fa-users" aria-hidden="true"></i>
+            <span [class]="isOpen ? 'show-text-menu' : ''"
+              >Registered Users</span
+            >
+          </div>
+          <div
+            class="nav-link"
+            routerLink="/calendar"
+            routerLinkActive="active-link"
+            *ngIf="auth.isLoggedIn() != null && auth.isLoggedIn() != undefined"
+          >
+            <i class="fa fa-calendar" aria-hidden="true"></i
+            ><span [class]="isOpen ? 'show-text-menu' : ''">Calendar</span>
+          </div>
+          <div
+            class="nav-link"
+            routerLink="/user-dashboard"
+            routerLinkActive="active-link"
+            *ngIf="auth.isLoggedIn() != null && auth.isLoggedIn() != undefined"
+          >
+            <i class="fa fa-line-chart" aria-hidden="true"></i>
+            <span [class]="isOpen ? 'show-text-menu' : ''">User Dashboard</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="bottom-nav-links-div"
+        *ngIf="auth.isLoggedIn() != null && auth.isLoggedIn() != undefined"
+      >
+        <div class="nav-link" (click)="showProfileModal()">
+          <i class="fa fa-user fa-2x" aria-hidden="true"></i
+          ><span [class]="isOpen ? 'show-text-menu' : ''">Profile</span>
+        </div>
+        <div class="nav-link" (click)="logOut()">
+          <i class="fa fa-sign-out fa-2x" aria-hidden="true"></i
+          ><span [class]="isOpen ? 'show-text-menu' : ''">Log Out</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="header-nav-container" [class]="filledNav">
+    <div class="header-nav">
+      <div class="hamburger-container" (click)="handleSideNav()">
+        <i class="fa fa-bars fa-2x"></i>
+      </div>
+      <div
+        class="header-btn"
+        *ngIf="auth.isLoggedIn() == null || auth.isLoggedIn() == undefined"
+      >
+        <button nz-button nzType="primary" routerLink="/login" nzSize="large">
+          Login
+        </button>
+      </div>
+      <div
+        class="nav-user-short-profile"
+        *ngIf="auth.isLoggedIn() != null || auth.isLoggedIn() != undefined"
+      >
+        <div class="nav-avatar">
+          <img [src]="currentUser['profileImage']" />
+        </div>
+        <div class="nav-user-content" [class]="filledNavUserContentColorChange">
+          <h5>{{ currentUser["fullName"] }}</h5>
+          <span class="is-mute">{{ currentUser["role"] }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nz-modal
+  [(nzVisible)]="isProfileModalVisible"
+  nzTitle="Profile"
+  (nzOnCancel)="handleCancelProfileModal()"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    <app-profile></app-profile>
+  </ng-container>
+</nz-modal>

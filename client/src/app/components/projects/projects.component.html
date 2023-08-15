@@ -1,0 +1,538 @@
+<app-navbar
+  [filledNav]="filledNav"
+  [filledNavUserContentColor]="filledNavUserContentColor"
+></app-navbar>
+<div class="projects-container">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['../']">Home</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['./']">Projects</a></nz-breadcrumb-item
+    >
+  </nz-breadcrumb>
+  <div class="projects-heading-container">
+    <h1>Projects</h1>
+    <button
+      *ngIf="noDataCur"
+      nz-button
+      nzType="primary"
+      routerLink="/projects/create-project"
+    >
+      Create Project <i class="fa fa-plus" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="current-projects-container">
+    <nz-divider
+      nzOrientation="left"
+      nzText="Current Projects"
+      class="section-divider"
+    ></nz-divider>
+    <div class="current-projects-quick-tool-container">
+      <div class="filters-container">
+        <nz-tag [nzColor]="'green'">
+          {{ selectedFilterCur.slice(0, -3) }}</nz-tag
+        ><a
+          nz-dropdown
+          [nzDropdownMenu]="currentProjectsFilter"
+          nzTrigger="click"
+          nzPlacement="bottomRight"
+        >
+          Filters <i class="fa fa-filter" aria-hidden="true"></i>
+        </a>
+        <nz-dropdown-menu #currentProjectsFilter="nzDropdownMenu">
+          <ul nz-menu nzSelectable>
+            <li
+              nz-menu-item
+              class="current-project-filter-option"
+              (click)="filterCurrentProjects('defaultCur')"
+            >
+              <span>Default</span>
+              <i
+                class="fa fa-check"
+                *ngIf="selectedFilterCur == 'defaultCur'"
+                aria-hidden="true"
+              ></i>
+            </li>
+
+            <li
+              nz-menu-item
+              class="current-project-filter-option"
+              (click)="filterCurrentProjects('sortAToZCur')"
+            >
+              <span>Sort A-Z</span>
+              <i
+                class="fa fa-check"
+                *ngIf="selectedFilterCur == 'sortAToZCur'"
+                aria-hidden="true"
+              ></i>
+            </li>
+            <li
+              nz-menu-item
+              class="current-project-filter-option"
+              (click)="filterCurrentProjects('sortZToACur')"
+            >
+              <span>Sort Z-A</span>
+              <i
+                class="fa fa-check"
+                *ngIf="selectedFilterCur == 'sortZToACur'"
+                aria-hidden="true"
+              ></i>
+            </li>
+            <li
+              nz-menu-item
+              class="current-project-filter-option"
+              (click)="filterCurrentProjects('deadlineNearbyProjectsCur')"
+            >
+              <span>Sort based on nearby deadline projects</span>
+              <i
+                class="fa fa-check"
+                *ngIf="selectedFilterCur == 'deadlineNearbyProjectsCur'"
+                aria-hidden="true"
+              ></i>
+            </li>
+            <li
+              nz-menu-item
+              class="current-project-filter-option"
+              (click)="filterCurrentProjects('deadlineEndedProjectsCur')"
+            >
+              <span>Show deadline ended projects</span>
+              <i
+                class="fa fa-check"
+                *ngIf="selectedFilterCur == 'deadlineEndedProjectsCur'"
+                aria-hidden="true"
+              ></i>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+      <div class="search-bar-container">
+        <nz-input-group [nzSuffix]="suffixIconSearch">
+          <input
+            type="text"
+            nz-input
+            placeholder="Search for current projects"
+            #searchCurrentProjects
+            (keyup)="handleSearchCurrentProjects(searchCurrentProjects.value)"
+          />
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <span nz-icon nzType="search"></span>
+        </ng-template>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+      <div
+        nz-col
+        class="gutter-row"
+        [nzSm]="12"
+        [nzXs]="24"
+        [nzMd]="12"
+        [nzLg]="6"
+        *ngIf="
+          this.auth.isLoggedIn() &&
+          currentUser &&
+          (currentUser['role'] == 'Admin' ||
+            currentUser['role'] == 'Team Lead') &&
+          !noDataCur
+        "
+      >
+        <div class="inner-box">
+          <div
+            class="current-project-div"
+            routerLink="/projects/create-project"
+          >
+            <nz-card
+              style="width: 100%"
+              [nzBordered]="false"
+              class="create-card"
+            >
+              <i
+                class="fa fa-plus-circle project-add-icon"
+                aria-hidden="true"
+              ></i>
+              <p>Create</p>
+            </nz-card>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngFor="let data of currentProjectDetails"
+        nz-col
+        class="gutter-row"
+        [nzSm]="12"
+        [nzXs]="24"
+        [nzMd]="12"
+        [nzLg]="6"
+      >
+        <div class="inner-box">
+          <div class="current-project-div">
+            <nz-card
+              style="width: 100%"
+              [nzBordered]="true"
+              class="current-project-card"
+              [class]="daysLeftFunc(data.deadline) < 0 ? 'bg-red' : ''"
+            >
+              <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+                <div
+                  nz-col
+                  class="gutter-row"
+                  [nzSm]="6"
+                  [nzXs]="6"
+                  [nzMd]="6"
+                  [nzLg]="6"
+                >
+                  <div class="inner-box">
+                    <img
+                      src="../../../assets/images/ProjectImage.png"
+                      class="project-image"
+                      alt="project-image"
+                    />
+                  </div>
+                </div>
+                <div
+                  nz-col
+                  class="gutter-row"
+                  [nzSm]="18"
+                  [nzXs]="18"
+                  [nzMd]="18"
+                  [nzLg]="18"
+                >
+                  <div
+                    class="inner-box current-projects-inner-box"
+                    [routerLink]="[
+                      '/projects/project-dashboard',
+                      { projectId: data._id }
+                    ]"
+                  >
+                    <h6 class="project-title">{{ data.projectTitle }}</h6>
+                    <span class="deadline-text"
+                      >Deadline: {{ data.deadline }}</span
+                    >
+                    <br />
+                    <span
+                      class="deadline-ended-text"
+                      *ngIf="daysLeftFunc(data.deadline) < 0"
+                    >
+                      Deadline ended
+                    </span>
+                  </div>
+                </div>
+                <nz-divider class="content-divider"></nz-divider>
+                <div class="project-details-container">
+                  <div>
+                    <p class="project-description">
+                      {{ data.projectDescription }}
+                    </p>
+                  </div>
+                  <div class="project-details-sub-div">
+                    <div class="team-members">
+                      <span
+                        class="team-members-avatar"
+                        *ngFor="
+                          let teamMemberData of data.teamMembers.slice(0, 3)
+                        "
+                      >
+                        <img src="{{ teamMemberData.profileImage }}" />
+                      </span>
+
+                      <span
+                        class="team-members-remaining-count"
+                        *ngIf="data.teamMembers.length - 3 > 0"
+                        >+{{ data.teamMembers.length - 3 }}</span
+                      >
+                    </div>
+                    <div class="options-container">
+                      <div>
+                        <i
+                          class="fa fa-external-link project-dashboard-link"
+                          aria-hidden="true"
+                          [routerLink]="[
+                            '/projects/project-dashboard',
+                            { projectId: data._id }
+                          ]"
+                          nz-tooltip
+                          nzTooltipTitle="Go to Project Dashboard"
+                        ></i>
+                      </div>
+                      <div>
+                        <a
+                          nz-dropdown
+                          [nzDropdownMenu]="currentProjectMenu"
+                          nzTrigger="click"
+                          class="options-icon"
+                        >
+                          <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                        </a>
+                        <nz-dropdown-menu #currentProjectMenu="nzDropdownMenu">
+                          <ul nz-menu nzSelectable>
+                            <li
+                              nz-menu-item
+                              (click)="changeProjectStatus(data._id)"
+                            >
+                              Mark as Complete
+                            </li>
+
+                            <li
+                              nz-menu-item
+                              nzDanger
+                              (click)="
+                                deleteProject(data._id, data.projectTitle)
+                              "
+                            >
+                              Delete Project
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nz-card>
+          </div>
+        </div>
+      </div>
+
+      <ng-template
+        [ngTemplateOutlet]="noDataRef"
+        [ngTemplateOutletContext]="{
+          projectDetails: currentProjectDetails,
+          noData: noDataCur
+        }"
+      ></ng-template>
+    </div>
+  </div>
+  <div class="completed-projects-container">
+    <nz-divider
+      nzOrientation="left"
+      nzText="Completed Projects"
+      class="section-divider"
+    ></nz-divider>
+    <div class="completed-projects-quick-tool-container">
+      <div class="filters-container">
+        <nz-tag [nzColor]="'green'">
+          {{ selectedFilterCom.slice(0, -3) }}</nz-tag
+        >
+        <a
+          nz-dropdown
+          [nzDropdownMenu]="completedProjectsFilter"
+          nzTrigger="click"
+          nzPlacement="bottomRight"
+        >
+          Filters <i class="fa fa-filter" aria-hidden="true"></i>
+        </a>
+        <nz-dropdown-menu #completedProjectsFilter="nzDropdownMenu">
+          <ul nz-menu nzSelectable>
+            <li
+              nz-menu-item
+              (click)="filterCompletedProjects('defaultCom')"
+              class="completed-project-filter-option"
+            >
+              <span>Default</span>
+              <i
+                class="fa fa-check"
+                *ngIf="selectedFilterCom == 'defaultCom'"
+                aria-hidden="true"
+              ></i>
+            </li>
+
+            <li
+              nz-menu-item
+              (click)="filterCompletedProjects('sortAToZCom')"
+              class="completed-project-filter-option"
+            >
+              <span>Sort A-Z</span>
+              <i
+                class="fa fa-check"
+                *ngIf="selectedFilterCom == 'sortAToZCom'"
+                aria-hidden="true"
+              ></i>
+            </li>
+            <li
+              nz-menu-item
+              (click)="filterCompletedProjects('sortZtoACom')"
+              class="completed-project-filter-option"
+            >
+              <span>Sort Z-A</span>
+              <i
+                class="fa fa-check"
+                *ngIf="selectedFilterCom == 'sortZtoACom'"
+                aria-hidden="true"
+              ></i>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+      <div class="search-bar-container">
+        <nz-input-group [nzSuffix]="suffixIconSearch">
+          <input
+            type="text"
+            nz-input
+            placeholder="Search for completed projects"
+            #searchCompletedProjects
+            (keyup)="
+              handleSearchCompletedProjects(searchCompletedProjects.value)
+            "
+          />
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <span nz-icon nzType="search"></span>
+        </ng-template>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+      <div
+        *ngFor="let data of completedProjectDetails"
+        nz-col
+        class="gutter-row"
+        [nzSm]="12"
+        [nzXs]="24"
+        [nzMd]="12"
+        [nzLg]="6"
+      >
+        <div class="inner-box">
+          <div class="completed-project-div">
+            <nz-card
+              style="width: 100%"
+              [nzBordered]="true"
+              class="completed-project-card"
+            >
+              <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+                <div
+                  nz-col
+                  class="gutter-row"
+                  [nzSm]="24"
+                  [nzXs]="24"
+                  [nzMd]="12"
+                  [nzLg]="6"
+                >
+                  <div class="inner-box">
+                    <img
+                      src="../../../assets/images/ProjectImage.png"
+                      class="project-image"
+                      alt="project-image"
+                    />
+                  </div>
+                </div>
+                <div
+                  nz-col
+                  class="gutter-row"
+                  [nzSm]="24"
+                  [nzXs]="24"
+                  [nzMd]="12"
+                  [nzLg]="18"
+                >
+                  <div
+                    class="inner-box completed-projects-inner-box"
+                    [routerLink]="[
+                      '/projects/project-dashboard',
+                      { projectId: data._id }
+                    ]"
+                  >
+                    <h6 class="project-title">{{ data.projectTitle }}</h6>
+                    <span class="project-status"
+                      >{{ data.status }}
+                      <i class="fa fa-check-circle" aria-hidden="true"></i>
+                    </span>
+                  </div>
+                </div>
+                <nz-divider class="content-divider"></nz-divider>
+                <div class="project-details-container">
+                  <p class="project-description">
+                    {{ data.projectDescription }}
+                  </p>
+                  <div class="project-details-sub-div">
+                    <div class="team-members">
+                      <span
+                        class="team-members-avatar"
+                        *ngFor="
+                          let teamMemberData of data.teamMembers.slice(0, 3)
+                        "
+                      >
+                        <img src="{{ teamMemberData.profileImage }}" />
+                      </span>
+
+                      <span
+                        class="team-members-remaining-count"
+                        *ngIf="data.teamMembers.length - 3 > 0"
+                        >+{{ data.teamMembers.length - 3 }}</span
+                      >
+                    </div>
+                    <div class="options-container">
+                      <div>
+                        <i
+                          class="fa fa-external-link project-dashboard-link"
+                          aria-hidden="true"
+                          [routerLink]="[
+                            '/projects/project-dashboard',
+                            { projectId: data._id }
+                          ]"
+                          nz-tooltip
+                          nzTooltipTitle="Go to Project Dashboard"
+                        ></i>
+                      </div>
+                      <div>
+                        <a
+                          nz-dropdown
+                          [nzDropdownMenu]="completedProjectsMenu"
+                          nzTrigger="hover"
+                          class="options-icon"
+                        >
+                          <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                        </a>
+                        <nz-dropdown-menu
+                          #completedProjectsMenu="nzDropdownMenu"
+                        >
+                          <ul nz-menu nzSelectable>
+                            <li
+                              nz-menu-item
+                              nzDanger
+                              (click)="
+                                deleteProject(data._id, data.projectTitle)
+                              "
+                            >
+                              Delete Project
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nz-card>
+          </div>
+        </div>
+      </div>
+      <ng-template
+        [ngTemplateOutlet]="noDataRef"
+        [ngTemplateOutletContext]="{
+          projectDetails: completedProjectDetails,
+          noData: noDataCom
+        }"
+      ></ng-template>
+      <ng-template
+        [ngTemplateOutlet]="noProjectDataRef"
+        [ngTemplateOutletContext]="{
+          projectDetails: completedProjectDetails,
+          noDataText: 'No projects has been completed'
+        }"
+      ></ng-template>
+    </div>
+  </div>
+</div>
+<ng-template #noDataRef let-projectDetails="projectDetails" let-noData="noData">
+  <div *ngIf="projectDetails.length == 0 && noData" class="no-data-container">
+    <nz-empty></nz-empty>
+  </div>
+</ng-template>
+<ng-template
+  #noProjectDataRef
+  let-projectDetails="projectDetails"
+  let-noDataText="noDataText"
+>
+  <div *ngIf="projectDetails.length == 0" class="no-data-container">
+    <span> {{ noDataText }}</span>
+  </div>
+</ng-template>

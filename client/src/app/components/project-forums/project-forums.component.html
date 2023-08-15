@@ -1,0 +1,363 @@
+<div class="project-forums-container">
+  <div class="forum-options">
+    <div class="sort-container">
+      <nz-tag [nzColor]="'green'"> Sort : {{ selectedForumSort }}</nz-tag>
+      <a
+        nz-dropdown
+        [nzDropdownMenu]="forumsSort"
+        nzTrigger="click"
+        nzPlacement="bottomRight"
+      >
+        Sort
+        <i class="fa fa-sort" aria-hidden="true"></i>
+      </a>
+      <nz-dropdown-menu #forumsSort="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li
+            nz-menu-item
+            class="forum-sort-option"
+            (click)="sortForums('default')"
+          >
+            <span>Default</span>
+            <i
+              *ngIf="selectedForumSort == 'default'"
+              class="fa fa-check"
+              aria-hidden="true"
+            ></i>
+          </li>
+
+          <li
+            nz-menu-item
+            class="forum-sort-option"
+            (click)="sortForums('Top Voted')"
+          >
+            <span>Top Voted</span>
+            <i
+              *ngIf="selectedForumSort == 'Top Voted'"
+              class="fa fa-check"
+              aria-hidden="true"
+            ></i>
+          </li>
+          <li
+            nz-menu-item
+            class="forum-sort-option"
+            (click)="sortForums('Earliest')"
+          >
+            <span>Earliest</span>
+            <i
+              *ngIf="selectedForumSort == 'Earliest'"
+              class="fa fa-check"
+              aria-hidden="true"
+            ></i>
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <div class="search-bar-container">
+      <nz-input-group [nzSuffix]="suffixIconSearch">
+        <input
+          type="text"
+          nz-input
+          placeholder="Search by title"
+          #searchForum
+          (keyup)="searchInForums(searchForum.value)"
+        />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
+    </div>
+  </div>
+  <nz-card
+    class="project-forum-card"
+    *ngFor="let forum of forumDetails; let i = index"
+    ><div class="user-profile-container">
+      <div class="user-profile">
+        <div class="avatar">
+          <img [src]="forum.postedPersonProfileImage" />
+        </div>
+        <div class="user-content">
+          <h5>{{ forum.postedPersonFullName }}</h5>
+          <span>{{ forum.postedPersonRole }}</span>
+        </div>
+        <span>({{ forum.timeStamp }})</span>
+      </div>
+      <div class="post-options">
+        <div
+          class="up-vote-container"
+          *ngIf="
+            forum.likedUserNames == undefined ||
+            (forum.likedUserNames && forum.likedUserNames.length == 0)
+          "
+        >
+          <span
+            >0
+            <i
+              class="fa fa-thumbs-o-up"
+              aria-hidden="true"
+              (click)="likeProjectForum(forum.forumId)"
+            ></i
+          ></span>
+        </div>
+        <ng-container *ngFor="let likedUser of forum.likedUserNames">
+          <div
+            class="up-vote-container"
+            *ngIf="!(likedUser.likedUserName == currentUser['userName'])"
+          >
+            <span
+              >{{ forum.likedUserNames.length }}
+              <i
+                class="fa fa-thumbs-o-up"
+                aria-hidden="true"
+                (click)="likeProjectForum(forum.forumId)"
+              ></i
+            ></span>
+          </div>
+          <div
+            class="up-vote-container"
+            *ngIf="likedUser.likedUserName == currentUser['userName']"
+          >
+            <span
+              >{{ forum.likedUserNames.length
+              }}<i
+                class="fa fa-thumbs-up"
+                aria-hidden="true"
+                (click)="unLikeProjectForum(forum.forumId)"
+              ></i
+            ></span>
+          </div>
+        </ng-container>
+
+        <div class="comments-icon-container">
+          <span
+            nz-icon
+            nzType="message"
+            nzTheme="outline"
+            (click)="openCommentsDrawer(forum.forumId)"
+          ></span>
+        </div>
+        <div
+          class="delete-container"
+          *ngIf="forum.postedPersonUserName == currentUser['userName']"
+        >
+          <i
+            class="fa fa-trash"
+            aria-hidden="true"
+            (click)="deleteProjectForum(forum.forumId)"
+          ></i>
+        </div>
+      </div>
+    </div>
+    <div class="forum-content">
+      <h4>{{ forum.forumTitle }}</h4>
+      <p class="forum-description">
+        {{ forum.forumDescription }}
+      </p>
+      <div class="read-less-div">
+        <a (click)="showText(i)"> read less </a>
+      </div>
+      <div class="read-more-div">
+        <span>...</span> <a (click)="showText(i)"> read more </a>
+      </div>
+    </div>
+  </nz-card>
+  <div
+    class="no-search-data-found"
+    *ngIf="noSearchDataFound && forumDetails.length == 0"
+  >
+    <nz-empty></nz-empty>
+  </div>
+  <div
+    class="no-forums-posted"
+    *ngIf="!noSearchDataFound && forumDetails.length == 0"
+  >
+    <p>No Forums Posted yet! Be the first to post</p>
+  </div>
+  <nz-drawer
+    [nzBodyStyle]="{ overflow: 'auto' }"
+    [nzMaskClosable]="false"
+    [nzWidth]="350"
+    [nzVisible]="visible"
+    (nzOnClose)="closeCommentsDrawer()"
+  >
+    <ng-container *nzDrawerContent>
+      <div class="comments-container">
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="small"
+          (click)="showCommentBox()"
+        >
+          Add Comment
+        </button>
+        <div class="add-comment-container" #addCommentContainer>
+          <form
+            (ngSubmit)="addProjectForumComment()"
+            [formGroup]="requiredForm"
+          >
+            <div class="text-area-container">
+              <textarea
+                class="comment-form-input"
+                placeholder="Post your comment here..."
+                formControlName="comment"
+              ></textarea>
+            </div>
+            <div
+              *ngIf="
+                submitted &&
+                requiredForm.controls['comment'].errors &&
+                requiredForm.controls['comment'].errors['required']
+              "
+              class="error-text"
+            >
+              Comment is required*
+            </div>
+            <div class="comment-btn-container">
+              <button
+                class="comment-form-btn"
+                [ngClass]="{ 'add-comment-btn-loading': addCommentBtnLoading }"
+                type="submit"
+                [disabled]="addCommentBtnLoading"
+              >
+                {{ addCommentBtnLoading ? "Adding..." : "Add" }}
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="comments-content-container">
+          <div class="comments-header">
+            <h4>Comments</h4>
+            <div class="comments-sort-container">
+              <nz-tag [nzColor]="'green'">
+                Sort : {{ selectedCommentSort }}</nz-tag
+              >
+              <a
+                nz-dropdown
+                [nzDropdownMenu]="commentsSort"
+                nzTrigger="click"
+                nzPlacement="bottomRight"
+              >
+                Sort <i class="fa fa-sort" aria-hidden="true"></i>
+              </a>
+              <nz-dropdown-menu #commentsSort="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li
+                    nz-menu-item
+                    class="comments-sort-option"
+                    (click)="sortComments('default')"
+                  >
+                    <span>Default</span>
+                    <i
+                      *ngIf="selectedCommentSort == 'default'"
+                      class="fa fa-check"
+                      aria-hidden="true"
+                    ></i>
+                  </li>
+                  <li
+                    nz-menu-item
+                    class="comments-sort-option"
+                    (click)="sortComments('Top Comments')"
+                  >
+                    <span>Top Comments</span>
+                    <i
+                      *ngIf="selectedCommentSort == 'Top Comments'"
+                      class="fa fa-check"
+                      aria-hidden="true"
+                    ></i>
+                  </li>
+                  <li
+                    nz-menu-item
+                    class="comments-sort-option"
+                    (click)="sortComments('Earliest')"
+                  >
+                    <span>Earliest</span>
+                    <i
+                      *ngIf="selectedCommentSort == 'Earliest'"
+                      class="fa fa-check"
+                      aria-hidden="true"
+                    ></i>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
+          <div class="comments-list">
+            <div class="comment" *ngFor="let comment of commentDetails">
+              <div class="user-container">
+                <div class="user-name-and-time">
+                  <h5>{{ comment.commentorName }}</h5>
+                  <span>({{ comment.timeStamp }})</span>
+                </div>
+              </div>
+              <div class="comment-content">{{ comment.comment }}</div>
+              <div class="comment-options">
+                <div>
+                  <div
+                    class="up-vote-container"
+                    *ngIf="
+                      comment.likedUserNames == undefined ||
+                      (comment.likedUserNames &&
+                        comment.likedUserNames.length == 0)
+                    "
+                  >
+                    <span
+                      >0
+                      <i
+                        class="fa fa-thumbs-o-up"
+                        aria-hidden="true"
+                        (click)="likeProjectForumComment(comment.commentId)"
+                      ></i
+                    ></span>
+                  </div>
+                  <ng-container
+                    *ngFor="let likedUser of comment.likedUserNames"
+                  >
+                    <div
+                      class="up-vote-container"
+                      *ngIf="
+                        !(likedUser.likedUserName == currentUser['userName'])
+                      "
+                    >
+                      <span
+                        >{{ comment.likedUserNames.length }}
+                        <i
+                          class="fa fa-thumbs-o-up"
+                          aria-hidden="true"
+                          (click)="likeProjectForumComment(comment.commentId)"
+                        ></i
+                      ></span>
+                    </div>
+                    <div
+                      class="up-vote-container"
+                      *ngIf="likedUser.likedUserName == currentUser['userName']"
+                    >
+                      <span
+                        >{{ comment.likedUserNames.length
+                        }}<i
+                          class="fa fa-thumbs-up"
+                          aria-hidden="true"
+                          (click)="unLikeProjectForumComment(comment.commentId)"
+                        ></i
+                      ></span>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="delete-comment">
+                  <i
+                    *ngIf="comment.commentorUserName == currentUser['userName']"
+                    class="fa fa-trash"
+                    aria-hidden="true"
+                    (click)="deleteProjectForumComment(comment.commentId)"
+                  ></i>
+                </div>
+              </div>
+            </div>
+            <div class="no-comments-posted" *ngIf="commentDetails.length == 0">
+              <p>No Comments Posted yet!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </nz-drawer>
+</div>

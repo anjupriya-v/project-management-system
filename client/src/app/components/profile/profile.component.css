@@ -1,0 +1,83 @@
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 4em;
+}
+.profile-container {
+  height: 450px;
+  width: 300px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-size: cover;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  font-family: "Abel", sans-serif;
+}
+
+.image {
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
+  border: 5px solid white;
+  position: relative;
+  top: 200px;
+  margin-left: 170px;
+  box-shadow: 0 2px 15px rgb(58, 54, 54);
+  transform: rotate(-20deg);
+}
+.image img {
+  height: 90px;
+  width: 90px;
+  border-radius: 50%;
+}
+
+.shape {
+  height: 250px;
+  width: 400px;
+  background-color: rgb(156, 156, 156);
+  margin-left: -20px;
+  position: relative;
+  top: -80px;
+  box-shadow: 0 2px 15px black;
+  transform: rotate(25deg);
+}
+
+.user-name {
+  margin-bottom: 10px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.title {
+  color: rgb(105, 100, 109);
+}
+
+.user-details {
+  padding-left: 30px;
+  padding-right: 30px;
+  color: rgb(105, 100, 109);
+}
+
+.icons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+}
+.dashboard-button {
+  margin-right: 1em;
+}
+.dashboard-button i {
+  margin-left: 1em;
+}
+.rating {
+  background-color: rgb(216, 216, 23);
+  color: black;
+  padding-top: 0.5em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.rating i {
+  margin-left: 0.5em;
+}

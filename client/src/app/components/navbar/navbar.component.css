@@ -1,0 +1,154 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap");
+.side-nav-container {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  height: 100vh;
+  width: 68px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 2;
+  background-color: #d90166;
+  transition: width 0.3s;
+}
+.header-nav-container {
+  height: 58px;
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  padding-left: 75px;
+  padding-bottom: 1em;
+  padding-top: 0.5em;
+}
+.filled-nav {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  background-color: white;
+}
+.hamburger-container {
+  margin: 5px;
+}
+.hamburger-container i {
+  cursor: pointer;
+  color: rgb(194, 194, 194);
+}
+.header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.header-btn {
+  margin-right: 1.5em;
+}
+.header-btn button {
+  padding-left: 2em;
+  padding-right: 2em;
+}
+.nav-user-short-profile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 3em;
+}
+.nav-avatar {
+  margin-right: 0.8em;
+}
+.nav-avatar img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.nav-user-content * {
+  color: white;
+}
+.filled-nav-user-content-color * {
+  color: black;
+}
+.nav-user-content h5 {
+  font-size: 1em;
+  margin-bottom: 0;
+}
+.nav-user-content span {
+  font-size: 0.8em;
+}
+.side-nav-header {
+  margin-top: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+.logo-image {
+  width: 40px;
+  height: 40px;
+}
+.logo-text {
+  display: none;
+  margin-left: 0.8em;
+  font-family: "Roboto Slab", serif;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+.show-logo-text {
+  display: inline-block;
+}
+.double-left-arrow {
+  display: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: gray;
+}
+.show-double-left-arrow {
+  display: inline-block;
+}
+.nav-section {
+  height: 95vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.top-nav-links-div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-link {
+  margin-top: 2.2em;
+  margin-bottom: 2.2em;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+}
+
+.nav-link i {
+  font-size: 1.5em;
+  color: rgb(50, 45, 45);
+}
+.nav-link span {
+  display: none;
+  color: rgb(50, 45, 45);
+  margin-left: 0.7em;
+}
+
+.nav-link .show-text-menu {
+  display: inline-block;
+}
+.nav-link:hover * {
+  color: rgba(210, 210, 210, 0.8);
+}
+.active-link i,
+.active-link span {
+  color: rgb(210, 210, 210);
+}
+.extend-side-nav-width {
+  width: 250px;
+  transition: width 0.3s;
+}

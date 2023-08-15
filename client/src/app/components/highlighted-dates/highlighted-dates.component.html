@@ -1,0 +1,39 @@
+<mat-calendar
+  [dateClass]="dateClass"
+  nz-button
+  nz-popover
+  [nzPopoverTitle]="titleTemplate"
+  [nzPopoverContent]="contentTemplate"
+  nzPopoverTrigger="click"
+  [selected]="selectedDate"
+  (selectedChange)="
+    track == 'projectProgress'
+      ? getProjectActiveDays($event)
+      : getUserActiveDays($event)
+  "
+></mat-calendar>
+<ng-template #titleTemplate>Track Progress</ng-template>
+<ng-template #contentTemplate>
+  <div
+    *ngIf="track == 'projectProgress' && projectProgressDone.length > 0"
+    class="progress-done-container"
+  >
+    <ul *ngFor="let item of projectProgressDone">
+      <li>{{ item }}</li>
+    </ul>
+  </div>
+  <div *ngIf="track == 'projectProgress' && projectProgressDone.length == 0">
+    Click Highlighted days to track your progress
+  </div>
+  <div
+    *ngIf="track == 'userProgress' && userProgressDone.length > 0"
+    class="progress-done-container"
+  >
+    <ul *ngFor="let item of userProgressDone">
+      <li>{{ item }}</li>
+    </ul>
+  </div>
+  <div *ngIf="track == 'userProgress' && userProgressDone.length == 0">
+    Click Highlighted days to track your progress
+  </div>
+</ng-template>

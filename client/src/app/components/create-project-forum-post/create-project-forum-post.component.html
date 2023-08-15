@@ -1,0 +1,75 @@
+<div class="create-forum-post-container">
+  <h2 class="create-forum-post-heading">Create Post</h2>
+  <form (ngSubmit)="submitForumDiscussion()" [formGroup]="requiredForm">
+    <div class="input-container">
+      <input
+        class="forum-form-input"
+        placeholder="Discussion Title"
+        type="text"
+        formControlName="forumPostTitle"
+      />
+    </div>
+    <div
+      *ngIf="
+        submitted &&
+        requiredForm.controls['forumPostTitle'].errors &&
+        requiredForm.controls['forumPostTitle'].errors['required']
+      "
+      class="error-text"
+    >
+      Post Title is required*
+    </div>
+    <div
+      *ngIf="
+        submitted &&
+        requiredForm.controls['forumPostTitle'].errors &&
+        requiredForm.controls['forumPostTitle'].errors['maxlength']
+      "
+      class="error-text"
+    >
+      Title should have maximum 15 characters*
+    </div>
+    <div class="text-area-container">
+      <textarea
+        class="forum-form-input"
+        placeholder="Post your discussion here..."
+        formControlName="forumPostDescription"
+      ></textarea>
+    </div>
+    <div
+      *ngIf="
+        submitted &&
+        requiredForm.controls['forumPostDescription'].errors &&
+        requiredForm.controls['forumPostDescription'].errors['required']
+      "
+      class="error-text"
+    >
+      Post Description is required*
+    </div>
+    <div
+      *ngIf="
+        submitted &&
+        requiredForm.controls['forumPostDescription'].errors &&
+        requiredForm.controls['forumPostDescription'].errors['minlength']
+      "
+      class="error-text"
+    >
+      Description should have atleast 60 characters*
+      <br />
+      Characters Count:
+      {{ requiredForm.controls["forumPostDescription"].value.length }}
+    </div>
+    <div class="forum-btn-container">
+      <button
+        class="forum-form-btn"
+        type="submit"
+        [ngClass]="{
+          'create-forum-post-btn-loading': createForumPostBtnLoading
+        }"
+        [disabled]="createForumPostBtnLoading"
+      >
+        {{ createForumPostBtnLoading ? "Posting..." : "Post" }}
+      </button>
+    </div>
+  </form>
+</div>

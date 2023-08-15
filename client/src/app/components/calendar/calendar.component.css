@@ -1,0 +1,47 @@
+.calendar-container {
+  margin-left: 7em;
+  margin-top: 5em;
+  margin-right: 3em;
+  padding-bottom: 3em;
+}
+.calendar {
+  padding: 1em;
+  background-color: rgb(254, 254, 218);
+}
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 0.5em;
+}
+.calendar-indicators,
+.calendar-indicators div {
+  display: flex;
+  align-items: baseline;
+  margin-left: 1em;
+}
+.calendar-indicators div span {
+  margin-left: 0.5em;
+}
+.task-deadline,
+.project-deadline,
+.task-deadline-ended,
+.project-deadline-ended {
+  height: 15px;
+  width: 15px;
+  border: 1px solid rgb(161, 161, 161);
+}
+.task-deadline {
+  background-color: rgb(255, 212, 133);
+}
+.project-deadline {
+  background-color: rgb(255, 183, 183);
+}
+.task-deadline-ended {
+  border-radius: 50%;
+  background-color: rgb(71, 30, 255);
+}
+.project-deadline-ended {
+  border-radius: 50%;
+  background-color: red;
+}

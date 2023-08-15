@@ -1,0 +1,234 @@
+<app-navbar
+  [filledNav]="filledNav"
+  [filledNavUserContentColor]="filledNavUserContentColor"
+></app-navbar>
+<div class="create-project-container">
+  <section class="create-project-section">
+    <form
+      class="create-project-form"
+      (ngSubmit)="submitProjectDetailsForm($event)"
+      [formGroup]="requiredForm"
+    >
+      <div class="heading">
+        <h2>Create Project</h2>
+        <p>Want to manage your project from anywhere? This will do!</p>
+      </div>
+      <div class="input-div">
+        <nz-input-group [nzPrefix]="prefixProjectTitle">
+          <input
+            type="text"
+            nz-input
+            placeholder="Project Title"
+            class="form-control"
+            formControlName="projectTitle"
+          />
+        </nz-input-group>
+        <ng-template #prefixProjectTitle>
+          <i class="fa fa-window-maximize" aria-hidden="true"></i>
+        </ng-template>
+
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['projectTitle'].errors &&
+            requiredForm.controls['projectTitle'].errors['required']
+          "
+          class="error-text"
+        >
+          Project Title is required*
+        </div>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['projectTitle'].errors &&
+            requiredForm.controls['projectTitle'].errors['maxlength']
+          "
+          class="error-text"
+        >
+          Project Title should only have atmost 20 characters*
+        </div>
+      </div>
+      <div class="input-div">
+        <nz-input-group
+          [nzPrefix]="prefixProjectDescription"
+          class="text-area-input"
+        >
+          <textarea
+            nz-input
+            placeholder="Project Description"
+            nzAutosize
+            formControlName="projectDescription"
+          ></textarea>
+        </nz-input-group>
+        <ng-template #prefixProjectDescription>
+          <i class="fa fa-file-text-o" aria-hidden="true"></i>
+        </ng-template>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['projectDescription'].errors &&
+            requiredForm.controls['projectDescription'].errors['required']
+          "
+          class="error-text"
+        >
+          Project Description is required*
+        </div>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['projectDescription'].errors &&
+            requiredForm.controls['projectDescription'].errors['minlength']
+          "
+          class="error-text"
+        >
+          Project Description must have atleast 80 characters.
+          <br />
+          Characters entered count:
+          {{ requiredForm.controls["projectDescription"].value.length }}
+        </div>
+      </div>
+
+      <div class="input-div">
+        <nz-input-group [nzPrefix]="prefixProjectDeadline">
+          <input
+            type="text"
+            onfocus="(this.type='date')"
+            nz-input
+            placeholder="Deadline"
+            formControlName="deadline"
+            [min]="getTodaysDate()"
+          />
+        </nz-input-group>
+        <ng-template #prefixProjectDeadline>
+          <i class="fa fa-calendar" aria-hidden="true"></i>
+        </ng-template>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['deadline'].errors &&
+            requiredForm.controls['deadline'].errors['required']
+          "
+          class="error-text"
+        >
+          Deadline is required*
+        </div>
+      </div>
+      <div class="input-div">
+        <nz-input-group [nzPrefix]="prefixProjectTeamMembers">
+          <nz-select
+            style="width: 100%"
+            [nzMaxTagCount]="5"
+            [nzMaxTagPlaceholder]="tagPlaceHolder"
+            nzMode="multiple"
+            nzPlaceHolder="Select team members"
+            [nzAllowClear]="false"
+            [(ngModel)]="listOfSelectedUserNames"
+            formControlName="teamMembers"
+          >
+            <nz-option
+              *ngFor="let item of listOfUserNames"
+              [nzLabel]="item"
+              [nzValue]="item"
+            ></nz-option>
+          </nz-select>
+          <ng-template #tagPlaceHolder let-selectedList
+            >and {{ selectedList.length }} more selected</ng-template
+          >
+        </nz-input-group>
+        <ng-template #prefixProjectTeamMembers>
+          <i class="fa fa-users" aria-hidden="true"></i>
+        </ng-template>
+
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['teamMembers'].errors &&
+            requiredForm.controls['teamMembers'].errors['required']
+          "
+          class="error-text"
+        >
+          Team Members is required*
+        </div>
+      </div>
+      <div class="input-div">
+        <span class="passkey-confirmation-text"
+          >Do you want to generate passkey Automatically?</span
+        >
+        <nz-radio-group formControlName="confirmation">
+          <label (click)="handleYesToGeneratePK()" nz-radio nzValue="Yes"
+            >Yes</label
+          >
+          <label (click)="handleNoToGeneratePK()" nz-radio nzValue="No"
+            >No</label
+          >
+        </nz-radio-group>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['confirmation'].errors &&
+            requiredForm.controls['confirmation'].errors['required']
+          "
+          class="error-text"
+        >
+          Confirmation is required*
+        </div>
+      </div>
+      <div class="input-div pass-key-div">
+        <nz-input-group [nzPrefix]="prefixPassKey">
+          <input
+            type="text"
+            nz-input
+            placeholder="Pass Key"
+            formControlName="passKey"
+          />
+        </nz-input-group>
+        <ng-template #prefixPassKey>
+          <i class="fa fa-key" aria-hidden="true"></i>
+        </ng-template>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['passKey'].errors &&
+            requiredForm.controls['passKey'].errors['required']
+          "
+          class="error-text"
+        >
+          Pass Key is required*
+        </div>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['passKey'].errors &&
+            requiredForm.controls['passKey'].errors['minlength']
+          "
+          class="error-text"
+        >
+          PassKey should have atleast 8 characters
+        </div>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['passKey'].errors &&
+            requiredForm.controls['passKey'].errors['maxlength']
+          "
+          class="error-text"
+        >
+          PassKey should have atmost 13 characters
+        </div>
+      </div>
+      <input
+        type="submit"
+        [attr.disabled]="submissionInProgress ? true : null"
+        [class]="
+          submissionInProgress ? 'button change-submit-button-bg' : 'button'
+        "
+        [value]="
+          submissionInProgress ? 'Creating Project...' : 'Create Project'
+        "
+      />
+    </form>
+    <div class="app-features">
+      <h3 class="heading"></h3>
+    </div>
+  </section>
+</div>

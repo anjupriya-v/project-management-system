@@ -1,0 +1,356 @@
+@import url("https://fonts.googleapis.com/css?family=Pathway+Gothic+One");
+.registered-users-container {
+  margin-left: 7em;
+  margin-top: 5em;
+  margin-right: 3em;
+  padding-bottom: 4em;
+}
+.registered-users-container h1 {
+  margin-top: 0.7em;
+}
+.table-options-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+.table-options-container div {
+  margin-left: 1em;
+}
+.filter-option {
+  display: flex;
+  justify-content: space-between;
+}
+.check-icon {
+  color: green;
+  margin-left: 1em !important;
+}
+
+.create-button button i {
+  margin-left: 0.5em;
+}
+.table-container {
+  width: 100%;
+  overflow-x: scroll;
+}
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+.table-sub-container {
+  width: 1400px;
+  background-color: #eeeeee;
+}
+
+.table-sub-container,
+.table-header,
+.table-data {
+  border: 1px solid white;
+  border-collapse: collapse;
+  padding: 15px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.table-sub-container .table-header {
+  background-color: #404040;
+  color: white;
+}
+
+.table-data img {
+  border: 1px solid #b7b6b6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+.capitalize-data {
+  text-transform: capitalize;
+}
+.button_one,
+.button_two {
+  text-transform: capitalize;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+.button_one {
+  background: #03a9f4;
+  color: white;
+}
+
+.button_two {
+  background: #e91e63;
+  color: white;
+  margin-left: 1em;
+}
+.deleting-user-button {
+  background: #fe7ba6;
+}
+
+.not-found-container {
+  margin-top: 0.3em;
+  border: 2px dashed rgb(165, 165, 165);
+  padding: 3em;
+  background-color: #eeeeee;
+}
+.not-found-container .not-found-heading-1 {
+  text-align: center;
+  font-family: "Pathway Gothic One";
+  font-size: 4em;
+  letter-spacing: 2px;
+  margin-bottom: 0;
+}
+.not-found-container .not-found-heading-2 {
+  text-align: center;
+  font-size: 1.5em;
+  letter-spacing: 2px;
+  color: #666;
+}
+.picture-upload-container {
+  max-height: 100%;
+  max-width: 100%;
+  text-align: center;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.picture-upload-container img {
+  border: 1px solid #1890ff;
+  border-radius: 50%;
+  padding: 7px;
+  object-fit: cover;
+}
+.picture-upload-container label {
+  margin-top: 1em;
+}
+.user-profile-image {
+  height: 180px;
+  width: 180px;
+}
+.user-profile-picture {
+  z-index: 999;
+  line-height: 0;
+  font-size: 50px;
+  position: absolute;
+  opacity: 0;
+  filter: alpha(opacity = 0);
+  -ms-filter: "alpha(opacity=0)";
+  cursor: pointer;
+  _cursor: hand;
+  margin: 0;
+  padding: 0;
+  left: 0;
+}
+
+.add-photo-btn {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: center;
+  background-color: #1890ff;
+  color: #fff;
+  display: block;
+  width: 197px;
+  height: 31px;
+  font-size: 18px;
+  line-height: 30px;
+  float: left;
+}
+.form-container .form-group {
+  margin-top: 15px;
+}
+
+.form-container .form-group label {
+  color: #000000;
+  font-weight: normal;
+}
+
+.form-container .form-group input {
+  width: 100%;
+  padding: 10px;
+  border: #ddd 1px solid;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: inherit;
+  caret-color: #1890ff;
+}
+
+.form-container .form-group input:focus {
+  outline-color: #1890ff;
+}
+.user-name-container {
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.user-name-input {
+  border: none !important;
+}
+.user-name-input:focus {
+  outline: none;
+}
+.user-name-success-icon,
+.user-name-error-icon,
+.user-name-loader-icon {
+  margin-right: 0.7em;
+}
+.user-name-success-icon {
+  color: green;
+}
+.user-name-error-icon {
+  color: red;
+}
+.user-name-status-container {
+  margin-top: 1em;
+}
+.dropdown {
+  position: relative;
+  width: 100%;
+  height: 50px;
+}
+
+.dropdown::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  z-index: 1000;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #333;
+  border-top: 2px solid #fff;
+  border-right: 2px solid #fff;
+  transform: rotate(-45deg);
+  transition: 0.5s;
+  pointer-events: none;
+}
+
+.dropdown.active::before {
+  top: 22px;
+  transform: rotate(-225deg);
+}
+
+.dropdown input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  /* background: #fff; */
+  font-size: 1.2em;
+  border: none;
+  outline: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+}
+
+.dropdown .options {
+  position: absolute;
+  top: 70px;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  overflow: hidden;
+  display: none;
+}
+
+.dropdown.active .options {
+  display: block;
+}
+
+.dropdown .options div {
+  padding: 12px 20px;
+  cursor: pointer;
+}
+
+.dropdown .options div:hover {
+  background: #62baea;
+  color: #fff;
+}
+
+.dropdown .options div ion-icon {
+  position: relative;
+  top: 4px;
+  font-size: 1.2em;
+  margin-right: 10px;
+}
+.disableRoleInput {
+  pointer-events: none;
+  background: rgb(250, 250, 247);
+}
+
+.register-error-msg-container {
+  margin-top: 1em;
+}
+.password-input-container {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  background: #fff;
+  align-items: center;
+  overflow: hidden;
+}
+.password-input-container input {
+  outline: none;
+  border: none;
+  background: none;
+  font-size: 1em;
+  padding: 0.5em;
+  color: inherit;
+  flex: auto 1 1;
+  width: 100%;
+  background: none;
+  background-color: transparent;
+}
+.password-input-container .fa {
+  padding: 10px;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+.form-container .btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 25px;
+  background: #1890ff;
+  color: #fff;
+  cursor: pointer;
+  border: #1890ff 1px solid;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.form-container .btn:hover {
+  background: #2796fd;
+  color: #f4f4f4;
+}
+
+.form-container .btn:focus {
+  outline-color: #2796fd;
+}
+.form-container .submissionInProgress {
+  cursor: not-allowed;
+  background: #67b4fd;
+}
+.form-container .submissionInProgress:hover {
+  background: #67b4fd;
+}
+.error-text {
+  color: red;
+}
+@media (min-width: 768px) {
+  .not-found-container h2 {
+    font-size: 2em;
+  }
+}

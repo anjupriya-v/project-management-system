@@ -1,0 +1,30 @@
+<app-navbar [filledNav]="filledNav"></app-navbar>
+<div class="home-container">
+  <nz-carousel [nzEffect]="strategy" nzAutoPlay>
+    <div nz-carousel-content *ngFor="let slide of slides">
+      <div
+        [ngStyle]="{
+          background:
+            'linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),url(' +
+            slide.src +
+            ')',
+          'background-size': 'cover',
+          'background-repeat': 'no-repeat'
+        }"
+        class="home-carousel-image"
+      >
+        <div class="nz-carousel-heading-container">
+          <h1>Project</h1>
+          <h1>Management System</h1>
+          <hr />
+          <h4>{{ slide.title }}</h4>
+          <p>{{ slide.subtitle }}</p>
+          <button nz-button nzType="primary" [nzSize]="size" nzShape="round">
+            Get Started
+            <span nz-icon nzType="double-right" nzTheme="outline"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nz-carousel>
+</div>

@@ -1,0 +1,207 @@
+.projects-container {
+  margin-left: 7em;
+  margin-top: 5em;
+  margin-right: 3em;
+  padding-bottom: 4em;
+}
+.projects-heading-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2em;
+}
+.projects-heading-container button i {
+  margin-left: 1em;
+}
+.current-projects-container {
+  margin-top: 2em;
+}
+.completed-projects-container {
+  margin-top: 4em;
+}
+.current-projects-quick-tool-container,
+.completed-projects-quick-tool-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin-bottom: 0.5em;
+}
+.current-projects-quick-tool-container .filters-container,
+.completed-projects-quick-tool-container .filters-container {
+  margin-right: 1.5em;
+  color: black;
+}
+.ant-input-affix-wrapper {
+  border-radius: 15px;
+}
+.ant-input.ng-star-inserted {
+  width: 200px;
+}
+.current-project-div,
+.completed-project-div {
+  margin-top: 1.5em;
+}
+
+.ant-divider-horizontal.ant-divider-with-text {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+.ant-divider-horizontal.ant-divider-with-text {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+.create-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 2px dashed rgb(176, 176, 176);
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  cursor: pointer;
+  text-align: center;
+}
+.current-project-card,
+.completed-project-card {
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+.ant-card {
+  height: 242.5px;
+}
+
+.create-card:hover,
+.current-project-card:hover,
+.completed-project-card:hover {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+.project-add-icon {
+  font-size: 3em;
+}
+.bg-red {
+  background-color: rgb(255, 237, 237);
+}
+.project-image {
+  width: 40px;
+  height: 40px;
+}
+.current-projects-inner-box,
+.completed-projects-inner-box {
+  cursor: pointer;
+}
+.project-title {
+  font-size: 1.1em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.deadline-text {
+  padding: 0px;
+}
+.deadline-text,
+.deadline-ended-text {
+  font-size: 0.9em;
+}
+.deadline-text {
+  color: orange;
+}
+.deadline-ended-text {
+  color: red;
+}
+.ant-divider-horizontal {
+  margin: 0px;
+  padding: 0px;
+}
+.content-divider {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.section-divider {
+  margin-bottom: 0.5em;
+}
+.project-details-container {
+  width: 100%;
+}
+.project-description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.project-details-sub-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.team-members {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.team-members-avatar {
+  position: relative;
+  left: 35px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  overflow: hidden;
+  width: 40px;
+  height: 40px;
+}
+
+.team-members-avatar:not(:last-child) {
+  margin-left: -60px;
+}
+
+.team-members-avatar img {
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+.team-members-remaining-count {
+  position: relative;
+  left: 37px;
+  color: black;
+}
+.options-container {
+  display: flex;
+}
+.options-container div :nth-child(1) {
+  margin-left: 1em;
+}
+.project-dashboard-link {
+  cursor: pointer;
+}
+.options-icon {
+  color: black;
+  margin-right: 1em;
+}
+.project-status {
+  font-size: 0.9em;
+  color: green;
+}
+.current-project-filter-option,
+.completed-project-filter-option {
+  display: flex;
+  justify-content: space-between;
+}
+.current-project-filter-option i,
+.completed-project-filter-option i {
+  color: green;
+  margin-left: 1em;
+}
+.no-data-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 250px;
+  width: 100%;
+  border: 2px dashed gray;
+  background-color: rgb(235, 235, 235);
+  margin-left: 2em;
+  margin-right: 2em;
+  margin-top: 3em;
+}
+.no-data-container span {
+  font-size: 1.5em;
+}

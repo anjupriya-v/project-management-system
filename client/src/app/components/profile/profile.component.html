@@ -1,0 +1,26 @@
+<div class="profile">
+  <div class="profile-container">
+    <div class="shape">
+      <div class="image"><img [src]="profileImage" /></div>
+    </div>
+    <h3 class="user-name">{{ fullName }}</h3>
+    <h3 class="title">{{ role }}</h3>
+    <p class="user-details">{{ email }}</p>
+    <p class="user-details">{{ phoneNumber }}</p>
+
+    <div class="icons">
+      <button
+        nz-button
+        nzSize="default"
+        nzType="primary"
+        routerLink="/user-dashboard"
+        class="dashboard-button"
+      >
+        Dashboard <i class="fa fa-external-link" aria-hidden="true"></i>
+      </button>
+      <div class="rating">
+        <span> Rating <i class="fa fa-star" aria-hidden="true"></i> (5)</span>
+      </div>
+    </div>
+  </div>
+</div>

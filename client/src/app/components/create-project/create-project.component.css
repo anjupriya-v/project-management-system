@@ -1,0 +1,134 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+.create-project-container {
+  margin-left: 7em;
+  margin-top: 7em;
+  margin-right: 3em;
+}
+.create-project-section {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  border-radius: 4px;
+  background-color: #334155;
+}
+
+.create-project-form {
+  flex-grow: 1;
+  padding: 40px;
+  background-color: #e8eaf6;
+}
+
+.create-project-form .heading {
+  margin-bottom: 48px;
+}
+
+.create-project-form .heading h2 {
+  margin-bottom: 8px;
+  color: #27272a;
+  font-size: 36px;
+}
+
+.create-project-form .heading p {
+  color: #4b5563;
+  font-size: 16px;
+}
+.input-div {
+  margin-bottom: 1.5em;
+}
+.ant-input-affix-wrapper > input.ant-input {
+  padding: 10px;
+}
+textarea {
+  border: none;
+}
+
+.ant-input-focused,
+.ant-input:focus {
+  border-color: white;
+  box-shadow: none;
+}
+.passkey-confirmation-text {
+  margin-right: 0.5em;
+}
+.pass-key-div {
+  display: none;
+}
+.create-project-form .button {
+  padding: 12px 36px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2979ff;
+  box-shadow: inset 0 -2px 4px 0 #304ffe;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.create-project-form .button:active {
+  box-shadow: inset 0 0 4px 2px #304ffe;
+}
+.create-project-form .change-submit-button-bg {
+  background-color: #5c98ff;
+  cursor: not-allowed;
+}
+.create-project-form .change-submit-button-bg:active {
+  box-shadow: inset 0 0 4px 2px #9dacfe;
+  cursor: not-allowed;
+}
+.error-text {
+  margin-left: 0.5em;
+  color: red;
+}
+.app-features {
+  width: 30%;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.app-features .heading {
+  color: white;
+  text-align: center;
+  font-size: 40px;
+}
+.app-features .heading::after {
+  opacity: 1;
+  content: "Platform with pass key system";
+  margin-bottom: 48px;
+  animation: textrotate 10s linear infinite;
+  -webkit-animation: textrotate 10s linear infinite;
+  animation-fill-mode: forwards;
+  transition: animation 0.5s;
+}
+@keyframes textrotate {
+  20% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+    content: "Tracks user progress and project progress";
+  }
+  60% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 1;
+    content: "Increases Productivity";
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .create-project-section {
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .create-project-form {
+    padding: 40px;
+  }
+  .app-features {
+    width: 100%;
+  }
+}

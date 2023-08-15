@@ -1,0 +1,488 @@
+<app-navbar
+  [filledNav]="filledNav"
+  [filledNavUserContentColor]="filledNavUserContentColor"
+></app-navbar>
+<div class="registered-users-container">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Home</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/registered-users']"
+        >Registered Users</a
+      ></nz-breadcrumb-item
+    >
+  </nz-breadcrumb>
+  <h1>Registered Users</h1>
+  <div class="table-options-container">
+    <div class="filter-container">
+      <a
+        nz-dropdown
+        nzTrigger="click"
+        [nzDropdownMenu]="menu"
+        nzPlacement="bottomRight"
+      >
+        Filter
+        <i class="fa fa-filter" aria-hidden="true"></i>
+      </a>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li
+            nz-menu-item
+            (click)="filterRegisteredUsers('Default')"
+            class="filter-option"
+          >
+            <span> Default</span>
+            <i
+              *ngIf="userRole == 'Default'"
+              class="fa fa-check check-icon"
+              aria-hidden="true"
+            ></i>
+          </li>
+          <li
+            nz-menu-item
+            (click)="filterRegisteredUsers('Admin')"
+            class="filter-option"
+          >
+            <span> Show Admin</span>
+            <i
+              *ngIf="userRole == 'Admin'"
+              class="fa fa-check check-icon"
+              aria-hidden="true"
+            ></i>
+          </li>
+          <li
+            nz-menu-item
+            (click)="filterRegisteredUsers('Team Lead')"
+            class="filter-option"
+          >
+            <span>Show Team Leads</span>
+            <i
+              *ngIf="userRole == 'Team Lead'"
+              class="fa fa-check check-icon"
+              aria-hidden="true"
+            ></i>
+          </li>
+          <li
+            nz-menu-item
+            (click)="filterRegisteredUsers('Employee')"
+            class="filter-option"
+          >
+            <span> Show Employees</span>
+            <i
+              *ngIf="userRole == 'Employee'"
+              class="fa fa-check check-icon"
+              aria-hidden="true"
+            ></i>
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <div class="search-bar-container">
+      <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+        <input
+          type="text"
+          nz-input
+          placeholder="Search by Name"
+          #searchInput
+          (keyup)="searchRegisteredUsers(searchInput.value)"
+        />
+      </nz-input-group>
+      <ng-template #suffixIconButton>
+        <button nz-button nzType="primary" nzSearch>
+          <span nz-icon nzType="search"></span>
+        </button>
+      </ng-template>
+    </div>
+    <div class="create-button">
+      <button
+        nz-button
+        nzType="primary"
+        (click)="showCreateModel('Create User')"
+      >
+        Create User <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+  <div class="table-container">
+    <table class="table-sub-container">
+      <thead>
+        <tr>
+          <th class="table-header">Avatar</th>
+          <th class="table-header">Full Name</th>
+          <th class="table-header">User Name</th>
+          <th class="table-header">Email</th>
+          <th class="table-header">Role</th>
+          <th class="table-header">Phone Number</th>
+          <th class="table-header">Controls</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let registeredUser of registeredUsers">
+          <td class="table-data">
+            <img
+              [src]="
+                registeredUser.profileImage
+                  ? registeredUser.profileImage
+                  : 'https://static.vecteezy.com/system/resources/thumbnails/002/534/006/small/social-media-chatting-online-blank-profile-picture-head-and-body-icon-people-standing-icon-grey-background-free-vector.jpg'
+              "
+              alt="user-profile-picture"
+            />
+          </td>
+          <td class="table-data capitalize-data">
+            {{ registeredUser.fullName }}
+          </td>
+          <td class="table-data">{{ registeredUser.userName }}</td>
+          <td class="table-data">{{ registeredUser.email }}</td>
+          <td class="table-data capitalize-data">{{ registeredUser.role }}</td>
+          <td class="table-data">{{ registeredUser.phoneNumber }}</td>
+          <td class="table-data">
+            <button
+              class="button_one"
+              (click)="showUpdateModel(registeredUser.email, 'Update User')"
+            >
+              <i class="fa fa-pencil" aria-hidden="true"></i> Edit
+            </button>
+            <button
+              class="button_two"
+              [class]="
+                deleteEmail == registeredUser.email
+                  ? 'deleting-user-button'
+                  : ''
+              "
+              (click)="deleteUser(registeredUser.email)"
+            >
+              <i class="fa fa-trash" aria-hidden="true"></i>
+              {{ deleteEmail == registeredUser.email ? deleteText : "Delete" }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="profile-container">
+      <nz-modal
+        [nzStyle]="{ top: '20px' }"
+        [(nzVisible)]="isVisible"
+        nzTitle="User Registration"
+        [nzFooter]="null"
+        (nzOnCancel)="handleCancel()"
+        [nzMaskClosable]="false"
+      >
+        <ng-container *nzModalContent>
+          <div class="details-container">
+            <div class="picture-upload-container">
+              <img
+                [src]="userProfileImageSrc"
+                alt="user-profile-image"
+                class="user-profile-image"
+              />
+              <span *ngIf="userProfileImageMsg" class="error-text">{{
+                userProfileImageMsg
+              }}</span>
+              <label class="add-photo-btn"
+                >upload<span
+                  ><input
+                    (change)="uploadProfileImage($event)"
+                    type="file"
+                    class="user-profile-picture"
+                    name="profileImage" /></span
+              ></label>
+            </div>
+            <div class="form-container">
+              <form
+                (ngSubmit)="
+                  formFunctionality == ('Create User' || 'Creating User...')
+                    ? createUser($event)
+                    : updateUser($event)
+                "
+                [formGroup]="requiredForm"
+              >
+                <div class="form-group">
+                  <label for="fullName">Full Name</label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    id="fullName"
+                    formControlName="fullName"
+                    placeholder="Enter Full Name"
+                  />
+                  <div
+                    *ngIf="
+                      submitted &&
+                      requiredForm.controls['fullName'].errors &&
+                      requiredForm.controls['fullName'].errors['required']
+                    "
+                    class="error-text"
+                  >
+                    Full Name is required*
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="userName">User Name</label>
+
+                  <div class="user-name-container">
+                    <input
+                      (keyup)="checkUserName(userName.value)"
+                      #userName
+                      type="text"
+                      name="userName"
+                      id="userName"
+                      formControlName="userName"
+                      placeholder="Enter User Name"
+                      class="user-name-input"
+                    />
+                    <i
+                      *ngIf="
+                        userNameStatus == 'inValid' && userName.value.length > 0
+                      "
+                      class="fa fa-times fa-2x user-name-error-icon"
+                      aria-hidden="true"
+                    ></i>
+
+                    <i
+                      *ngIf="
+                        userNameStatus == 'valid' && userName.value.length > 0
+                      "
+                      class="fa fa-check fa-2x user-name-success-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <i
+                      *ngIf="userNameLoader && userName.value.length > 0"
+                      class="fa fa-circle-o-notch fa-spin fa-2x user-name-loader-icon"
+                    ></i>
+                  </div>
+                  <div class="user-name-status-container">
+                    <nz-alert
+                      *ngIf="
+                        userNameStatus == 'valid' && userName.value.length > 0
+                      "
+                      nzType="success"
+                      nzMessage="{{ userNameStatusMsg }}"
+                      nzShowIcon
+                    ></nz-alert>
+
+                    <nz-alert
+                      *ngIf="
+                        userNameStatus == 'inValid' && userName.value.length > 0
+                      "
+                      nzType="error"
+                      nzMessage="{{ userNameStatusMsg }}"
+                      nzShowIcon
+                    ></nz-alert>
+                  </div>
+
+                  <div
+                    *ngIf="
+                      submitted &&
+                      requiredForm.controls['userName'].errors &&
+                      requiredForm.controls['userName'].errors['required']
+                    "
+                    class="error-text"
+                  >
+                    User Name is required*
+                  </div>
+                  <div
+                    *ngIf="
+                      submitted &&
+                      requiredForm.controls['userName'].errors &&
+                      requiredForm.controls['userName'].errors['pattern']
+                    "
+                    class="error-text"
+                  >
+                    User Name should consist of 4 to 15 characters
+                    <br />
+                    User Name should contain only alphanumberic characters and
+                    Underscore. Alphanumeric characters consist of [a-z], [A-Z]
+                    and [0-9]
+                    <br />
+                    User Name should start with alphabetic character either
+                    lowercase and uppercase
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="role">Role</label>
+                  <div
+                    class="dropdown"
+                    #selectRoleDropdown
+                    (click)="
+                      disableAdminRole && selectInput.value == 'Admin'
+                        ? false
+                        : handleSelectRole()
+                    "
+                  >
+                    <input
+                      [class]="
+                        disableAdminRole && selectInput.value == 'Admin'
+                          ? 'disableRoleInput'
+                          : ''
+                      "
+                      #selectInput
+                      class="text-box"
+                      type="text"
+                      placeholder="Select Role"
+                      name="role"
+                      formControlName="role"
+                      readonly
+                    />
+
+                    <div class="options">
+                      <div (click)="showSelectValue('Team Lead')">
+                        Team Lead
+                      </div>
+                      <div (click)="showSelectValue('Employee')">Employee</div>
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="
+                      submitted &&
+                      requiredForm.controls['role'].errors &&
+                      requiredForm.controls['role'].errors['required']
+                    "
+                    class="error-text"
+                  >
+                    Role is required*
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    formControlName="email"
+                    placeholder="Enter Email"
+                  />
+                  <div
+                    *ngIf="
+                      submitted &&
+                      requiredForm.controls['email'].errors &&
+                      requiredForm.controls['email'].errors['required']
+                    "
+                    class="error-text"
+                  >
+                    Email is required*
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="phoneNumber">Phone Number</label>
+                  <input
+                    type="number"
+                    name="phoneNumber"
+                    id="phoneNumber"
+                    formControlName="phoneNumber"
+                    placeholder="Enter Phone Number"
+                  />
+                  <div
+                    *ngIf="
+                      submitted &&
+                      requiredForm.controls['phoneNumber'].errors &&
+                      requiredForm.controls['phoneNumber'].errors['required']
+                    "
+                    class="error-text"
+                  >
+                    Phone Number is required*
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <div class="password-input-container">
+                    <input
+                      [type]="showPassword ? 'text' : 'password'"
+                      name="password"
+                      id="password"
+                      formControlName="password"
+                      placeholder="Enter Password"
+                    />
+                    <i
+                      [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"
+                      (click)="handleShowPassword()"
+                    ></i>
+                  </div>
+                  <div
+                    *ngIf="
+                      submitted &&
+                      requiredForm.controls['password'].errors &&
+                      requiredForm.controls['password'].errors['required']
+                    "
+                    class="error-text"
+                  >
+                    Password is required*
+                  </div>
+                  <div
+                    *ngIf="
+                      submitted &&
+                      requiredForm.controls['password'].errors &&
+                      requiredForm.controls['password'].errors['pattern']
+                    "
+                    class="error-text"
+                  >
+                    Password must contain at least one number, one uppercase ,
+                    one lower case, one special character (@$!%*#?&^_-) and at
+                    least 8 characters<br />Password cannot contain whitespace
+                  </div>
+                </div>
+                <div class="register-error-msg-container">
+                  <nz-alert
+                    *ngIf="!registerStatus"
+                    nzType="error"
+                    nzCloseable
+                    nzMessage="{{ registerMsg }}"
+                  ></nz-alert>
+                </div>
+                <button
+                  type="submit"
+                  [disabled]="
+                    formFunctionality == 'Creating User...' ||
+                    formFunctionality == 'Updating User...'
+                      ? true
+                      : null
+                  "
+                  [class]="
+                    formFunctionality == 'Creating User...' ||
+                    formFunctionality == 'Updating User...'
+                      ? 'btn submissionInProgress'
+                      : 'btn'
+                  "
+                >
+                  {{ formFunctionality }}
+                </button>
+              </form>
+            </div>
+          </div>
+        </ng-container>
+      </nz-modal>
+    </div>
+    <div class="not-found-container" *ngIf="registeredUsers.length <= 0">
+      <div
+        *ngIf="
+          registeredUsers.length <= 0 &&
+          userRole != 'Default' &&
+          searchNoData == false
+        "
+      >
+        <h1 class="not-found-heading-1">Oops!</h1>
+        <h2 class="not-found-heading-2">
+          <i class="fa fa-frown-o" aria-hidden="true"></i>
+          {{ userRole }}s are not Registered!
+        </h2>
+      </div>
+      <div
+        *ngIf="
+          registeredUsers.length <= 0 &&
+          searchNoData == false &&
+          !fetchUsersStatus
+        "
+      >
+        <h1 class="not-found-heading-1">Oops!</h1>
+        <h2 class="not-found-heading-2">
+          <i class="fa fa-frown-o" aria-hidden="true"></i>
+          {{ fetchUsersMsg }}
+        </h2>
+      </div>
+      <div *ngIf="registeredUsers.length <= 0 && searchNoData == true">
+        <nz-empty></nz-empty>
+      </div>
+    </div>
+  </div>
+</div>

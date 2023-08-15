@@ -1,0 +1,65 @@
+.home-container {
+  height: 100vh;
+}
+.home-carousel-image {
+  width: 100%;
+  height: 100vh;
+}
+.heading-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.nz-carousel-heading-container {
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+.nz-carousel-heading-container h1 {
+  color: white;
+  font-family: sans-serif;
+  font-size: 4.5em;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  line-height: 0.9em;
+  text-shadow: -1px 1px 0 #41ba45, 1px 1px 0 #c63d2b, 1px -1px 0 #42afac,
+    -1px -1px 0 #c6c23f;
+}
+.nz-carousel-heading-container hr {
+  margin-bottom: 2em;
+  -webkit-animation: hrAnimation 5s infinite;
+  -moz-animation: hrAnimation 3s infinite;
+  -o-animation: hrAnimation 3s infinite;
+  animation: hrAnimation 5s infinite;
+}
+@keyframes hrAnimation {
+  0% {
+    border-left: 200px solid rgb(146, 146, 146);
+  }
+  50% {
+    border-left: 400px solid rgb(146, 146, 146);
+  }
+  80% {
+    border-left: 600px solid rgb(146, 146, 146);
+  }
+  100% {
+    border-left: 700px solid rgb(146, 146, 146);
+  }
+}
+.nz-carousel-heading-container h4,
+.nz-carousel-heading-container p {
+  color: white;
+  display: block;
+  line-height: 1.1em;
+  font-family: sans-serif;
+  letter-spacing: 2px;
+}
+.nz-carousel-heading-container h4,
+.nz-carousel-heading-container p {
+  font-size: 1.8em;
+}

@@ -1,0 +1,38 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
+    "@h3mul/zoom-api": "^1.0.4",
+    "axios": "^1.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "googleapis": "^27.0.0",
+    "handlebars": "^4.7.7",
+    "jsdom": "^22.1.0",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.3.2",
+    "multer": "^1.4.5-lts.1",
+    "node-localstorage": "^2.2.1",
+    "nodemailer": "^6.9.4",
+    "nodemon": "^3.0.0",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "query-string": "^8.1.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "simple-encryptor": "^4.0.0",
+    "zoomus": "^0.1.4"
+  }
+}

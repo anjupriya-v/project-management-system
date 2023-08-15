@@ -1,0 +1,580 @@
+<app-navbar
+  [filledNav]="filledNav"
+  [filledNavUserContentColor]="filledNavUserContentColor"
+></app-navbar>
+<div
+  class="user-dashboard-container"
+  *ngIf="userDashboardLoader ? false : true"
+>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Home</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/user-dashboard']"
+        >User Dashboard</a
+      ></nz-breadcrumb-item
+    >
+  </nz-breadcrumb>
+  <div class="user-dashboard">
+    <div class="user-dashboard-header">
+      <h1>My Dashboard</h1>
+
+      <nz-tag [nzColor]="'yellow'" class="over-all-rating"
+        >OverAll Rating: ({{ overAllRating }})
+        <i class="fa fa-star" aria-hidden="true"></i
+      ></nz-tag>
+    </div>
+    <div class="user-dashboard-div">
+      <div
+        nz-row
+        [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }"
+        class="user-dashboard-section-one"
+      >
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="5"
+        >
+          <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+            <div
+              nz-col
+              class="gutter-row"
+              [nzSm]="24"
+              [nzXs]="24"
+              [nzMd]="12"
+              [nzLg]="24"
+            >
+              <nz-card>
+                <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+                  <div
+                    nz-col
+                    class="gutter-row task-count"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="8"
+                  >
+                    {{ taskAssignedCount }}
+                  </div>
+                  <div
+                    nz-col
+                    class="gutter-row task-count-text"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="16"
+                  >
+                    <h6>
+                      OverAll Tasks <br />
+                      Assigned
+                    </h6>
+                  </div>
+                </div>
+              </nz-card>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+            <div
+              nz-col
+              class="gutter-row"
+              [nzSm]="24"
+              [nzXs]="24"
+              [nzMd]="12"
+              [nzLg]="24"
+            >
+              <nz-card class="task-count-card">
+                <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+                  <div
+                    nz-col
+                    class="gutter-row task-count"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="8"
+                  >
+                    {{ taskCompletedCount }}
+                  </div>
+                  <div
+                    nz-col
+                    class="gutter-row task-count-text"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="16"
+                  >
+                    <h6>
+                      OverAll Tasks <br />
+                      Completed
+                    </h6>
+                  </div>
+                </div></nz-card
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="5"
+        >
+          <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+            <div
+              nz-col
+              class="gutter-row"
+              [nzSm]="24"
+              [nzXs]="24"
+              [nzMd]="12"
+              [nzLg]="24"
+            >
+              <nz-card>
+                <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+                  <div
+                    nz-col
+                    class="gutter-row project-count"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="8"
+                  >
+                    {{ projectAssignedCount }}
+                  </div>
+                  <div
+                    nz-col
+                    class="gutter-row project-count-text"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="16"
+                  >
+                    <h6>
+                      Total Projects <br />
+                      Assigned
+                    </h6>
+                  </div>
+                </div>
+              </nz-card>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+            <div
+              nz-col
+              class="gutter-row"
+              [nzSm]="24"
+              [nzXs]="24"
+              [nzMd]="12"
+              [nzLg]="24"
+            >
+              <nz-card class="project-count-card">
+                <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+                  <div
+                    nz-col
+                    class="gutter-row project-count"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="8"
+                  >
+                    {{ projectCompletedCount }}
+                  </div>
+                  <div
+                    nz-col
+                    class="gutter-row project-count-text"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="16"
+                  >
+                    <h6>
+                      Total Projects <br />
+                      Completed
+                    </h6>
+                  </div>
+                </div></nz-card
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="7"
+        >
+          <nz-card class="pie-chart-container">
+            <canvas id="pieChart" width="100%" height="240px">{{
+              pieChart
+            }}</canvas>
+          </nz-card>
+        </div>
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="7"
+        >
+          <nz-card class="multi-bar-chart-container">
+            <canvas id="multiBarChart" width="100%" height="240px">{{
+              multiBarChart
+            }}</canvas>
+          </nz-card>
+        </div>
+      </div>
+      <div
+        nz-row
+        [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }"
+        class="user-dashboard-section-two"
+      >
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="24"
+          [nzLg]="10"
+        >
+          <nz-card>
+            <div class="current-tasks-container">
+              <div class="current-tasks-header">
+                <h2>Your Current Tasks</h2>
+                <hr />
+              </div>
+              <div class="current-tasks-content">
+                <nz-card
+                  [ngClass]="{
+                    'task-deadline-ended': daysLeftFunc(task.deadline) < 0
+                  }"
+                  class="current-task-card"
+                  *ngFor="let task of currentTasks"
+                >
+                  <div class="current-task-card-header">
+                    <h3>{{ task.taskName }}</h3>
+                    <div class="current-task-side-menu">
+                      <div
+                        *ngIf="daysLeftFunc(task.deadline) < 0"
+                        class="deadline-ended-text"
+                      >
+                        Deadline ended
+                      </div>
+                      <i
+                        class="fa fa-external-link"
+                        [routerLink]="[
+                          '/projects/project-dashboard',
+                          { projectId: task.projectId }
+                        ]"
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                  </div>
+                  <div>
+                    <nz-tag [nzColor]="'green'"
+                      >Project: {{ task.projectTitle }}</nz-tag
+                    >
+                    <nz-tag [nzColor]="'red'"
+                      >Task Deadline : {{ task.deadline }}</nz-tag
+                    >
+                    <nz-tag
+                      *ngIf="task.progressStatus == 'Not Started'"
+                      [nzColor]="'red'"
+                      >Status : {{ task.progressStatus }}</nz-tag
+                    >
+                    <nz-tag
+                      *ngIf="task.progressStatus == 'In Progress'"
+                      [nzColor]="'blue'"
+                      >Status : {{ task.progressStatus }}</nz-tag
+                    >
+                    <nz-tag
+                      [nzColor]="'orange'"
+                      *ngIf="task.progressStatus == 'Under Review'"
+                      >Status : {{ task.progressStatus }}</nz-tag
+                    >
+                  </div>
+                </nz-card>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="24"
+          [nzLg]="7"
+        >
+          <div
+            nz-row
+            [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }"
+            class="active-days-card-container"
+          >
+            <div
+              nz-col
+              class="gutter-row"
+              [nzSm]="24"
+              [nzXs]="24"
+              [nzMd]="12"
+              [nzLg]="24"
+            >
+              <nz-card>
+                <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+                  <div
+                    nz-col
+                    class="gutter-row active-days-count"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="8"
+                  >
+                    {{ activeDays.length }}
+                  </div>
+                  <div
+                    nz-col
+                    class="gutter-row active-days-count-text"
+                    [nzSm]="24"
+                    [nzXs]="24"
+                    [nzMd]="12"
+                    [nzLg]="16"
+                  >
+                    <h6>
+                      No. of <br />
+                      Active days
+                    </h6>
+                  </div>
+                </div>
+              </nz-card>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+            <div
+              nz-col
+              class="gutter-row"
+              [nzSm]="24"
+              [nzXs]="24"
+              [nzMd]="12"
+              [nzLg]="24"
+            >
+              <nz-card class="scatter-chart-container"
+                ><canvas id="scatterChart" width="100%" height="300px">{{
+                  scatterChart
+                }}</canvas></nz-card
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="24"
+          [nzLg]="7"
+        >
+          <nz-card>
+            <div class="calendar-header">
+              <h2>Your Active Days</h2>
+              <hr />
+            </div>
+            <div>
+              <app-highlighted-dates
+                [datesArray]="activeDays"
+                [track]="userProgress"
+              ></app-highlighted-dates>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+      <div
+        nz-row
+        [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }"
+        class="user-dashboard-section-three"
+      >
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="12"
+        >
+          <nz-card>
+            <div class="current-projects-container">
+              <div class="current-projects-header">
+                <h2>
+                  Your Current Projects
+                  <i class="fa fa-bolt" aria-hidden="true"></i>
+                </h2>
+                <hr />
+              </div>
+              <div class="current-projects-content">
+                <nz-card
+                  [ngClass]="{
+                    'project-deadline-ended': daysLeftFunc(project.deadline) < 0
+                  }"
+                  class="current-project-card"
+                  *ngFor="let project of currentProjects"
+                >
+                  <div
+                    nz-row
+                    [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }"
+                    class="user-dashboard-section-three"
+                  >
+                    <div
+                      nz-col
+                      class="gutter-row"
+                      [nzSm]="24"
+                      [nzXs]="24"
+                      [nzMd]="12"
+                      [nzLg]="3"
+                    >
+                      <img
+                        src="../../../assets/images/ProjectImage.png"
+                        class="project-image"
+                        alt="project-image"
+                      />
+                    </div>
+                    <div
+                      nz-col
+                      class="gutter-row"
+                      [nzSm]="24"
+                      [nzXs]="24"
+                      [nzMd]="12"
+                      [nzLg]="21"
+                    >
+                      <div class="project-header-container">
+                        <h3>{{ project.projectTitle }}</h3>
+                        <div class="current-project-side-menu">
+                          <div
+                            *ngIf="daysLeftFunc(project.deadline) < 0"
+                            class="deadline-ended-text"
+                          >
+                            Deadline ended
+                          </div>
+                          <i
+                            class="fa fa-external-link"
+                            aria-hidden="true"
+                            [routerLink]="[
+                              '/projects/project-dashboard',
+                              { projectId: project.projectId }
+                            ]"
+                          ></i>
+                        </div>
+                      </div>
+                      <div class="project-content-container">
+                        <nz-tag [nzColor]="'red'"
+                          >Deadline: {{ project.deadline }}</nz-tag
+                        >
+                        <nz-tag [nzColor]="'blue'"
+                          >Your Role : {{ project.yourRole }} 😎</nz-tag
+                        >
+                        <nz-tag
+                          *ngIf="project.taskCount == 0"
+                          [nzColor]="'blue'"
+                          >No Tasks Assigned To you</nz-tag
+                        >
+                        <nz-tag
+                          *ngIf="project.taskCount > 0"
+                          [nzColor]="'red'"
+                          >{{
+                            project.taskCount == 1
+                              ? "1 Task is assigned to you"
+                              : project.taskCount + " tasks assigned to you"
+                          }}</nz-tag
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </nz-card>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="12"
+        >
+          <nz-card>
+            <div class="completed-projects-container">
+              <div class="completed-projects-header">
+                <h2>
+                  Your Completed Projects
+                  <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                </h2>
+                <hr />
+              </div>
+              <div class="completed-projects-content">
+                <nz-card
+                  class="completed-project-card"
+                  *ngFor="let project of completedProjects"
+                >
+                  <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+                    <div
+                      nz-col
+                      class="gutter-row"
+                      [nzSm]="24"
+                      [nzXs]="24"
+                      [nzMd]="12"
+                      [nzLg]="3"
+                    >
+                      <img
+                        src="../../../assets/images/ProjectImage.png"
+                        class="project-image"
+                        alt="project-image"
+                      />
+                    </div>
+                    <div
+                      nz-col
+                      class="gutter-row"
+                      [nzSm]="24"
+                      [nzXs]="24"
+                      [nzMd]="12"
+                      [nzLg]="21"
+                    >
+                      <div class="project-header-container">
+                        <h3>{{ project.projectTitle }}</h3>
+                        <i
+                          class="fa fa-external-link"
+                          aria-hidden="true"
+                          [routerLink]="[
+                            '/projects/project-dashboard',
+                            { projectId: project.projectId }
+                          ]"
+                        ></i>
+                      </div>
+                      <div class="project-content-container">
+                        <nz-tag [nzColor]="'yellow'"
+                          >Your Rating: {{ project.userRating }}
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                        </nz-tag>
+                        <nz-tag [nzColor]="'blue'"
+                          >Your Role : {{ project.yourRole }} 😎</nz-tag
+                        >
+                        <nz-tag [nzColor]="'green'"
+                          >Total Tasks Done : {{ project.tasksDone }}</nz-tag
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </nz-card>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="userDashboardLoader ? true : false">Loading</div>

@@ -1,0 +1,1317 @@
+<app-navbar
+  [filledNav]="filledNav"
+  [filledNavUserContentColor]="filledNavUserContentColor"
+></app-navbar>
+
+<div
+  class="project-dashboard-container"
+  *ngIf="projectDashboardLoader ? false : true"
+>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">Home</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/projects']">Projects</a></nz-breadcrumb-item
+    >
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/project-dashboard']"
+        >Project Dashboard</a
+      ></nz-breadcrumb-item
+    >
+  </nz-breadcrumb>
+  <div class="project-title-container">
+    <h1>{{ projectTitle }}</h1>
+  </div>
+  <div class="project-details">
+    <div class="description-container" (click)="showProjectDescriptionModal()">
+      <i class="fa fa-info-circle" aria-hidden="true"></i>
+      <h4>Description</h4>
+    </div>
+    <div class="project-options-container">
+      <nz-tag [nzColor]="'red'" class="deadline-text"
+        >Deadline: {{ deadline }}</nz-tag
+      >
+
+      <button nz-button nzType="primary" (click)="showTeamMembersModal()">
+        Team Members <i class="fa fa-users" aria-hidden="true"></i>
+      </button>
+      <button nz-button nzType="primary" (click)="ViewForums()">
+        Forums <i class="fa fa-comments-o" aria-hidden="true"></i>
+      </button>
+
+      <button
+        nz-button
+        nzType="primary"
+        (click)="openAssignTaskDrawer()"
+        *ngIf="
+          (currentUser['role'] == 'Admin' ||
+            currentUser['role'] == 'Team Lead') &&
+          this.projectStatus == 'Incomplete'
+        "
+        [disabled]="this.daysLeft < 0"
+      >
+        Assign Task <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+      <button
+        nz-button
+        nz-popconfirm
+        nzPopconfirmTitle="Are you sure to mark as complete?"
+        nzPopconfirmPlacement="bottom"
+        (nzOnConfirm)="confirmMarkAsComplete()"
+        (nzOnCancel)="cancelMarkAsComplete()"
+        class="mark-as-complete-button"
+        *ngIf="
+          (currentUser['role'] == 'Admin' ||
+            currentUser['role'] == 'Team Lead') &&
+          projectStatus != 'Completed'
+        "
+      >
+        Mark as complete <i class="fa fa-check" aria-hidden="true"></i>
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        nz-popconfirm
+        nzPopconfirmTitle="Are you sure to delete this project?"
+        nzPopconfirmPlacement="bottom"
+        (nzOnConfirm)="confirmDeleteProject(projectId, projectTitle)"
+        (nzOnCancel)="cancelDeleteProject()"
+        *ngIf="
+          currentUser['role'] == 'Admin' || currentUser['role'] == 'Team Lead'
+        "
+      >
+        Delete Project <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+  <div
+    class="project-dashboard-section-one"
+    nz-row
+    [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }"
+  >
+    <div
+      class="project-progress-container"
+      nz-col
+      class="gutter-row"
+      [nzSm]="24"
+      [nzXs]="24"
+      [nzMd]="12"
+      [nzLg]="6"
+    >
+      <nz-card class="project-progress-card">
+        <div class="project-progress">
+          <nz-progress
+            [nzPercent]="completedPercentage"
+            nzType="circle"
+            [nzStrokeColor]="{
+              '0%': '#108ee9',
+              '50%': '#2db7f5',
+              '100%': '#87d068'
+            }"
+          ></nz-progress>
+        </div>
+        <div class="progress-text">Completed</div>
+      </nz-card>
+    </div>
+    <div
+      nz-col
+      class="gutter-row"
+      [nzSm]="24"
+      [nzXs]="24"
+      [nzMd]="12"
+      [nzLg]="10"
+    >
+      <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="12"
+        >
+          <nz-card
+            class="first-row-card days-count"
+            [ngClass]="{
+              'project-completed': this.projectStatus == 'Completed',
+              'deadline-ended':
+                this.projectStatus == 'Incomplete' && this.daysLeft < 0
+            }"
+          >
+            <h5
+              [ngClass]="{
+                'project-completed-text': this.projectStatus == 'Completed'
+              }"
+            >
+              {{
+                this.projectStatus == "Completed"
+                  ? "Project Completed"
+                  : this.daysLeft >= 0
+                  ? this.daysLeft == 1
+                    ? this.daysLeft + " Day Left"
+                    : this.daysLeft + " Days Left"
+                  : "Project Deadline Ended"
+              }}
+              <i
+                *ngIf="this.projectStatus == 'Incomplete' && this.daysLeft >= 0"
+                class="fa fa-hourglass-half project-inprogress"
+                aria-hidden="true"
+              ></i>
+
+              <i
+                *ngIf="this.projectStatus == 'Incomplete' && this.daysLeft < 0"
+                class="fa fa-hourglass-end project-incomplete"
+                aria-hidden="true"
+              ></i>
+              <i
+                *ngIf="this.projectStatus == 'Completed'"
+                class="fa fa-trophy project-completed"
+                aria-hidden="true"
+              ></i>
+            </h5>
+          </nz-card>
+        </div>
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="12"
+        >
+          <nz-card class="first-row-card task-assigned">
+            <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+              <div
+                nz-col
+                class="gutter-row task-count"
+                [nzSm]="24"
+                [nzXs]="24"
+                [nzMd]="12"
+                [nzLg]="8"
+              >
+                {{ taskAssignedSum }}
+              </div>
+              <div
+                nz-col
+                class="gutter-row task-count-text"
+                [nzSm]="24"
+                [nzXs]="24"
+                [nzMd]="12"
+                [nzLg]="16"
+              >
+                <h6>
+                  Task <br />
+                  Assigned
+                </h6>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="12"
+        >
+          <nz-card class="second-row-card">
+            <div class="last-active-member-container">
+              <h4 style="color: orange">Last Active Member:</h4>
+              <div class="last-active-member">
+                <div class="avatar">
+                  <img [src]="lastActiveMemberProfileImage" />
+                </div>
+                <div class="user-content">
+                  <h5>{{ lastActiveMemberFullName }}</h5>
+                  <span>{{ lastActiveMemberRole }}</span>
+                </div>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+        <div
+          nz-col
+          class="gutter-row"
+          [nzSm]="24"
+          [nzXs]="24"
+          [nzMd]="12"
+          [nzLg]="12"
+        >
+          <nz-card class="second-row-card task-completed">
+            <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+              <div
+                nz-col
+                class="gutter-row task-count"
+                [nzSm]="24"
+                [nzXs]="24"
+                [nzMd]="12"
+                [nzLg]="8"
+              >
+                {{ taskCompletedSum }}
+              </div>
+              <div
+                nz-col
+                class="gutter-row task-count-text"
+                [nzSm]="24"
+                [nzXs]="24"
+                [nzMd]="12"
+                [nzLg]="16"
+              >
+                <h6>Task Completed</h6>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+    </div>
+    <div
+      nz-col
+      class="gutter-row task-count-text"
+      [nzSm]="24"
+      [nzXs]="24"
+      [nzMd]="12"
+      [nzLg]="8"
+    >
+      <nz-card
+        style="height: 245px"
+        [ngClass]="{ 'chart-not-processed-div': !chartProcessed }"
+      >
+        <div *ngIf="chartProcessed">
+          <canvas id="MyChart" width="100%" height="210px">{{ chart }}</canvas>
+        </div>
+        <div *ngIf="chartProcessed == false ? true : false">
+          Chart Not processed
+          <br />
+          Assign Task to see the progress
+        </div>
+      </nz-card>
+    </div>
+  </div>
+  <div class="project-dashboard-section-two">
+    <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+      <div
+        nz-col
+        class="gutter-row"
+        [nzSm]="24"
+        [nzXs]="24"
+        [nzMd]="24"
+        [nzLg]="24"
+      >
+        <nz-card>
+          <div class="header-container">
+            <div class="heading">
+              <h1>Task by user</h1>
+            </div>
+            <div class="task-list-quick-tool-container">
+              <div class="current-user-task-count-container">
+                <nz-tag [nzColor]="currentUserTaskCount > 0 ? 'red' : 'blue'">
+                  <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+                  <span>{{
+                    currentUserTaskCount > 0
+                      ? "You have Assigned " + currentUserTaskCount + " Tasks"
+                      : "No Tasks Assigned to you"
+                  }}</span>
+                </nz-tag>
+              </div>
+              <div class="filter-container">
+                <nz-tag [nzColor]="'green'">
+                  Filter : {{ selectedTaskListFilter }}</nz-tag
+                >
+                <a
+                  nz-dropdown
+                  [nzDropdownMenu]="menu"
+                  nzTrigger="click"
+                  nzPlacement="bottomRight"
+                >
+                  Filter
+                  <i class="fa fa-filter" aria-hidden="true"></i>
+                </a>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                  <ul nz-menu nzSelectable>
+                    <li
+                      nz-menu-item
+                      class="task-filter-option"
+                      (click)="filterTaskList('default')"
+                    >
+                      <span>Default</span>
+                      <i
+                        *ngIf="selectedTaskListFilter == 'default'"
+                        class="fa fa-check"
+                        aria-hidden="true"
+                      ></i>
+                    </li>
+                    <li
+                      nz-menu-item
+                      class="task-filter-option"
+                      (click)="filterTaskList('Not Started')"
+                    >
+                      <span> Not Started</span>
+                      <i
+                        *ngIf="selectedTaskListFilter == 'Not Started'"
+                        class="fa fa-check"
+                        aria-hidden="true"
+                      ></i>
+                    </li>
+                    <li
+                      nz-menu-item
+                      class="task-filter-option"
+                      (click)="filterTaskList('In Progress')"
+                    >
+                      <span> In Progress</span>
+                      <i
+                        *ngIf="selectedTaskListFilter == 'In Progress'"
+                        class="fa fa-check"
+                        aria-hidden="true"
+                      ></i>
+                    </li>
+                    <li
+                      nz-menu-item
+                      class="task-filter-option"
+                      (click)="filterTaskList('Under Review')"
+                    >
+                      <span> Under Review</span>
+                      <i
+                        *ngIf="selectedTaskListFilter == 'Under Review'"
+                        class="fa fa-check"
+                        aria-hidden="true"
+                      ></i>
+                    </li>
+                    <li
+                      nz-menu-item
+                      class="task-filter-option"
+                      (click)="filterTaskList('Completed')"
+                    >
+                      <span>Completed</span>
+                      <i
+                        *ngIf="selectedTaskListFilter == 'Completed'"
+                        class="fa fa-check"
+                        aria-hidden="true"
+                      ></i>
+                    </li>
+                    <li
+                      nz-menu-item
+                      class="task-filter-option"
+                      (click)="filterTaskList('Task Not Assigned Members')"
+                    >
+                      <span>Task Not Assigned Members</span>
+                      <i
+                        *ngIf="
+                          selectedTaskListFilter == 'Task Not Assigned Members'
+                        "
+                        class="fa fa-check"
+                        aria-hidden="true"
+                      ></i>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <div class="search-container">
+                <nz-input-group nzSearch [nzAddOnAfter]="addOnAfterTemplate">
+                  <input
+                    type="text"
+                    nz-input
+                    [placeholder]="'Search By User Name'"
+                    #taskListSearchValue
+                    (keyup)="searchInTaskList(taskListSearchValue.value)"
+                  />
+                </nz-input-group>
+                <ng-template #addOnAfterTemplate>
+                  <button nz-button nzType="primary" nzSearch>
+                    <span nz-icon nzType="search"></span>
+                  </button>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="task-container">
+            <ng-container *ngFor="let teamMember of teamMembers">
+              <ng-container
+                *ngIf="
+                  !taskNotAssignedMembers.includes(teamMember.userName) &&
+                  filteredAssignees.includes(teamMember.userName) &&
+                  !filterNotSatisfiedMembers.includes(teamMember.userName)
+                "
+              >
+                <ng-template
+                  *ngTemplateOutlet="
+                    teamMemberTemplate;
+                    context: { teamMember: teamMember }
+                  "
+                ></ng-template>
+
+                <div class="task-list-container">
+                  <ng-container *ngFor="let task of taskDetails">
+                    <nz-card
+                      [ngClass]="{
+                        'task-deadline-ended':
+                          daysLeftFunc(task.deadline) < 0 &&
+                          task.approvalStatus == 'Not Submitted',
+                        'task-completed-card': task.approvalStatus == 'Approved'
+                      }"
+                      class="task-card"
+                      *ngIf="task.assignee == teamMember.userName"
+                    >
+                      <div
+                        nz-row
+                        [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }"
+                        class="task-card-sub-div"
+                      >
+                        <div
+                          nz-col
+                          class="gutter-row"
+                          [nzSm]="24"
+                          [nzXs]="24"
+                          [nzMd]="24"
+                          [nzLg]="5"
+                        >
+                          {{ task.taskName }}
+                          <br />
+                          <span
+                            class="task-deadline-ended-text"
+                            *ngIf="
+                              daysLeftFunc(task.deadline) < 0 &&
+                              task.approvalStatus == 'Not Submitted'
+                            "
+                          >
+                            (Deadline ended)
+                          </span>
+                        </div>
+                        <div
+                          nz-col
+                          class="gutter-row centering-element"
+                          [nzSm]="24"
+                          [nzXs]="24"
+                          [nzMd]="24"
+                          [nzLg]="3"
+                        >
+                          <nz-tag
+                            *ngIf="task.priority == 'High Priority'"
+                            [nzColor]="'red'"
+                            style="padding: 5px"
+                            >{{ task.priority }}</nz-tag
+                          >
+                          <nz-tag
+                            *ngIf="task.priority == 'Medium Priority'"
+                            [nzColor]="'orange'"
+                            style="padding: 5px"
+                            >{{ task.priority }}</nz-tag
+                          >
+                          <nz-tag
+                            *ngIf="task.priority == 'Low Priority'"
+                            [nzColor]="'green'"
+                            style="padding: 5px"
+                            >{{ task.priority }}</nz-tag
+                          >
+                        </div>
+                        <div
+                          nz-col
+                          class="gutter-row centering-element"
+                          [nzSm]="24"
+                          [nzXs]="24"
+                          [nzMd]="24"
+                          [nzLg]="4"
+                        >
+                          <nz-tag nzColor="red" style="padding: 5px">
+                            <span nz-icon nzType="clock-circle"></span>
+                            <span>Deadline: {{ task.deadline }}</span>
+                          </nz-tag>
+                        </div>
+                        <div
+                          nz-col
+                          class="gutter-row centering-element"
+                          [nzSm]="24"
+                          [nzXs]="24"
+                          [nzMd]="24"
+                          [nzLg]="3"
+                        >
+                          <nz-select
+                            *ngIf="
+                              !(
+                                task.progressStatus == 'Under Review' ||
+                                task.progressStatus == 'Completed' ||
+                                task.progressStatus == 'In Complete'
+                              )
+                            "
+                            (ngModelChange)="
+                              changeTaskProgressStatus($event, task.taskId)
+                            "
+                            #progressStatus
+                            [ngModel]="task.progressStatus"
+                            [nzOptions]="listOfProgressStatus"
+                            [ngClass]="{
+                              notStarted: task.progressStatus == 'Not Started',
+                              inProgress: task.progressStatus == 'In Progress',
+
+                            }"
+                            [disabled]="
+                              task.approvalStatus == 'Waiting for approval' ||
+                              task.approvalStatus == 'Approved' ||
+                              task.approvalStatus == 'Rejected' ||
+                              currentUser['userName'] != teamMember.userName
+                            "
+                          ></nz-select>
+                          <div
+                            *ngIf="
+                              task.progressStatus == 'Under Review' ||
+                              task.progressStatus == 'Completed' ||
+                              task.progressStatus == 'In Complete'
+                            "
+                            [ngClass]="{
+                              underReview:
+                                task.progressStatus == 'Under Review',
+                              completed: task.progressStatus == 'Completed',
+                              inComplete: task.progressStatus == 'In Complete'
+                            }"
+                          >
+                            <i class="fa fa-circle" aria-hidden="true"></i>
+                            {{ task.progressStatus }}
+                          </div>
+                        </div>
+                        <div
+                          nz-col
+                          class="gutter-row centering-element"
+                          [nzSm]="24"
+                          [nzXs]="24"
+                          [nzMd]="24"
+                          [nzLg]="4"
+                        >
+                          <button
+                            *ngIf="task.approvalStatus == 'Not Submitted'"
+                            nz-button
+                            nzType="primary"
+                            nzSize="default"
+                            nzShape="round"
+                            class="upload-work-button"
+                            (click)="showUploadWorkModal(task.taskId)"
+                            [disabled]="
+                              currentUser['userName'] != teamMember.userName &&
+                              task.approvalStatus == 'Not Submitted'
+                            "
+                          >
+                            <i class="fa fa-upload" aria-hidden="true"></i>
+                            Upload work
+                          </button>
+                          <button
+                            *ngIf="
+                              task.approvalStatus == 'Waiting for approval' ||
+                              task.approvalStatus == 'Approved' ||
+                              task.approvalStatus == 'Rejected'
+                            "
+                            nz-button
+                            nzSize="default"
+                            nzShape="round"
+                            class="view-upload-button"
+                            (click)="showViewUploadModal(task.taskId)"
+                          >
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                            View Upload
+                          </button>
+                        </div>
+                        <div
+                          nz-col
+                          class="gutter-row centering-element"
+                          [nzSm]="24"
+                          [nzXs]="24"
+                          [nzMd]="24"
+                          [nzLg]="4"
+                        >
+                          <span
+                            *ngIf="
+                              !(
+                                currentUser['role'] == 'Admin' ||
+                                currentUser['role'] == 'Team Lead'
+                              ) || task.approvalStatus != 'Waiting for approval'
+                            "
+                            [ngClass]="{
+                              notSubmitted:
+                                task.approvalStatus == 'Not Submitted',
+                              waitingForApproval:
+                                task.approvalStatus == 'Waiting for approval',
+                              approved: task.approvalStatus == 'Approved',
+                              rejected: task.approvalStatus == 'Rejected'
+                            }"
+                          >
+                            <i
+                              *ngIf="
+                                task.approvalStatus == 'Not Submitted' ||
+                                task.approvalStatus == 'Waiting for approval'
+                              "
+                              class="fa fa-circle"
+                              aria-hidden="true"
+                            ></i>
+                            <i
+                              *ngIf="task.approvalStatus == 'Approved'"
+                              class="fa fa-check approved-icon"
+                              aria-hidden="true"
+                            ></i>
+                            <i
+                              *ngIf="task.approvalStatus == 'Rejected'"
+                              class="fa fa-times rejected-icon"
+                              aria-hidden="true"
+                            ></i>
+                            {{ task.approvalStatus }}</span
+                          >
+                          <button
+                            *ngIf="
+                              (currentUser['role'] == 'Admin' ||
+                                currentUser['role'] == 'Team Lead') &&
+                              task.approvalStatus == 'Waiting for approval'
+                            "
+                            nz-button
+                            nzType="primary"
+                            nzDanger
+                            (click)="showApproveTaskModal(task.taskId)"
+                          >
+                            Approve Task
+                          </button>
+                        </div>
+                        <div
+                          nz-col
+                          class="gutter-row centering-element"
+                          [nzSm]="24"
+                          [nzXs]="24"
+                          [nzMd]="24"
+                          [nzLg]="1"
+                        >
+                          <a
+                            nz-dropdown
+                            [nzDropdownMenu]="taskOptions"
+                            nzTrigger="click"
+                            nzPlacement="bottomRight"
+                          >
+                            More
+                          </a>
+                          <nz-dropdown-menu #taskOptions="nzDropdownMenu">
+                            <ul nz-menu nzSelectable>
+                              <li
+                                *ngIf="
+                                  (task.approvalStatus ==
+                                    'Waiting for approval' ||
+                                    task.approvalStatus == 'Rejected') &&
+                                  currentUser['userName'] == teamMember.userName
+                                "
+                                nz-menu-item
+                                class="task-option"
+                                (click)="reSubmitTask(task.taskId)"
+                              >
+                                <span
+                                  ><i
+                                    class="fa fa-paper-plane-o"
+                                    aria-hidden="true"
+                                  ></i>
+                                  Re-submit Task</span
+                                >
+                              </li>
+                              <li
+                                nz-menu-item
+                                class="task-option"
+                                (click)="
+                                  showTaskCommentModal(
+                                    task.taskName,
+                                    task.taskId
+                                  )
+                                "
+                              >
+                                <span>
+                                  <i
+                                    class="fa fa-commenting"
+                                    aria-hidden="true"
+                                  ></i>
+                                  Comment</span
+                                >
+                              </li>
+                              <li
+                                nz-menu-item
+                                class="task-option delete-task"
+                                *ngIf="
+                                  currentUser['role'] == 'Admin' ||
+                                  currentUser['role'] == 'Team Lead'
+                                "
+                                (click)="deleteTask(task.taskId)"
+                              >
+                                <span>
+                                  <i class="fa fa-trash" aria-hidden="true"></i>
+
+                                  Delete</span
+                                >
+                              </li>
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
+                      </div>
+                    </nz-card>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </ng-container>
+            <ng-container
+              *ngIf="noTeamMembersListData && teamMembers.length == 0"
+            >
+              <div class="no-members-found-div">
+                <nz-empty nzNotFoundContent="No Search Data found!"></nz-empty>
+              </div>
+            </ng-container>
+            <ng-container *ngFor="let teamMember of teamMembers">
+              <ng-container
+                *ngIf="
+                  !noTeamMembersListData &&
+                  filterNotSatisfiedMembers.includes(teamMember.userName) &&
+                  selectedTaskListFilter != 'Task Not Assigned Members' &&
+                  selectedTaskListFilter != 'default'
+                "
+              >
+                <ng-template
+                  *ngTemplateOutlet="
+                    teamMemberTemplate;
+                    context: { teamMember: teamMember }
+                  "
+                ></ng-template>
+                <div class="no-task-found-div">
+                  No Tasks with the progress Status '{{
+                    selectedTaskListFilter
+                  }}
+                  'Found
+                </div>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngFor="let teamMember of copyTeamMembers">
+              <ng-container
+                *ngIf="
+                  !noTeamMembersListData &&
+                  taskNotAssignedMembers.includes(teamMember.userName) &&
+                  (selectedTaskListFilter == 'default' ||
+                    selectedTaskListFilter == 'Task Not Assigned Members')
+                "
+              >
+                <ng-template
+                  *ngTemplateOutlet="
+                    teamMemberTemplate;
+                    context: { teamMember: teamMember }
+                  "
+                ></ng-template>
+                <div class="task-not-assigned-div">
+                  No Task is assigned to {{ teamMember.fullName }}
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </nz-card>
+      </div>
+    </div>
+  </div>
+  <div class="project-dashboard-section-three" #forumsSection>
+    <div
+      nz-row
+      [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }"
+      class="task-card-sub-div"
+    >
+      <div
+        nz-col
+        class="gutter-row"
+        [nzSm]="24"
+        [nzXs]="24"
+        [nzMd]="24"
+        [nzLg]="8"
+      >
+        <nz-card>
+          <div class="calendar-header"><h3>Project Active Days</h3></div>
+          <hr />
+          <div class="calendar-content">
+            <app-highlighted-dates
+              [datesArray]="activeDays"
+              [projectId]="projectId"
+              [track]="projectProgress"
+            ></app-highlighted-dates>
+          </div>
+        </nz-card>
+      </div>
+      <div
+        nz-col
+        class="gutter-row"
+        [nzSm]="24"
+        [nzXs]="24"
+        [nzMd]="24"
+        [nzLg]="16"
+      >
+        <nz-card>
+          <div class="forum-header">
+            <h3>Forums</h3>
+            <div class="forum-button-container">
+              <button
+                nz-button
+                nzType="primary"
+                (click)="showForumCreateModal()"
+              >
+                Create Forum <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <hr />
+          <iframe
+            [src]="iFrameUrl"
+            width="100%"
+            height="452px"
+            class="forum-iframe"
+            frameBorder="0"
+          ></iframe
+        ></nz-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nz-drawer
+  [nzBodyStyle]="{ overflow: 'auto' }"
+  [nzMaskClosable]="false"
+  [nzWidth]="500"
+  [nzVisible]="isAssignTaskDrawerVisible"
+  (nzOnClose)="closeAssignTaskDrawer()"
+>
+  <ng-container *nzDrawerContent>
+    <div class="create-task-form-container">
+      <app-create-task
+        [projectId]="projectId"
+        (taskCreationCompleted)="closeAssignTaskDrawerFromChild($event)"
+      ></app-create-task>
+    </div>
+  </ng-container>
+</nz-drawer>
+<nz-modal
+  [(nzVisible)]="isProjectDescriptionVisible"
+  nzTitle="Project Description"
+  (nzOnCancel)="handleCloseProjectDescriptionModal()"
+  [nzFooter]="null"
+  ><ng-container *nzModalContent>
+    <div class="project-description-container">
+      {{ projectDescription }}
+    </div>
+  </ng-container>
+</nz-modal>
+<nz-modal
+  [(nzVisible)]="isTeamMembersModalVisible"
+  nzTitle="Team Members"
+  (nzOnCancel)="handleCloseTeamMembersModal()"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    <div class="team-members-container">
+      <div
+        class="team-member-card"
+        *ngFor="let teamMember of displayTeamMembers"
+      >
+        <div class="team-member-container">
+          <div class="team-member-image-and-name">
+            <div class="avatar">
+              <img [src]="teamMember.profileImage" />
+            </div>
+            <div class="team-member-name">
+              <h5>{{ teamMember.fullName }}</h5>
+            </div>
+          </div>
+          <div class="team-member-role">
+            <span
+              ><i
+                class="fa fa-circle"
+                [class]="
+                  teamMember.role == 'Admin' || teamMember.role == 'Team Lead'
+                    ? 'showInGreen'
+                    : 'showInOrange'
+                "
+                aria-hidden="true"
+              ></i>
+              {{
+                teamMember.role == "Admin" || teamMember.role == "Team Lead"
+                  ? "Team Leader"
+                  : "Team Member"
+              }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>
+<nz-modal
+  [(nzVisible)]="isUploadWorkModalVisible"
+  nzTitle="Upload Work"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCloseUploadWorkModal()"
+>
+  <ng-container *nzModalContent>
+    <div class="work-upload-form-container">
+      <form
+        class="work-upload-form"
+        (ngSubmit)="submitTaskWork($event)"
+        [formGroup]="requiredForm"
+      >
+        <div class="input-group">
+          <label for="selectFile"> File Type </label>
+          <select
+            name="Select File Type"
+            required
+            id="selectFile"
+            #selectfileType
+            formControlName="selectFileType"
+            (change)="handleSelectFile(selectfileType.value)"
+          >
+            <option
+              value=""
+              disabled
+              [selected]="selectedDefaultFileTypeOption"
+            >
+              Select a File type
+            </option>
+            <option value="link">Link</option>
+            <option value="image">Image</option>
+            <option value="pdf">Pdf</option>
+            <option value="word">Word</option>
+            <option value="powerpoint">Powerpoint</option>
+            <option value="excel">Excel</option>
+            <option value="text">Text file</option>
+          </select>
+
+          <div
+            *ngIf="
+              submitted &&
+              requiredForm.controls['selectFileType'].errors &&
+              requiredForm.controls['selectFileType'].errors['required']
+            "
+            class="error-text"
+          >
+            Please select the file type
+          </div>
+        </div>
+        <div class="input-group input-url" #inputURL>
+          <label for="inputURL"> URL </label>
+          <br />
+          <input
+            type="url"
+            placeholder="Enter the url"
+            id="inputURL"
+            formControlName="taskWorkURL"
+          />
+          <div
+            *ngIf="
+              submitted &&
+              requiredForm.controls['taskWorkURL'].errors &&
+              requiredForm.controls['taskWorkURL'].errors['required']
+            "
+            class="error-text"
+          >
+            Please enter the URL
+          </div>
+        </div>
+        <div class="input-group input-file" #inputFile>
+          <label for="file">
+            File <span>({{ this.acceptedFile }})</span>
+          </label>
+          <br />
+          <input
+            type="file"
+            placeholder="Choose your file"
+            id="file"
+            [accept]="acceptedFile"
+            formControlName="taskWorkFile"
+            (change)="uploadTaskWorkFile($event)"
+          />
+          <div
+            *ngIf="
+              submitted &&
+              requiredForm.controls['taskWorkFile'].errors &&
+              requiredForm.controls['taskWorkFile'].errors['required']
+            "
+            class="error-text"
+          >
+            Please upload the file ({{ this.acceptedFile }})
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="comments"> Comments (optional) </label>
+          <textarea
+            name="comments"
+            id="comments"
+            cols="30"
+            rows="5"
+            placeholder="Any Comments..."
+            formControlName="comments"
+          ></textarea>
+        </div>
+
+        <button
+          [disabled]="uploadTaskWorkBtnLoading"
+          [ngClass]="{
+            'upload-task-work-btn-loading': uploadTaskWorkBtnLoading
+          }"
+        >
+          {{ uploadTaskWorkBtnLoading ? "Uploading..." : "Upload Work" }}
+        </button>
+      </form>
+    </div>
+  </ng-container>
+</nz-modal>
+<nz-modal
+  [nzStyle]="{ top: '100px' }"
+  [(nzVisible)]="isViewUploadModalVisible"
+  nzTitle="Uploaded Task"
+  (nzOnCancel)="handleCloseViewUploadModal()"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    <div class="task-upload-details-container">
+      <ng-template *ngTemplateOutlet="viewUploadTemplate"> </ng-template>
+    </div>
+  </ng-container>
+</nz-modal>
+<nz-modal
+  [nzStyle]="{ top: '100px' }"
+  [(nzVisible)]="isApproveTaskModalVisible"
+  nzTitle="Uploaded Task"
+  (nzOnCancel)="handleCloseApproveTaskModal()"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    <div class="task-upload-details-container">
+      <ng-template *ngTemplateOutlet="viewUploadTemplate"> </ng-template>
+      <div class="task-approval-buttons">
+        <button
+          nz-button
+          nzSize="default"
+          nzShape="round"
+          class="reject-task-button"
+          (click)="taskApproval('Rejected', 'In Complete')"
+          [disabled]="rejectBtnLoading"
+          [ngClass]="{ 'reject-btn-loading': rejectBtnLoading }"
+        >
+          <i class="fa fa-times" aria-hidden="true"></i>
+          {{ rejectBtnLoading ? "Rejecting..." : "Reject" }}
+        </button>
+        <button
+          nz-button
+          nzSize="default"
+          nzShape="round"
+          class="approve-task-button"
+          (click)="taskApproval('Approved', 'Completed')"
+          [disabled]="approveBtnLoading"
+          [ngClass]="{ 'approve-btn-loading': approveBtnLoading }"
+        >
+          <i class="fa fa-check" aria-hidden="true"></i>
+          {{ approveBtnLoading ? "Approving..." : "Approve" }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>
+<nz-modal
+  [(nzVisible)]="isTaskCommentsModalVisible"
+  [nzTitle]="currentTaskCommentTitle"
+  nzCentered
+  (nzOnCancel)="handleCloseTaskCommentModal()"
+  [nzStyle]="{ width: '700px' }"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    <div class="add-comment-container">
+      <form
+        (ngSubmit)="submitTaskCommentForm($event)"
+        [formGroup]="taskCommentRequiredForm"
+      >
+        <div class="task-comment-form-fields">
+          <div>
+            <input
+              nz-input
+              placeholder="Add Comment..."
+              nzSize="large"
+              formControlName="taskComment"
+            />
+            <div
+              *ngIf="
+                taskCommentFormSubmitted &&
+                taskCommentRequiredForm.controls['taskComment'].errors &&
+                taskCommentRequiredForm.controls['taskComment'].errors[
+                  'required'
+                ]
+              "
+              class="error-text"
+            >
+              Task Comment is required*
+            </div>
+          </div>
+          <button
+            nz-button
+            nzSize="large"
+            nzType="primary"
+            type="submit"
+            [ngClass]="{ 'add-comment-btn-loading': addCommentBtnLoading }"
+            [disabled]="addCommentBtnLoading"
+          >
+            {{ addCommentBtnLoading ? "Adding..." : "Add Comment" }}
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="task-comments-list">
+      <h4>Task Comments</h4>
+      <div class="task-comment-container">
+        <ng-container *ngFor="let data of taskDetails">
+          <ng-container *ngIf="data.taskId == currentTaskId">
+            <div
+              class="task-comment"
+              *ngFor="let taskComment of data.taskComments"
+            >
+              <div class="user-container">
+                <div class="user-name-and-time">
+                  <h5>{{ taskComment.commentorFullName }}</h5>
+                  <span>{{ taskComment.timeStamp }}</span>
+                </div>
+                <div class="task-comment-options-container">
+                  <div class="thumbs-up-container">
+                    <span>{{
+                      taskComment.likedUserNames == undefined ||
+                      (taskComment.likedUserNames &&
+                        taskComment.likedUserNames.length == 0)
+                        ? 0
+                        : taskComment.likedUserNames.length
+                    }}</span>
+
+                    <i
+                      *ngIf="
+                        taskComment.likedUserNames == undefined ||
+                        (taskComment.likedUserNames &&
+                          taskComment.likedUserNames.length == 0)
+                      "
+                      (click)="likeTaskComment(taskComment.commentId)"
+                      class="fa fa-thumbs-o-up"
+                      aria-hidden="true"
+                    ></i>
+
+                    <ng-container
+                      *ngFor="let likedUser of taskComment.likedUserNames"
+                    >
+                      <i
+                        *ngIf="
+                          !(likedUser.likedUserName == currentUser['userName'])
+                        "
+                        (click)="likeTaskComment(taskComment.commentId)"
+                        class="fa fa-thumbs-o-up"
+                        aria-hidden="true"
+                      ></i>
+                      <i
+                        (click)="unLikeTaskComment(taskComment.commentId)"
+                        *ngIf="
+                          likedUser.likedUserName == currentUser['userName']
+                        "
+                        class="fa fa-thumbs-up"
+                        aria-hidden="true"
+                      ></i>
+                    </ng-container>
+                  </div>
+                  <div
+                    class="task-comment-delete-container"
+                    *ngIf="data.assignee == currentUser['userName']"
+                  >
+                    <i
+                      class="fa fa-trash"
+                      aria-hidden="true"
+                      (click)="
+                        deleteTaskComment(data.taskId, taskComment.commentId)
+                      "
+                    ></i>
+                  </div>
+                </div>
+              </div>
+              <div class="task-comment-content">
+                {{ taskComment.taskComment }}
+              </div>
+            </div>
+            <ng-container
+              *ngIf="
+                data.taskComments == undefined || data.taskComments.length == 0
+              "
+            >
+              <div class="no-task-comments-found-container">
+                No Task comments posted yet!
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isForumModalVisible"
+  nzTitle="Forum"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCloseForumCreateModal(false)"
+>
+  <ng-container *nzModalContent>
+    <app-create-project-forum-post
+      [projectId]="projectId"
+      (forumPostCreationCompleted)="handleCloseForumCreateModal($event)"
+    ></app-create-project-forum-post>
+  </ng-container>
+</nz-modal>
+<ng-template #teamMemberTemplate let-teamMember="teamMember">
+  <div class="user-profile-container">
+    <div class="user-profile">
+      <div class="avatar">
+        <img [src]="teamMember.profileImage" />
+      </div>
+      <div class="user-content">
+        <h5>
+          {{ teamMember.fullName }}
+          <span *ngIf="teamMember.userName == currentUser['userName']"
+            >- You</span
+          >
+          <span
+            class="showInGreen"
+            *ngIf="teamMember.role == 'Admin' || teamMember.role == 'Team Lead'"
+            >(Team Leader)</span
+          >
+
+          <span class="showInOrange" *ngIf="teamMember.role == 'Employee'"
+            >(Team Member)</span
+          >
+        </h5>
+        <span>{{ teamMember.role }}</span>
+      </div>
+    </div>
+    <div
+      class="rating-container"
+      *ngIf="!taskNotAssignedMembers.includes(teamMember.userName)"
+    >
+      <tc-rating
+        formControlName="ratingField"
+        #rating
+        (click)="submitUserRating(rating.value, teamMember.userName)"
+        [value]="teamMember.rating ? teamMember.rating : 0"
+      ></tc-rating>
+    </div>
+  </div>
+</ng-template>
+<ng-template #viewUploadTemplate>
+  <div *ngFor="let data of taskWorkDetails">
+    <h3>{{ data.taskName }}</h3>
+    <div class="task-doc-field">
+      <span>Task Work :</span>
+      <a href="{{ data.taskWork }}" target="_blank">View </a>
+    </div>
+    <div
+      *ngIf="data.assigneeComments != ''"
+      class="assignee-task-comment-field"
+    >
+      <span>Task Work </span><br />
+      <span>{{ data.assigneeComments }}</span>
+    </div>
+  </div>
+  <div class="comments-field"></div>
+</ng-template>
+<ng-container
+  ><div *ngIf="projectDashboardLoader ? true : false">
+    Loading...
+  </div></ng-container
+>
