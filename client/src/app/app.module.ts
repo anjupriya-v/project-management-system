@@ -62,6 +62,7 @@ import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { ProjectForumsComponent } from './components/project-forums/project-forums.component';
 import { CreateProjectForumPostComponent } from './components/create-project-forum-post/create-project-forum-post.component';
 import { HighlightedDatesComponent } from './components/highlighted-dates/highlighted-dates.component';
+import { PassKeySystemComponent } from './components/pass-key-system/pass-key-system.component';
 const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
     ProjectForumsComponent,
     CreateProjectForumPostComponent,
     HighlightedDatesComponent,
+    PassKeySystemComponent,
   ],
   imports: [
     BrowserAnimationsModule,

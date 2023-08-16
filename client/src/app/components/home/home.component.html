@@ -19,10 +19,36 @@
           <hr />
           <h4>{{ slide.title }}</h4>
           <p>{{ slide.subtitle }}</p>
-          <button nz-button nzType="primary" [nzSize]="size" nzShape="round">
-            Get Started
-            <span nz-icon nzType="double-right" nzTheme="outline"></span>
-          </button>
+          <div
+            class="header-btn"
+            *ngIf="auth.isLoggedIn() == null || auth.isLoggedIn() == undefined"
+          >
+            <button
+              nz-button
+              nzType="primary"
+              [nzSize]="size"
+              nzShape="round"
+              [routerLink]="['/login']"
+            >
+              Get Started
+              <span nz-icon nzType="double-right" nzTheme="outline"></span>
+            </button>
+          </div>
+          <div
+            class="nav-user-short-profile"
+            *ngIf="auth.isLoggedIn() != null || auth.isLoggedIn() != undefined"
+          >
+            <button
+              nz-button
+              nzType="primary"
+              [nzSize]="size"
+              nzShape="round"
+              [routerLink]="['/projects']"
+            >
+              Get Started
+              <span nz-icon nzType="double-right" nzTheme="outline"></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

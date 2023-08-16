@@ -12,6 +12,7 @@ import { RoleAuthGuard } from './guards/role-auth-guard.service';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { RegisteredUsersComponent } from './components/registered-users/registered-users.component';
 import { ProjectForumsComponent } from './components/project-forums/project-forums.component';
+import { PassKeySystemComponent } from './components/pass-key-system/pass-key-system.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   {
@@ -28,7 +29,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'projects/project-dashboard',
+    path: 'projects/project-dashboard/:projectId',
     component: ProjectDashboardComponent,
     canActivate: [AuthGuard],
   },
@@ -53,6 +54,11 @@ const routes: Routes = [
   {
     path: 'calendar',
     component: CalendarComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'projects/auth/pass-key-system',
+    component: PassKeySystemComponent,
     canActivate: [AuthGuard],
   },
   {

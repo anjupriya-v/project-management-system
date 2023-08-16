@@ -1,0 +1,61 @@
+<app-navbar
+  [filledNav]="filledNav"
+  [filledNavUserContentColor]="filledNavUserContentColor"
+></app-navbar>
+<div class="pass-key-container">
+  <div class="pass-key-card">
+    <form>
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/61/61457.png"
+        id="passKeyLogo"
+      />
+      <div class="pass-key-header">
+        <h2 class="formTitle">Pass Key System</h2>
+        <span
+          class="reason-text"
+          nz-popover
+          nzPopoverTitle="Reason"
+          [(nzPopoverVisible)]="isReasonPopOverVisible"
+          nzPopoverTrigger="click"
+          [nzPopoverContent]="contentTemplate"
+          >Why this system? <i class="fa fa-info-circle" aria-hidden="true"></i
+        ></span>
+        <ng-template #contentTemplate>
+          <span
+            >This system build to secure your project information from other
+            people except the corressponding project team members</span
+          >
+        </ng-template>
+      </div>
+      <div class="inputDiv">
+        <label class="inputLabel" for="pass-key">Pass Key</label>
+        <input
+          type="text"
+          id="pass-key"
+          name="Pass Key"
+          class="pass-key-input"
+          required
+          placeholder="Enter Passkey"
+        />
+      </div>
+
+      <div class="buttonWrapper">
+        <button type="submit" id="submitButton" class="submitButton">
+          Enter project Dashboard
+        </button>
+      </div>
+    </form>
+    <div class="pass-key-options">
+      <span
+        ><i class="fa fa-repeat" aria-hidden="true"></i> Re-send passkey</span
+      >
+      <span>
+        <i class="fa fa-refresh" aria-hidden="true"></i> Reset passkey</span
+      >
+      <span
+        ><i class="fa fa-paper-plane" aria-hidden="true"></i> Request to
+        change</span
+      >
+    </div>
+  </div>
+</div>

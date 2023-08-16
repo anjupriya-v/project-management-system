@@ -200,10 +200,7 @@
                 >
                   <div
                     class="inner-box current-projects-inner-box"
-                    [routerLink]="[
-                      '/projects/project-dashboard',
-                      { projectId: data._id }
-                    ]"
+                    [routerLink]="['/projects/auth/pass-key-system']"
                   >
                     <h6 class="project-title">{{ data.projectTitle }}</h6>
                     <span class="deadline-text"
@@ -249,7 +246,7 @@
                           aria-hidden="true"
                           [routerLink]="[
                             '/projects/project-dashboard',
-                            { projectId: data._id }
+                            data._id
                           ]"
                           nz-tooltip
                           nzTooltipTitle="Go to Project Dashboard"
@@ -425,10 +422,7 @@
                 >
                   <div
                     class="inner-box completed-projects-inner-box"
-                    [routerLink]="[
-                      '/projects/project-dashboard',
-                      { projectId: data._id }
-                    ]"
+                    [routerLink]="['/projects/project-dashboard', data._id]"
                   >
                     <h6 class="project-title">{{ data.projectTitle }}</h6>
                     <span class="project-status"
@@ -466,7 +460,7 @@
                           aria-hidden="true"
                           [routerLink]="[
                             '/projects/project-dashboard',
-                            { projectId: data._id }
+                            data._id
                           ]"
                           nz-tooltip
                           nzTooltipTitle="Go to Project Dashboard"

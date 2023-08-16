@@ -24,7 +24,6 @@ export class CalendarComponent implements OnInit {
     plugins: [dayGridPlugin],
     initialView: 'dayGridMonth',
     height: 590,
-    eventColor: 'gainsboro',
   };
   daysLeftFunc(deadline: any) {
     var today = new Date();
