@@ -55,7 +55,9 @@
   border: solid 1px #ccc;
   padding: 0 11px;
 }
-
+.error-text {
+  color: red;
+}
 .buttonWrapper {
   margin-top: 40px;
 }

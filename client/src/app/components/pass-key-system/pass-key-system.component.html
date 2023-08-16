@@ -4,29 +4,23 @@
 ></app-navbar>
 <div class="pass-key-container">
   <div class="pass-key-card">
-    <form>
-      <img
-        src="https://cdn-icons-png.flaticon.com/512/61/61457.png"
-        id="passKeyLogo"
-      />
-      <div class="pass-key-header">
-        <h2 class="formTitle">Pass Key System</h2>
-        <span
-          class="reason-text"
-          nz-popover
-          nzPopoverTitle="Reason"
-          [(nzPopoverVisible)]="isReasonPopOverVisible"
-          nzPopoverTrigger="click"
-          [nzPopoverContent]="contentTemplate"
-          >Why this system? <i class="fa fa-info-circle" aria-hidden="true"></i
-        ></span>
-        <ng-template #contentTemplate>
-          <span
-            >This system build to secure your project information from other
-            people except the corressponding project team members</span
-          >
-        </ng-template>
-      </div>
+    <img
+      src="https://cdn-icons-png.flaticon.com/512/61/61457.png"
+      id="passKeyLogo"
+    />
+    <div class="pass-key-header">
+      <h2 class="formTitle">Pass Key System</h2>
+      <span
+        class="reason-text"
+        nz-popover
+        nzPopoverTitle="Why this system ?"
+        [(nzPopoverVisible)]="isReasonPopOverVisible"
+        nzPopoverTrigger="click"
+        [nzPopoverContent]="contentTemplate"
+        >Why this system? <i class="fa fa-info-circle" aria-hidden="true"></i
+      ></span>
+    </div>
+    <form (ngSubmit)="submitPassKey($event)" [formGroup]="requiredForm">
       <div class="inputDiv">
         <label class="inputLabel" for="pass-key">Pass Key</label>
         <input
@@ -34,9 +28,39 @@
           id="pass-key"
           name="Pass Key"
           class="pass-key-input"
-          required
           placeholder="Enter Passkey"
+          formControlName="passKey"
         />
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['passKey'].errors &&
+            requiredForm.controls['passKey'].errors['required']
+          "
+          class="error-text"
+        >
+          Pass Key is required*
+        </div>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['passKey'].errors &&
+            requiredForm.controls['passKey'].errors['minlength']
+          "
+          class="error-text"
+        >
+          Pass key should have atleast 8 characters*
+        </div>
+        <div
+          *ngIf="
+            submitted &&
+            requiredForm.controls['passKey'].errors &&
+            requiredForm.controls['passKey'].errors['maxlength']
+          "
+          class="error-text"
+        >
+          Pass Key should have atmost 13 characters*
+        </div>
       </div>
 
       <div class="buttonWrapper">
@@ -59,3 +83,9 @@
     </div>
   </div>
 </div>
+<ng-template #contentTemplate>
+  <span
+    >This system build to secure your project information from <br />other
+    people except the corressponding project team members</span
+  >
+</ng-template>
