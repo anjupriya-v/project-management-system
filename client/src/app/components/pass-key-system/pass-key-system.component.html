@@ -20,7 +20,7 @@
         >Why this system? <i class="fa fa-info-circle" aria-hidden="true"></i
       ></span>
     </div>
-    <form (ngSubmit)="submitPassKey($event)" [formGroup]="requiredForm">
+    <form (ngSubmit)="submitPassKey($event)" [formGroup]="requiredPassKeyForm">
       <div class="inputDiv">
         <label class="inputLabel" for="pass-key">Pass Key</label>
         <input
@@ -33,9 +33,9 @@
         />
         <div
           *ngIf="
-            submitted &&
-            requiredForm.controls['passKey'].errors &&
-            requiredForm.controls['passKey'].errors['required']
+            passKeyFormSubmitted &&
+            requiredPassKeyForm.controls['passKey'].errors &&
+            requiredPassKeyForm.controls['passKey'].errors['required']
           "
           class="error-text"
         >
@@ -43,9 +43,9 @@
         </div>
         <div
           *ngIf="
-            submitted &&
-            requiredForm.controls['passKey'].errors &&
-            requiredForm.controls['passKey'].errors['minlength']
+            passKeyFormSubmitted &&
+            requiredPassKeyForm.controls['passKey'].errors &&
+            requiredPassKeyForm.controls['passKey'].errors['minlength']
           "
           class="error-text"
         >
@@ -53,9 +53,9 @@
         </div>
         <div
           *ngIf="
-            submitted &&
-            requiredForm.controls['passKey'].errors &&
-            requiredForm.controls['passKey'].errors['maxlength']
+            passKeyFormSubmitted &&
+            requiredPassKeyForm.controls['passKey'].errors &&
+            requiredPassKeyForm.controls['passKey'].errors['maxlength']
           "
           class="error-text"
         >
@@ -73,7 +73,7 @@
       <span
         ><i class="fa fa-repeat" aria-hidden="true"></i> Re-send passkey</span
       >
-      <span>
+      <span (click)="openResetPassKeyDrawer()">
         <i class="fa fa-refresh" aria-hidden="true"></i> Reset passkey</span
       >
       <span
@@ -89,3 +89,178 @@
     people except the corressponding project team members</span
   >
 </ng-template>
+<nz-drawer
+  nzSize="large"
+  [nzVisible]="isResetPassKeyDrawervisible"
+  nzPlacement="right"
+  nzTitle="Reset Pass Key"
+  (nzOnClose)="closeResetPassKeyDrawer()"
+>
+  <ng-container *nzDrawerContent>
+    <div class="reset-pass-key-container">
+      <div class="verify-email-card" #emailVerify>
+        <h2 class="formTitle">Email Verification before reset</h2>
+        <form
+          #emailVerification
+          class="email-verification"
+          (ngSubmit)="submitEmailForVerification($event)"
+          [formGroup]="requiredEmailVerificationForm"
+        >
+          <div class="inputDiv">
+            <label class="inputLabel" for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="email-input"
+              placeholder="Enter email"
+              formControlName="email"
+            />
+            <div
+              *ngIf="
+                emailverificationFormSubmitted &&
+                requiredEmailVerificationForm.controls['email'].errors &&
+                requiredEmailVerificationForm.controls['email'].errors[
+                  'required'
+                ]
+              "
+              class="error-text"
+            >
+              Email is required*
+            </div>
+            <div
+              *ngIf="
+                emailverificationFormSubmitted &&
+                requiredEmailVerificationForm.controls['email'].errors &&
+                requiredEmailVerificationForm.controls['email'].errors['email']
+              "
+              class="error-text"
+            >
+              Please enter valid email*
+            </div>
+          </div>
+
+          <div class="buttonWrapper">
+            <button type="submit" id="submitButton" class="submitButton">
+              Send code
+            </button>
+          </div>
+        </form>
+        <form
+          #verificationCode
+          class="verification-code"
+          (ngSubmit)="submitVerificationCode($event)"
+          [formGroup]="requiredVerificationCodeForm"
+        >
+          <div class="inputDiv">
+            <label class="inputLabel" for="code">Code</label>
+            <input
+              type="number"
+              id="code"
+              name="code"
+              class="code-input"
+              placeholder="Enter Verification Code"
+              formControlName="code"
+            />
+            <div
+              *ngIf="
+                verificationCodeSubmitted &&
+                requiredVerificationCodeForm.controls['code'].errors &&
+                requiredVerificationCodeForm.controls['code'].errors['required']
+              "
+              class="error-text"
+            >
+              Code is required*
+            </div>
+            <div
+              *ngIf="
+                verificationCodeSubmitted &&
+                requiredVerificationCodeForm.controls['code'].errors &&
+                requiredVerificationCodeForm.controls['code'].errors[
+                  'minlength'
+                ] &&
+                requiredVerificationCodeForm.controls['code'].errors[
+                  'maxlength'
+                ]
+              "
+              class="error-text"
+            >
+              Code must have 6 digits*
+            </div>
+          </div>
+
+          <div class="buttonWrapper">
+            <button type="submit" id="submitButton" class="submitButton">
+              Verify Email
+            </button>
+          </div>
+          <div class="edit-email">
+            <span (click)="editEmailForResetPassKey()">Edit Email</span>
+            <span>Resend code</span>
+          </div>
+        </form>
+      </div>
+      <div class="reset-pass-key-card" #resetPassKey>
+        <h2 class="formTitle">Reset Pass Key</h2>
+        <form
+          (ngSubmit)="submitResetPassKey($event)"
+          [formGroup]="requiredResetPassKeyForm"
+        >
+          <div class="inputDiv">
+            <label class="inputLabel" for="pass-key">Pass Key</label>
+            <input
+              type="text"
+              id="pass-key"
+              name="Pass Key"
+              class="pass-key-input"
+              placeholder="Enter Passkey"
+              formControlName="resetPassKey"
+            />
+            <div
+              *ngIf="
+                resetPassKeySubmitted &&
+                requiredResetPassKeyForm.controls['resetPassKey'].errors &&
+                requiredResetPassKeyForm.controls['resetPassKey'].errors[
+                  'required'
+                ]
+              "
+              class="error-text"
+            >
+              Pass Key is required*
+            </div>
+            <div
+              *ngIf="
+                resetPassKeySubmitted &&
+                requiredResetPassKeyForm.controls['resetPassKey'].errors &&
+                requiredResetPassKeyForm.controls['resetPassKey'].errors[
+                  'minlength'
+                ]
+              "
+              class="error-text"
+            >
+              Pass key should have atleast 8 characters*
+            </div>
+            <div
+              *ngIf="
+                passKeyFormSubmitted &&
+                requiredResetPassKeyForm.controls['resetPassKey'].errors &&
+                requiredResetPassKeyForm.controls['resetPassKey'].errors[
+                  'maxlength'
+                ]
+              "
+              class="error-text"
+            >
+              Pass Key should have atmost 13 characters*
+            </div>
+          </div>
+
+          <div class="buttonWrapper">
+            <button type="submit" id="submitButton" class="submitButton">
+              Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-container>
+</nz-drawer>
