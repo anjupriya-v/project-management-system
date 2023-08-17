@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -10,13 +10,12 @@ import { ProjectService } from 'src/app/services/project-service/project.service
   templateUrl: './pass-key-system.component.html',
   styleUrls: ['./pass-key-system.component.css'],
 })
-export class PassKeySystemComponent {
+export class PassKeySystemComponent implements OnInit {
   filledNav: String = 'filled-nav';
   projectId: any = this.route.snapshot.paramMap.get('projectId');
   projectTitle: any = this.route.snapshot.paramMap.get('projectTitle');
   inActiveText: any = this.route.snapshot.paramMap.get('inActive');
   filledNavUserContentColor: any = 'filled-nav-user-content-color';
-  isReasonPopOverVisible: boolean = false;
   isResetPassKeyDrawervisible: boolean = false;
   passKeyFormSubmitted: boolean = false;
   emailverificationFormSubmitted: boolean = false;
@@ -27,6 +26,7 @@ export class PassKeySystemComponent {
   requiredVerificationCodeForm!: FormGroup;
   requiredResetPassKeyForm!: FormGroup;
   showInput: boolean = false;
+  currentUserRoleInProject: any;
   currentUser: any = JSON.parse(this.auth.getCurrentUser() || '{}');
 
   @ViewChild('emailVerification') emailVerification: any;
@@ -47,6 +47,9 @@ export class PassKeySystemComponent {
     this.emailVerificationForm();
     this.verificationCodeForm();
     this.resetPassKeyForm();
+  }
+  ngOnInit() {
+    this.getCurrentUserRoleInProject();
   }
   passKeyForm() {
     this.requiredPassKeyForm = this.fb.group({
@@ -104,12 +107,13 @@ export class PassKeySystemComponent {
         .subscribe((data: any) => {
           if (data.status) {
             this.projectService.storeProjectData(data.token, data.project);
+            this.messageService.create('success', data.message);
             this.router.navigate([
               '/projects/project-dashboard',
               data.project.projectId,
             ]);
           } else {
-            console.log(data.message);
+            this.messageService.create('error', data.message);
           }
         });
     }
@@ -147,6 +151,30 @@ export class PassKeySystemComponent {
   resendPassKey() {
     this.projectService
       .resendPassKey(this.projectId, this.currentUser['email'])
+      .subscribe((data: any) => {
+        if (data.status) {
+          this.messageService.create('success', data.message);
+        } else {
+          this.messageService.create('error', data.message);
+        }
+      });
+  }
+  getCurrentUserRoleInProject() {
+    this.projectService
+      .getCurrentUserRoleInProject(this.projectId, this.currentUser['email'])
+      .subscribe((data: any) => {
+        if (data.status) {
+          if (data.role == 'Admin' || data.role == 'Team Lead') {
+            this.currentUserRoleInProject = 'Team Leader';
+          } else {
+            this.currentUserRoleInProject = 'Team Member';
+          }
+        }
+      });
+  }
+  requestToResetPassKey() {
+    this.projectService
+      .requestToResetPassKey(this.projectId, this.currentUser['email'])
       .subscribe((data: any) => {
         if (data.status) {
           this.messageService.create('success', data.message);

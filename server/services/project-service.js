@@ -1628,3 +1628,102 @@ module.exports.resendPassKeyService = (projectDetails) => {
     }
   });
 };
+module.exports.getCurrentUserRoleInProjectService = (projectDetails) => {
+  var objectId = new mongoose.Types.ObjectId(projectDetails.projectId);
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      projectModel
+        .find({
+          _id: objectId,
+        })
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to fetch the current User Role",
+            });
+          } else {
+            result[0].teamMembers.forEach((teamMember) => {
+              if (teamMember.email == projectDetails.email) {
+                resolve({
+                  status: true,
+                  msg: `Your project role has been fetched successfully!`,
+                  role: teamMember.role,
+                });
+                return;
+              }
+            });
+            resolve({
+              status: false,
+              msg: `You are not part of this project`,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+};
+module.exports.requestToResetPassKeyService = (projectDetails) => {
+  var objectId = new mongoose.Types.ObjectId(projectDetails.projectId);
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      projectModel
+        .find({
+          _id: objectId,
+        })
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to request to reset the pass key",
+            });
+          } else {
+            var mailList = [];
+            var mailData = {};
+            result[0].teamMembers.forEach((teamMember) => {
+              if (
+                teamMember.role == "Admin" ||
+                teamMember.role == "Team Lead"
+              ) {
+                mailList.push(teamMember.email);
+              }
+              if (teamMember.email == projectDetails.email) {
+                if (teamMember.role == "Employee") {
+                  mailData = {
+                    projectTitle: result[0].projectTitle,
+                    teamMemberName: teamMember.fullName,
+                  };
+                }
+              }
+            });
+            if (mailData == {}) {
+              resolve({
+                status: false,
+                msg: `You are not part of this project`,
+              });
+            } else {
+              mailServiceForProject(
+                mailList,
+                mailData,
+                "email-templates/request-to-reset-pass-key.html",
+                "Request to reset pass key - PMS Service"
+              );
+              resolve({
+                status: true,
+                msg: `Your request has been sent to team lead. Kindly wait for your lead to reset!`,
+              });
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+};

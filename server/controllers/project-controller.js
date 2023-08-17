@@ -426,7 +426,41 @@ var resendPassKeyController = async (req, res) => {
     res.send({ status: false, message: error.msg });
   }
 };
-
+var getCurrentUserRoleInProjectController = async (req, res) => {
+  var result = null;
+  try {
+    result = await projectService.getCurrentUserRoleInProjectService(req.body);
+    if (result.status) {
+      res.send({
+        status: true,
+        message: result.msg,
+        role: result.role,
+      });
+    } else {
+      res.send({ status: false, message: result.msg });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ status: false, message: error.msg });
+  }
+};
+var requestToResetPassKeyController = async (req, res) => {
+  var result = null;
+  try {
+    result = await projectService.requestToResetPassKeyService(req.body);
+    if (result.status) {
+      res.send({
+        status: true,
+        message: result.msg,
+      });
+    } else {
+      res.send({ status: false, message: result.msg });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ status: false, message: error.msg });
+  }
+};
 module.exports = {
   projectCreationController,
   getProjectDetailsController,
@@ -454,4 +488,6 @@ module.exports = {
   deleteProjectForumCommentController,
   authenticatePassKeyController,
   resendPassKeyController,
+  getCurrentUserRoleInProjectController,
+  requestToResetPassKeyController,
 };

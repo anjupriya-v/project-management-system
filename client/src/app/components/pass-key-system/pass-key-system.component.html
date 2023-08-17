@@ -18,7 +18,6 @@
         class="reason-text"
         nz-popover
         nzPopoverTitle="Why this system ?"
-        [(nzPopoverVisible)]="isReasonPopOverVisible"
         nzPopoverTrigger="click"
         [nzPopoverContent]="contentTemplate"
         >Pass Key System <i class="fa fa-info-circle" aria-hidden="true"></i
@@ -77,13 +76,27 @@
       <span (click)="resendPassKey()"
         ><i class="fa fa-repeat" aria-hidden="true"></i> Re-send passkey</span
       >
-      <span (click)="openResetPassKeyDrawer()">
+      <span
+        (click)="openResetPassKeyDrawer()"
+        *ngIf="currentUserRoleInProject == 'Team Leader'"
+      >
         <i class="fa fa-refresh" aria-hidden="true"></i> Reset passkey</span
       >
-      <span
-        ><i class="fa fa-paper-plane" aria-hidden="true"></i> Request to
-        change</span
-      >
+      <div class="request-to-reset-div">
+        <span
+          (click)="requestToResetPassKey()"
+          *ngIf="currentUserRoleInProject == 'Team Member'"
+          ><i class="fa fa-paper-plane" aria-hidden="true"></i> Request to reset
+        </span>
+        <i
+          class="fa fa-question-circle"
+          aria-hidden="true"
+          nz-popover
+          nzPopoverTitle="You are not allowed to reset passkey. Reason 👇"
+          nzPopoverTrigger="click"
+          [nzPopoverContent]="whyRequestToChange"
+        ></i>
+      </div>
     </div>
   </div>
 </div>
@@ -91,6 +104,12 @@
   <span
     >This system build to secure your project information from <br />other
     people except the corressponding project team members</span
+  >
+</ng-template>
+<ng-template #whyRequestToChange>
+  <span
+    >The Reason is only the team leader of this project can able to <br />
+    reset the pass key. You can request team lead to reset.</span
   >
 </ng-template>
 <nz-drawer
@@ -246,7 +265,7 @@
             </div>
             <div
               *ngIf="
-                passKeyFormSubmitted &&
+                resetPassKeySubmitted &&
                 requiredResetPassKeyForm.controls['resetPassKey'].errors &&
                 requiredResetPassKeyForm.controls['resetPassKey'].errors[
                   'maxlength'

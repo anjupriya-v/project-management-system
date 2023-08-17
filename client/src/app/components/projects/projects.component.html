@@ -14,7 +14,13 @@
   <div class="projects-heading-container">
     <h1>Projects</h1>
     <button
-      *ngIf="noDataCur"
+      *ngIf="
+        this.auth.isLoggedIn() &&
+        currentUser &&
+        (currentUser['role'] == 'Admin' ||
+          currentUser['role'] == 'Team Lead') &&
+        noDataCur
+      "
       nz-button
       nzType="primary"
       routerLink="/projects/create-project"
@@ -313,6 +319,14 @@
           noData: noDataCur
         }"
       ></ng-template>
+      <ng-template
+        [ngTemplateOutlet]="noProjectDataRef"
+        [ngTemplateOutletContext]="{
+          projectDetails: currentProjectDetails,
+          noDataText: 'No Projects assigned to you',
+          noData: noDataCur
+        }"
+      ></ng-template>
     </div>
   </div>
   <div class="completed-projects-container">
@@ -540,7 +554,8 @@
         [ngTemplateOutlet]="noProjectDataRef"
         [ngTemplateOutletContext]="{
           projectDetails: completedProjectDetails,
-          noDataText: 'No projects has been completed'
+          noDataText: 'No projects has been completed',
+          noData: noDataCom
         }"
       ></ng-template>
     </div>
@@ -555,8 +570,9 @@
   #noProjectDataRef
   let-projectDetails="projectDetails"
   let-noDataText="noDataText"
+  let-noData="noData"
 >
-  <div *ngIf="projectDetails.length == 0" class="no-data-container">
+  <div *ngIf="projectDetails.length == 0 && !noData" class="no-data-container">
     <span> {{ noDataText }}</span>
   </div>
 </ng-template>

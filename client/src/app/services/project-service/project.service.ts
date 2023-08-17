@@ -348,4 +348,24 @@ export class ProjectService {
     };
     return this.httpClient.post(this.server + 'resend-pass-key/', formData);
   }
+  public getCurrentUserRoleInProject(projectId: any, email: any) {
+    var formData = {
+      projectId: projectId,
+      email: email,
+    };
+    return this.httpClient.post(
+      this.server + 'get-current-user-role-in-project/',
+      formData
+    );
+  }
+  public requestToResetPassKey(projectId: any, email: any) {
+    var formData = {
+      projectId: projectId,
+      email: email,
+    };
+    return this.httpClient.post(
+      this.server + 'request-to-reset-pass-key/',
+      formData
+    );
+  }
 }

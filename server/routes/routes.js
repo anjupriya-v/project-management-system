@@ -182,5 +182,17 @@ router
 router
   .route("/resend-pass-key", passport.authenticate("jwt", { session: false }))
   .post(projectController.resendPassKeyController);
+router
+  .route(
+    "/get-current-user-role-in-project",
+    passport.authenticate("jwt", { session: false })
+  )
+  .post(projectController.getCurrentUserRoleInProjectController);
+router
+  .route(
+    "/request-to-reset-pass-key",
+    passport.authenticate("jwt", { session: false })
+  )
+  .post(projectController.requestToResetPassKeyController);
 
 module.exports = router;

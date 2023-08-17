@@ -1,6 +1,5 @@
 .pass-key-container,
-.reset-pass-key-container,
-.resend-pass-key-container {
+.reset-pass-key-container {
   display: flex;
   min-height: 100%;
   align-items: center;
@@ -11,15 +10,12 @@
 .pass-key-card,
 .reset-pass-key-card,
 .verify-email-card {
+  width: 500px;
   background-color: rgb(243, 243, 254);
   padding: 36px 0;
   border-radius: 4px;
   margin: 30px 0;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  padding: 3em;
-}
-.pass-key-card {
-  margin: 10px 0;
 }
 .reset-pass-key-card,
 .verify-email-card {
@@ -100,10 +96,11 @@
   margin-top: 1.5em;
   margin: 3em;
 }
-.pass-key-options span {
+.pass-key-options span,
+.request-to-reset-div i {
   cursor: pointer;
-  margin-left: 1.5em;
 }
+
 .email-verification {
   display: block;
 }
