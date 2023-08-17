@@ -13,6 +13,7 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 import { RegisteredUsersComponent } from './components/registered-users/registered-users.component';
 import { ProjectForumsComponent } from './components/project-forums/project-forums.component';
 import { PassKeySystemComponent } from './components/pass-key-system/pass-key-system.component';
+import { ProjectGuard } from './guards/project-guard.service';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   {
@@ -31,12 +32,12 @@ const routes: Routes = [
   {
     path: 'projects/project-dashboard/:projectId',
     component: ProjectDashboardComponent,
-    canActivate: [AuthGuard],
+    canActivate: [ProjectGuard],
   },
   {
     path: 'projects/project-forums',
     component: ProjectForumsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [ProjectGuard],
   },
   {
     path: 'registered-users',
@@ -57,7 +58,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'projects/auth/pass-key-system',
+    path: 'projects/auth/pass-key-system/:projectId/:projectTitle',
     component: PassKeySystemComponent,
     canActivate: [AuthGuard],
   },

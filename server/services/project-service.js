@@ -6,8 +6,9 @@ var handlebars = require("handlebars");
 var fs = require("fs");
 key = "12345678rehtbetbejktejt";
 var encryptor = require("simple-encryptor")(key);
+const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: __dirname + "../.env" });
-
+var token = "";
 var readHTMLFile = function (path, callback) {
   fs.readFile(path, { encoding: "utf-8" }, function (err, html) {
     if (err) {
@@ -1522,6 +1523,51 @@ module.exports.deleteProjectForumCommentService = (forumCommentDetails) => {
               status: true,
               msg: `Comment is deleted successfully!`,
             });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+};
+module.exports.authenticatePassKeyService = (projectDetails) => {
+  var objectId = new mongoose.Types.ObjectId(projectDetails.projectId);
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      projectModel
+        .find({ _id: objectId })
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to authenticate your pass key",
+            });
+          } else {
+            var decryptedPassKey = encryptor.decrypt(result[0].passKey);
+            if (decryptedPassKey == projectDetails.passKey) {
+              token = jwt.sign(projectDetails, process.env.SECRETKEY);
+              resolve({
+                status: true,
+                msg: `Your Pass Key is Authenticated`,
+                token: token,
+                project: {
+                  projectId: result[0]._id,
+                  projectTitle: result[0].projectTitle,
+                  projectDescription: result[0].projectDescription,
+                  teamMembers: result[0].teamMembers,
+                  status: result[0].status,
+                  deadline: result[0].deadline,
+                  activeDays: result[0].activeDays,
+                  forums: result[0].forums,
+                  tasks: result[0].tasks,
+                },
+              });
+            } else {
+              reject({ status: false, msg: "Invalid Pass Key. Try Again!" });
+            }
           }
         })
         .catch((err) => {

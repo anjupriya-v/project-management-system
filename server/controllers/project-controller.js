@@ -391,6 +391,24 @@ var deleteProjectForumCommentController = async (req, res) => {
     res.send({ status: false, message: error.msg });
   }
 };
+var authenticatePassKeyController = async (req, res) => {
+  var result = null;
+  try {
+    result = await projectService.authenticatePassKeyService(req.body);
+    if (result.status) {
+      res.send({
+        status: true,
+        message: result.msg,
+        token: result.token,
+        project: result.project,
+      });
+    } else {
+      res.send({ status: false, message: result.msg });
+    }
+  } catch (error) {
+    res.send({ status: false, message: error.msg });
+  }
+};
 
 module.exports = {
   projectCreationController,
@@ -417,4 +435,5 @@ module.exports = {
   unLikeProjectForumCommentController,
   deleteProjectForumController,
   deleteProjectForumCommentController,
+  authenticatePassKeyController,
 };

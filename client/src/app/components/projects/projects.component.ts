@@ -30,7 +30,7 @@ export class ProjectsComponent implements OnInit {
   noDataCom: any = false;
   constructor(
     protected auth: AuthService,
-    private projectService: ProjectService,
+    protected projectService: ProjectService,
     private notification: NzNotificationService
   ) {}
   currentUser: any = JSON.parse(this.auth.getCurrentUser() || '{}');

@@ -200,7 +200,16 @@
                 >
                   <div
                     class="inner-box current-projects-inner-box"
-                    [routerLink]="['/projects/auth/pass-key-system']"
+                    [routerLink]="
+                      projectService.isPassKeyAuthenticated() == null ||
+                      projectService.isPassKeyAuthenticated() == undefined
+                        ? [
+                            '/projects/auth/pass-key-system',
+                            data._id,
+                            data.projectTitle
+                          ]
+                        : ['/projects/project-dashboard', data._id]
+                    "
                   >
                     <h6 class="project-title">{{ data.projectTitle }}</h6>
                     <span class="deadline-text"
@@ -244,10 +253,16 @@
                         <i
                           class="fa fa-external-link project-dashboard-link"
                           aria-hidden="true"
-                          [routerLink]="[
-                            '/projects/project-dashboard',
-                            data._id
-                          ]"
+                          [routerLink]="
+                            projectService.isPassKeyAuthenticated() == null ||
+                            projectService.isPassKeyAuthenticated() == undefined
+                              ? [
+                                  '/projects/auth/pass-key-system',
+                                  data._id,
+                                  data.projectTitle
+                                ]
+                              : ['/projects/project-dashboard', data._id]
+                          "
                           nz-tooltip
                           nzTooltipTitle="Go to Project Dashboard"
                         ></i>
@@ -422,7 +437,16 @@
                 >
                   <div
                     class="inner-box completed-projects-inner-box"
-                    [routerLink]="['/projects/project-dashboard', data._id]"
+                    [routerLink]="
+                      projectService.isPassKeyAuthenticated() == null ||
+                      projectService.isPassKeyAuthenticated() == undefined
+                        ? [
+                            '/projects/auth/pass-key-system',
+                            data._id,
+                            data.projectTitle
+                          ]
+                        : ['/projects/project-dashboard', data._id]
+                    "
                   >
                     <h6 class="project-title">{{ data.projectTitle }}</h6>
                     <span class="project-status"
@@ -458,10 +482,16 @@
                         <i
                           class="fa fa-external-link project-dashboard-link"
                           aria-hidden="true"
-                          [routerLink]="[
-                            '/projects/project-dashboard',
-                            data._id
-                          ]"
+                          [routerLink]="
+                            projectService.isPassKeyAuthenticated() == null ||
+                            projectService.isPassKeyAuthenticated() == undefined
+                              ? [
+                                  '/projects/auth/pass-key-system',
+                                  data._id,
+                                  data.projectTitle
+                                ]
+                              : ['/projects/project-dashboard', data._id]
+                          "
                           nz-tooltip
                           nzTooltipTitle="Go to Project Dashboard"
                         ></i>

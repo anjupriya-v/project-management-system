@@ -32,7 +32,7 @@ export class UserDashboardComponent implements OnInit {
   contributionCount: any[] = [];
   overAllRating: any = 0;
   constructor(
-    private projectService: ProjectService,
+    protected projectService: ProjectService,
     private auth: AuthService
   ) {}
   ngOnInit() {

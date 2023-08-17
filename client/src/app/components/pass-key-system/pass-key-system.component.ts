@@ -1,5 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProjectService } from 'src/app/services/project-service/project.service';
 
 @Component({
   selector: 'app-pass-key-system',
@@ -8,6 +10,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class PassKeySystemComponent {
   filledNav: String = 'filled-nav';
+  projectId: any = this.route.snapshot.paramMap.get('projectId');
+  projectTitle: any = this.route.snapshot.paramMap.get('projectTitle');
+  inActiveText: any = this.route.snapshot.paramMap.get('inActive');
   filledNavUserContentColor: any = 'filled-nav-user-content-color';
   isReasonPopOverVisible: boolean = false;
   isResetPassKeyDrawervisible: boolean = false;
@@ -25,7 +30,13 @@ export class PassKeySystemComponent {
   @ViewChild('emailVerify') emailVerify: any;
   @ViewChild('resetPassKey') resetPassKey: any;
 
-  constructor(private fb: FormBuilder, private el: ElementRef) {
+  constructor(
+    private fb: FormBuilder,
+    private el: ElementRef,
+    private projectService: ProjectService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     this.passKeyForm();
     this.emailVerificationForm();
     this.verificationCodeForm();
@@ -81,7 +92,20 @@ export class PassKeySystemComponent {
   submitPassKey(event: Event) {
     this.passKeyFormSubmitted = true;
     if (this.requiredPassKeyForm.valid) {
-      console.log(event);
+      var passKey = this.requiredPassKeyForm.controls['passKey'].value;
+      this.projectService
+        .authenticatePassKey(this.projectId, passKey)
+        .subscribe((data: any) => {
+          if (data.status) {
+            this.projectService.storeProjectData(data.token, data.project);
+            this.router.navigate([
+              '/projects/project-dashboard',
+              data.project.projectId,
+            ]);
+          } else {
+            console.log(data.message);
+          }
+        });
     }
   }
   submitEmailForVerification(event: Event) {

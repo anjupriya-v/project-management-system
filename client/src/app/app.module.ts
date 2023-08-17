@@ -57,12 +57,15 @@ import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import en from '@angular/common/locales/en';
+
 registerLocaleData(en);
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { ProjectForumsComponent } from './components/project-forums/project-forums.component';
 import { CreateProjectForumPostComponent } from './components/create-project-forum-post/create-project-forum-post.component';
 import { HighlightedDatesComponent } from './components/highlighted-dates/highlighted-dates.component';
 import { PassKeySystemComponent } from './components/pass-key-system/pass-key-system.component';
+import { ProjectGuard } from './guards/project-guard.service';
+import { BnNgIdleService } from 'bn-ng-idle';
 const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
 @NgModule({
   declarations: [
@@ -124,6 +127,8 @@ const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
     AuthGuard,
     LoggedInAuthGuard,
     RoleAuthGuard,
+    ProjectGuard,
+    BnNgIdleService,
     { provide: NZ_I18N, useValue: en_US },
   ],
   bootstrap: [AppComponent],

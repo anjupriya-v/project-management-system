@@ -10,6 +10,7 @@ import { AuthService } from '../authentication-service/auth.service';
 export class ProjectService {
   public server: string = 'http://localhost:5000/';
   currentUser: any = JSON.parse(this.auth.getCurrentUser() || '{}');
+  currentProject: any;
   constructor(private httpClient: HttpClient, private auth: AuthService) {}
   public handleProjectCreation(data: ProjectCreation) {
     const { projectTitle, projectDescription, deadline, teamMembers, passKey } =
@@ -318,5 +319,28 @@ export class ProjectService {
         '/' +
         commentId
     );
+  }
+  public authenticatePassKey(projectId: any, passKey: any) {
+    var formData = {
+      projectId: projectId,
+      passKey: passKey,
+    };
+    return this.httpClient.post(
+      this.server + 'authenticate-pass-key/',
+      formData
+    );
+  }
+  public isPassKeyAuthenticated() {
+    return sessionStorage.getItem('token');
+  }
+  public getCurrentProject() {
+    this.currentProject = sessionStorage.getItem('project');
+    return this.currentProject;
+  }
+  public storeProjectData(token: any, project: any) {
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('project', JSON.stringify(project));
+    localStorage.setItem('projectToken', token);
+    localStorage.setItem('project', JSON.stringify(project));
   }
 }

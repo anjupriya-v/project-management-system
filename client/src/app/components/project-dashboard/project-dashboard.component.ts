@@ -14,6 +14,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { AuthService } from 'src/app/services/authentication-service/auth.service';
 import { ProjectService } from 'src/app/services/project-service/project.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { BnNgIdleService } from 'bn-ng-idle';
 
 @Component({
   selector: 'app-project-dashboard',
@@ -107,7 +108,8 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
     private auth: AuthService,
     private notification: NzNotificationService,
     private messageService: NzMessageService,
-    private router: Router
+    private router: Router,
+    private bnIdle: BnNgIdleService
   ) {
     this.iFrameUrl = sanitizer.bypassSecurityTrustResourceUrl(
       '/projects/project-forums'
@@ -117,6 +119,21 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   }
   ngOnInit() {
     localStorage.setItem('projectId', this.projectId);
+
+    this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
+      if (isTimedOut) {
+        this.router.navigate([
+          '/projects/auth/pass-key-system',
+          this.projectId,
+          this.projectTitle,
+          {
+            inActive:
+              'Due to the inactivity of 5 mins, you have been logged out!',
+          },
+        ]);
+      }
+    });
+
     setTimeout(() => {
       this.getProjectDetails();
     }, 500);

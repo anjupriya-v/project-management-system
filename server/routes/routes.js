@@ -173,4 +173,11 @@ router
   )
   .delete(projectController.deleteProjectForumCommentController);
 
+router
+  .route(
+    "/authenticate-pass-key",
+    passport.authenticate("jwt", { session: false })
+  )
+  .post(projectController.authenticatePassKeyController);
+
 module.exports = router;

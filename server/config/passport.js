@@ -1,7 +1,6 @@
 var JwtStrategy = require("passport-jwt").Strategy;
 var ExtractJwt = require("passport-jwt").ExtractJwt;
 
-// load up the user model
 var User = require("../models/user-model");
 require("dotenv").config({ path: __dirname + "../.env" });
 

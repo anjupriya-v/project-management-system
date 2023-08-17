@@ -5,11 +5,8 @@ const mongoose = require("mongoose");
 const routes = require("./routes/routes");
 const passport = require("passport");
 const path = require("path");
-const { google } = require("googleapis");
-const fs = require("fs").promises;
 const process = require("process");
-const { authenticate } = require("@google-cloud/local-auth");
-// const qs = require("query-string");
+
 require("dotenv").config();
 require("./config/passport")(passport);
 

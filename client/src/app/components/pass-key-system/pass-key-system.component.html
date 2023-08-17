@@ -3,13 +3,17 @@
   [filledNavUserContentColor]="filledNavUserContentColor"
 ></app-navbar>
 <div class="pass-key-container">
+  <div *ngIf="inActiveText">
+    <nz-alert nzType="error" [nzMessage]="inActiveText"></nz-alert>
+  </div>
+
   <div class="pass-key-card">
     <img
       src="https://cdn-icons-png.flaticon.com/512/61/61457.png"
       id="passKeyLogo"
     />
     <div class="pass-key-header">
-      <h2 class="formTitle">Pass Key System</h2>
+      <h2 class="formTitle">{{ projectTitle }}</h2>
       <span
         class="reason-text"
         nz-popover
@@ -17,7 +21,7 @@
         [(nzPopoverVisible)]="isReasonPopOverVisible"
         nzPopoverTrigger="click"
         [nzPopoverContent]="contentTemplate"
-        >Why this system? <i class="fa fa-info-circle" aria-hidden="true"></i
+        >Pass Key System <i class="fa fa-info-circle" aria-hidden="true"></i
       ></span>
     </div>
     <form (ngSubmit)="submitPassKey($event)" [formGroup]="requiredPassKeyForm">
