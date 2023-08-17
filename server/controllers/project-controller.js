@@ -409,6 +409,23 @@ var authenticatePassKeyController = async (req, res) => {
     res.send({ status: false, message: error.msg });
   }
 };
+var resendPassKeyController = async (req, res) => {
+  var result = null;
+  try {
+    result = await projectService.resendPassKeyService(req.body);
+    if (result.status) {
+      res.send({
+        status: true,
+        message: result.msg,
+      });
+    } else {
+      res.send({ status: false, message: result.msg });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ status: false, message: error.msg });
+  }
+};
 
 module.exports = {
   projectCreationController,
@@ -436,4 +453,5 @@ module.exports = {
   deleteProjectForumController,
   deleteProjectForumCommentController,
   authenticatePassKeyController,
+  resendPassKeyController,
 };

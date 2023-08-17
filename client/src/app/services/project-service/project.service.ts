@@ -340,7 +340,12 @@ export class ProjectService {
   public storeProjectData(token: any, project: any) {
     sessionStorage.setItem('token', token);
     sessionStorage.setItem('project', JSON.stringify(project));
-    localStorage.setItem('projectToken', token);
-    localStorage.setItem('project', JSON.stringify(project));
+  }
+  public resendPassKey(projectId: any, email: any) {
+    var formData = {
+      projectId: projectId,
+      email: email,
+    };
+    return this.httpClient.post(this.server + 'resend-pass-key/', formData);
   }
 }

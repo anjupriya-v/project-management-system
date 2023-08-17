@@ -179,5 +179,8 @@ router
     passport.authenticate("jwt", { session: false })
   )
   .post(projectController.authenticatePassKeyController);
+router
+  .route("/resend-pass-key", passport.authenticate("jwt", { session: false }))
+  .post(projectController.resendPassKeyController);
 
 module.exports = router;

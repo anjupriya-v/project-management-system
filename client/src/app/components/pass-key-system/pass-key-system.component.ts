@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { AuthService } from 'src/app/services/authentication-service/auth.service';
 import { ProjectService } from 'src/app/services/project-service/project.service';
 
 @Component({
@@ -25,6 +27,8 @@ export class PassKeySystemComponent {
   requiredVerificationCodeForm!: FormGroup;
   requiredResetPassKeyForm!: FormGroup;
   showInput: boolean = false;
+  currentUser: any = JSON.parse(this.auth.getCurrentUser() || '{}');
+
   @ViewChild('emailVerification') emailVerification: any;
   @ViewChild('verificationCode') verificationCode: any;
   @ViewChild('emailVerify') emailVerify: any;
@@ -35,7 +39,9 @@ export class PassKeySystemComponent {
     private el: ElementRef,
     private projectService: ProjectService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private auth: AuthService,
+    private messageService: NzMessageService
   ) {
     this.passKeyForm();
     this.emailVerificationForm();
@@ -137,5 +143,16 @@ export class PassKeySystemComponent {
       this.resetPassKeySubmitted = false;
       this.isResetPassKeyDrawervisible = false;
     }
+  }
+  resendPassKey() {
+    this.projectService
+      .resendPassKey(this.projectId, this.currentUser['email'])
+      .subscribe((data: any) => {
+        if (data.status) {
+          this.messageService.create('success', data.message);
+        } else {
+          this.messageService.create('error', data.message);
+        }
+      });
   }
 }

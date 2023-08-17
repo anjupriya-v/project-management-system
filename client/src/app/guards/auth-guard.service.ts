@@ -15,7 +15,8 @@ export class AuthGuard implements CanActivate {
     if (
       route &&
       route.routeConfig &&
-      route.routeConfig.path != 'projects/project-dashboard/:projectId'
+      route.routeConfig.path != 'projects/project-dashboard/:projectId' &&
+      route.routeConfig.path != 'projects/project-forms'
     ) {
       sessionStorage.clear();
     }

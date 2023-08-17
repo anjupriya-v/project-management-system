@@ -220,7 +220,7 @@ module.exports.projectCreationService = (projectDetails) => {
                       mailList,
                       mailData,
                       "email-templates/project-creation.html",
-                      "Project Creation - PMS",
+                      "Project Creation - PMS Service",
                       content
                     );
                     var progressStatus = {
@@ -298,7 +298,7 @@ module.exports.changeProjectStatusService = (projectDetails) => {
               mailList,
               mailData,
               "email-templates/project-status.html",
-              "Project Status Updation - PMS",
+              "Project Status Updation - PMS Service",
               ""
             );
             var progressStatus = {
@@ -342,7 +342,7 @@ module.exports.deleteProjectService = (projectDetails) => {
               mailList,
               mailData,
               "email-templates/delete-project.html",
-              "Project Deletion - PMS",
+              "Project Deletion - PMS Service",
               ""
             );
             resolve({
@@ -1568,6 +1568,56 @@ module.exports.authenticatePassKeyService = (projectDetails) => {
             } else {
               reject({ status: false, msg: "Invalid Pass Key. Try Again!" });
             }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+};
+module.exports.resendPassKeyService = (projectDetails) => {
+  var objectId = new mongoose.Types.ObjectId(projectDetails.projectId);
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      projectModel
+        .find({
+          _id: objectId,
+        })
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to authenticate your pass key",
+            });
+          } else {
+            result[0].teamMembers.forEach((teamMember) => {
+              if (teamMember.email == projectDetails.email) {
+                var mailList = [projectDetails.email];
+                var decryptedPassKey = encryptor.decrypt(result[0].passKey);
+                var mailData = {
+                  projectTitle: result[0].projectTitle,
+                  passKey: decryptedPassKey,
+                };
+                mailServiceForProject(
+                  mailList,
+                  mailData,
+                  "email-templates/resended-pass-key.html",
+                  "Resended Pass Key - PMS Service"
+                );
+                resolve({
+                  status: true,
+                  msg: `Your Pass Key is resended.Check your inbox!`,
+                });
+                return;
+              }
+            });
+            resolve({
+              status: false,
+              msg: `Your mail id is incorrect`,
+            });
           }
         })
         .catch((err) => {
