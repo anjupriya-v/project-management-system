@@ -88,6 +88,12 @@
   font-size: 14px;
   cursor: pointer;
 }
+.enter-dashboard-btn-loading,
+.send-code-btn-loading,
+.verify-email-btn-loading,
+.reset-pass-key-btn-loading {
+  background-color: #3695e2;
+}
 .pass-key-options {
   display: flex;
   justify-content: space-between;

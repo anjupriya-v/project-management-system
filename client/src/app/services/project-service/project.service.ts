@@ -368,4 +368,28 @@ export class ProjectService {
       formData
     );
   }
+  public sendEmailVerificationCode(projectId: any, email: any) {
+    var formData = {
+      projectId: projectId,
+      email: email,
+    };
+    return this.httpClient.post(
+      this.server + 'send-email-verification-code/',
+      formData
+    );
+  }
+  public verifyEmail(projectId: any, verificationCode: any) {
+    var formData = {
+      projectId: projectId,
+      verificationCode: verificationCode,
+    };
+    return this.httpClient.post(this.server + 'verify-email/', formData);
+  }
+  public resetPassKey(projectId: any, passKey: any) {
+    var formData = {
+      projectId: projectId,
+      passKey: passKey,
+    };
+    return this.httpClient.post(this.server + 'reset-pass-key/', formData);
+  }
 }

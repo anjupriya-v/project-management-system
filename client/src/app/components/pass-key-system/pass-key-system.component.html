@@ -67,8 +67,20 @@
       </div>
 
       <div class="buttonWrapper">
-        <button type="submit" id="submitButton" class="submitButton">
-          Enter project Dashboard
+        <button
+          type="submit"
+          id="submitButton"
+          class="submitButton"
+          [ngClass]="{
+            'enter-dashboard-btn-loading': enterDashboardBtnLoading
+          }"
+          [disabled]="enterDashboardBtnLoading"
+        >
+          {{
+            enterDashboardBtnLoading
+              ? "Entering Project Dasboard..."
+              : "Enter Project Dashboard"
+          }}
         </button>
       </div>
     </form>
@@ -82,10 +94,11 @@
       >
         <i class="fa fa-refresh" aria-hidden="true"></i> Reset passkey</span
       >
-      <div class="request-to-reset-div">
-        <span
-          (click)="requestToResetPassKey()"
-          *ngIf="currentUserRoleInProject == 'Team Member'"
+      <div
+        class="request-to-reset-div"
+        *ngIf="currentUserRoleInProject == 'Team Member'"
+      >
+        <span (click)="requestToResetPassKey()"
           ><i class="fa fa-paper-plane" aria-hidden="true"></i> Request to reset
         </span>
         <i
@@ -164,8 +177,14 @@
           </div>
 
           <div class="buttonWrapper">
-            <button type="submit" id="submitButton" class="submitButton">
-              Send code
+            <button
+              type="submit"
+              id="submitButton"
+              class="submitButton"
+              [ngClass]="{ 'send-code-btn-loading': sendCodeBtnLoading }"
+              [disabled]="sendCodeBtnLoading"
+            >
+              {{ sendCodeBtnLoading ? "Sending Code..." : "Send Code" }}
             </button>
           </div>
         </form>
@@ -213,13 +232,23 @@
           </div>
 
           <div class="buttonWrapper">
-            <button type="submit" id="submitButton" class="submitButton">
-              Verify Email
+            <button
+              type="submit"
+              id="submitButton"
+              class="submitButton"
+              [ngClass]="{ 'verify-email-btn-loading': verifyEmailBtnLoading }"
+              [disabled]="verifyEmailBtnLoading"
+            >
+              {{
+                verifyEmailBtnLoading ? "Verifying Email..." : "Verify Email"
+              }}
             </button>
           </div>
           <div class="edit-email">
             <span (click)="editEmailForResetPassKey()">Edit Email</span>
-            <span>Resend code</span>
+            <span (click)="submitEmailForVerification($event)"
+              >Resend code</span
+            >
           </div>
         </form>
       </div>
@@ -278,8 +307,20 @@
           </div>
 
           <div class="buttonWrapper">
-            <button type="submit" id="submitButton" class="submitButton">
-              Reset
+            <button
+              type="submit"
+              id="submitButton"
+              class="submitButton"
+              [ngClass]="{
+                'reset-pass-key-btn-loading': resetPassKeyBtnLoading
+              }"
+              [disabled]="resetPassKeyBtnLoading"
+            >
+              {{
+                resetPassKeyBtnLoading
+                  ? "Resetting Pass Key..."
+                  : "Reset Pass Key"
+              }}
             </button>
           </div>
         </form>

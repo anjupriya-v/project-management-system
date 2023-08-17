@@ -21,6 +21,10 @@ export class PassKeySystemComponent implements OnInit {
   emailverificationFormSubmitted: boolean = false;
   verificationCodeSubmitted: boolean = false;
   resetPassKeySubmitted: boolean = false;
+  enterDashboardBtnLoading: boolean = false;
+  sendCodeBtnLoading: boolean = false;
+  verifyEmailBtnLoading: boolean = false;
+  resetPassKeyBtnLoading: boolean = false;
   requiredPassKeyForm!: FormGroup;
   requiredEmailVerificationForm!: FormGroup;
   requiredVerificationCodeForm!: FormGroup;
@@ -94,6 +98,9 @@ export class PassKeySystemComponent implements OnInit {
 
   closeResetPassKeyDrawer(): void {
     this.isResetPassKeyDrawervisible = false;
+    this.emailverificationFormSubmitted = false;
+    this.verificationCodeSubmitted = false;
+    this.resetPassKeySubmitted = false;
     this.requiredEmailVerificationForm.controls['email'].setValue('');
     this.requiredVerificationCodeForm.controls['code'].setValue('');
     this.requiredResetPassKeyForm.controls['resetPassKey'].setValue('');
@@ -101,6 +108,7 @@ export class PassKeySystemComponent implements OnInit {
   submitPassKey(event: Event) {
     this.passKeyFormSubmitted = true;
     if (this.requiredPassKeyForm.valid) {
+      this.enterDashboardBtnLoading = true;
       var passKey = this.requiredPassKeyForm.controls['passKey'].value;
       this.projectService
         .authenticatePassKey(this.projectId, passKey)
@@ -112,8 +120,10 @@ export class PassKeySystemComponent implements OnInit {
               '/projects/project-dashboard',
               data.project.projectId,
             ]);
+            this.enterDashboardBtnLoading = false;
           } else {
             this.messageService.create('error', data.message);
+            this.enterDashboardBtnLoading = false;
           }
         });
     }
@@ -121,15 +131,42 @@ export class PassKeySystemComponent implements OnInit {
   submitEmailForVerification(event: Event) {
     this.emailverificationFormSubmitted = true;
     if (this.requiredEmailVerificationForm.valid) {
-      this.emailVerification.nativeElement.style.display = 'none';
-      this.verificationCode.nativeElement.style.display = 'block';
+      this.sendCodeBtnLoading = true;
+      var email = this.requiredEmailVerificationForm.controls['email'].value;
+      this.projectService
+        .sendEmailVerificationCode(this.projectId, email)
+        .subscribe((data: any) => {
+          if (data.status) {
+            this.messageService.create('success', data.message);
+            this.emailVerification.nativeElement.style.display = 'none';
+            this.verificationCode.nativeElement.style.display = 'block';
+            this.sendCodeBtnLoading = false;
+          } else {
+            this.messageService.create('error', data.message);
+            this.sendCodeBtnLoading = false;
+          }
+        });
     }
   }
   submitVerificationCode(event: any) {
     this.verificationCodeSubmitted = true;
     if (this.requiredVerificationCodeForm.valid) {
-      this.emailVerify.nativeElement.style.display = 'none';
-      this.resetPassKey.nativeElement.style.display = 'block';
+      this.verifyEmailBtnLoading = true;
+      var verificationCode =
+        this.requiredVerificationCodeForm.controls['code'].value;
+      this.projectService
+        .verifyEmail(this.projectId, verificationCode)
+        .subscribe((data: any) => {
+          if (data.status) {
+            this.messageService.create('success', data.message);
+            this.emailVerify.nativeElement.style.display = 'none';
+            this.resetPassKey.nativeElement.style.display = 'block';
+            this.verifyEmailBtnLoading = false;
+          } else {
+            this.messageService.create('error', data.message);
+            this.verifyEmailBtnLoading = false;
+          }
+        });
     }
   }
   editEmailForResetPassKey() {
@@ -139,13 +176,28 @@ export class PassKeySystemComponent implements OnInit {
   submitResetPassKey(event: any) {
     this.resetPassKeySubmitted = true;
     if (this.requiredResetPassKeyForm.valid) {
-      this.requiredEmailVerificationForm.controls['email'].setValue('');
-      this.requiredVerificationCodeForm.controls['code'].setValue('');
-      this.requiredResetPassKeyForm.controls['resetPassKey'].setValue('');
-      this.emailverificationFormSubmitted = false;
-      this.verificationCodeSubmitted = false;
-      this.resetPassKeySubmitted = false;
-      this.isResetPassKeyDrawervisible = false;
+      this.resetPassKeyBtnLoading = true;
+      this.projectService
+        .resetPassKey(
+          this.projectId,
+          this.requiredResetPassKeyForm.controls['resetPassKey'].value
+        )
+        .subscribe((data: any) => {
+          if (data.status) {
+            this.messageService.create('success', data.message);
+            this.requiredEmailVerificationForm.controls['email'].setValue('');
+            this.requiredVerificationCodeForm.controls['code'].setValue('');
+            this.requiredResetPassKeyForm.controls['resetPassKey'].setValue('');
+            this.emailverificationFormSubmitted = false;
+            this.verificationCodeSubmitted = false;
+            this.resetPassKeySubmitted = false;
+            this.isResetPassKeyDrawervisible = false;
+            this.resetPassKeyBtnLoading = false;
+          } else {
+            this.messageService.create('error', data.message);
+            this.resetPassKeyBtnLoading = false;
+          }
+        });
     }
   }
   resendPassKey() {

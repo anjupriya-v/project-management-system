@@ -9,6 +9,9 @@ var encryptor = require("simple-encryptor")(key);
 const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: __dirname + "../.env" });
 var token = "";
+var verificationCode;
+var verified = false;
+var validCode = false;
 var readHTMLFile = function (path, callback) {
   fs.readFile(path, { encoding: "utf-8" }, function (err, html) {
     if (err) {
@@ -1724,6 +1727,185 @@ module.exports.requestToResetPassKeyService = (projectDetails) => {
         });
     } catch (err) {
       console.log(err);
+    }
+  });
+};
+module.exports.sendEmailVerificationCodeService = (projectDetails) => {
+  verified = false;
+  var objectId = new mongoose.Types.ObjectId(projectDetails.projectId);
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      projectModel
+        .find({
+          _id: objectId,
+        })
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to send the verification code",
+            });
+          } else {
+            result[0].teamMembers.forEach((teamMember) => {
+              if (teamMember.email == projectDetails.email) {
+                if (
+                  teamMember.role == "Admin" ||
+                  teamMember.role == "Team Lead"
+                ) {
+                  verificationCode = Math.floor(
+                    100000 + Math.random() * 900000
+                  );
+                  validCode = true;
+                  setTimeout(() => {
+                    validCode = false;
+                  }, 5 * 60 * 1000);
+                  var mailList = [projectDetails.email];
+                  var mailData = {
+                    projectTitle: result[0].projectTitle,
+                    verificationCode: verificationCode,
+                  };
+                  mailServiceForProject(
+                    mailList,
+                    mailData,
+                    "email-templates/send-email-verification-code.html",
+                    "Email Verification for passkey reset - PMS Service"
+                  );
+                  resolve({
+                    status: true,
+                    msg: `Verification code has been sent to your mail!`,
+                  });
+                } else {
+                  resolve({
+                    status: false,
+                    msg: `user belongs to this email id is not team lead!`,
+                  });
+                }
+              } else {
+                resolve({
+                  status: false,
+                  msg: `team lead with this email id does not exist`,
+                });
+              }
+              return;
+            });
+            resolve({
+              status: false,
+              msg: `You are not part of this project`,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+};
+module.exports.verifyEmailService = (projectDetails) => {
+  verified = false;
+  var objectId = new mongoose.Types.ObjectId(projectDetails.projectId);
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      projectModel
+        .find({
+          _id: objectId,
+        })
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to verify the email",
+            });
+          } else {
+            if (validCode == true) {
+              if (verificationCode == projectDetails.verificationCode) {
+                verified = true;
+                resolve({
+                  status: true,
+                  msg: `Your email id has been verified!`,
+                });
+              } else {
+                resolve({
+                  status: false,
+                  msg: `Incorrect verification code...!`,
+                });
+              }
+            } else {
+              resolve({
+                status: false,
+                msg: `Your verification code has expired...!`,
+              });
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+};
+
+module.exports.resetPassKeyService = (projectDetails) => {
+  console.log(projectDetails);
+  var objectId = new mongoose.Types.ObjectId(projectDetails.projectId);
+  var encryptedPassKey = encryptor.encrypt(projectDetails.passKey);
+  return new Promise(function projectService(resolve, reject) {
+    if (verified == true) {
+      try {
+        projectModel
+          .findByIdAndUpdate(
+            {
+              _id: objectId,
+            },
+            {
+              $set: {
+                passKey: encryptedPassKey,
+              },
+            },
+            { new: true }
+          )
+          .then((result, error) => {
+            if (error) {
+              reject({
+                status: false,
+                msg: "Unable to reset the passkey",
+              });
+            } else {
+              var mailList = [];
+              var decryptedPassKey = encryptor.decrypt(result.passKey);
+              result.teamMembers.forEach((teamMember) => {
+                mailList.push(teamMember.email);
+              });
+              var mailData = {
+                projectTitle: result.projectTitle,
+                passKey: decryptedPassKey,
+              };
+              mailServiceForProject(
+                mailList,
+                mailData,
+                "email-templates/reset-pass-key.html",
+                "Updated Pass Key - PMS Service"
+              );
+              resolve({
+                status: true,
+                msg: `Pass key reset is done and updated to team members!`,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      resolve({
+        status: false,
+        msg: `unable to reset the pass key...Please restart your email verification`,
+      });
     }
   });
 };

@@ -194,5 +194,19 @@ router
     passport.authenticate("jwt", { session: false })
   )
   .post(projectController.requestToResetPassKeyController);
+router
+  .route(
+    "/send-email-verification-code",
+    passport.authenticate("jwt", { session: false })
+  )
+  .post(projectController.sendEmailVerificationCodeController);
+
+router
+  .route("/verify-email", passport.authenticate("jwt", { session: false }))
+  .post(projectController.verifyEmailController);
+
+router
+  .route("/reset-pass-key", passport.authenticate("jwt", { session: false }))
+  .post(projectController.resetPassKeyController);
 
 module.exports = router;
