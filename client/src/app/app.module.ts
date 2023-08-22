@@ -67,6 +67,8 @@ import { PassKeySystemComponent } from './components/pass-key-system/pass-key-sy
 import { ProjectGuard } from './guards/project-guard.service';
 import { BnNgIdleService } from 'bn-ng-idle';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
+import { ScheduleMeetingComponent } from './components/schedule-meeting/schedule-meeting.component';
 
 const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
 @NgModule({
@@ -87,6 +89,7 @@ const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
     CreateProjectForumPostComponent,
     HighlightedDatesComponent,
     PassKeySystemComponent,
+    ScheduleMeetingComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -125,6 +128,7 @@ const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
     FullCalendarModule,
     NgApexchartsModule,
     NzTabsModule,
+    NzSegmentedModule,
   ],
   providers: [
     AuthGuard,

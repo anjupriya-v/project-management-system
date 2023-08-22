@@ -14,6 +14,8 @@ import { RegisteredUsersComponent } from './components/registered-users/register
 import { ProjectForumsComponent } from './components/project-forums/project-forums.component';
 import { PassKeySystemComponent } from './components/pass-key-system/pass-key-system.component';
 import { ProjectGuard } from './guards/project-guard.service';
+
+import { ScheduleMeetingComponent } from './components/schedule-meeting/schedule-meeting.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   {
@@ -37,6 +39,11 @@ const routes: Routes = [
   {
     path: 'projects/project-forums',
     component: ProjectForumsComponent,
+    canActivate: [ProjectGuard],
+  },
+  {
+    path: 'projects/project-dashboard/:projectId/schedule-meeting',
+    component: ScheduleMeetingComponent,
     canActivate: [ProjectGuard],
   },
   {

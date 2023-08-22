@@ -1,0 +1,257 @@
+<app-navbar
+  [filledNav]="filledNav"
+  [filledNavUserContentColor]="filledNavUserContentColor"
+></app-navbar>
+<div class="schedule-meeting-container">
+  <nz-card style="width: 1000px">
+    <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
+      <div
+        nz-col
+        class="gutter-row meeting-image-container"
+        [nzSm]="24"
+        [nzXs]="24"
+        [nzMd]="12"
+        [nzLg]="12"
+      ></div>
+      <div
+        class="meeting-form-container"
+        nz-col
+        class="gutter-row"
+        [nzSm]="24"
+        [nzXs]="24"
+        [nzMd]="12"
+        [nzLg]="12"
+      >
+        <div class="formbold-main-wrapper">
+          <h1>Schedule your meeting!</h1>
+
+          <div class="formbold-form-wrapper">
+            <form
+              (ngSubmit)="scheduleMeeting($event)"
+              [formGroup]="requiredForm"
+            >
+              <div class="formbold-mb-5">
+                <label for="summary" class="formbold-form-label">
+                  Meeting Summary
+                </label>
+                <input
+                  type="text"
+                  name="summary"
+                  id="summary"
+                  placeholder="Enter Meeting summary"
+                  class="formbold-form-input"
+                  formControlName="summary"
+                />
+                <div
+                  *ngIf="
+                    submitted &&
+                    requiredForm.controls['summary'].errors &&
+                    requiredForm.controls['summary'].errors['required']
+                  "
+                  class="error-text"
+                >
+                  Meeting Summary is required*
+                </div>
+                <div
+                  *ngIf="
+                    submitted &&
+                    requiredForm.controls['summary'].errors &&
+                    requiredForm.controls['summary'].errors['maxlength']
+                  "
+                  class="error-text"
+                >
+                  Meeting Summary should have atmost 20 characters*
+                </div>
+              </div>
+              <div class="formbold-mb-5">
+                <label for="description" class="formbold-form-label">
+                  Meeting Description
+                </label>
+                <textarea
+                  rows="4"
+                  name="description"
+                  id="description"
+                  placeholder="Enter Meeting Description"
+                  class="formbold-form-input"
+                  formControlName="description"
+                ></textarea>
+                <div
+                  *ngIf="
+                    submitted &&
+                    requiredForm.controls['description'].errors &&
+                    requiredForm.controls['description'].errors['required']
+                  "
+                  class="error-text"
+                >
+                  Meeting Description is required*
+                </div>
+                <div
+                  *ngIf="
+                    submitted &&
+                    requiredForm.controls['description'].errors &&
+                    requiredForm.controls['description'].errors['minlength']
+                  "
+                  class="error-text"
+                >
+                  Meeting Description should have atleast 80 Characters*
+                </div>
+              </div>
+              <div class="flex flex-wrap formbold--mx-3">
+                <div class="w-full sm:w-half formbold-px-3">
+                  <div class="formbold-mb-5 w-full">
+                    <label for="date" class="formbold-form-label"
+                      >Starting Date
+                    </label>
+                    <input
+                      type="date"
+                      name="date"
+                      id="date"
+                      class="formbold-form-input"
+                      formControlName="startingDate"
+                    />
+                    <div
+                      *ngIf="
+                        submitted &&
+                        requiredForm.controls['startingDate'].errors &&
+                        requiredForm.controls['startingDate'].errors['required']
+                      "
+                      class="error-text"
+                    >
+                      Starting Date is required*
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full sm:w-half formbold-px-3">
+                  <div class="formbold-mb-5">
+                    <label for="time" class="formbold-form-label"
+                      >Starting Time
+                    </label>
+                    <input
+                      type="time"
+                      name="time"
+                      id="time"
+                      class="formbold-form-input"
+                      formControlName="startingTime"
+                    />
+                    <div
+                      *ngIf="
+                        submitted &&
+                        requiredForm.controls['startingTime'].errors &&
+                        requiredForm.controls['startingTime'].errors['required']
+                      "
+                      class="error-text"
+                    >
+                      Starting Time is required*
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-wrap formbold--mx-3">
+                <div class="w-full sm:w-half formbold-px-3">
+                  <div class="formbold-mb-5 w-full">
+                    <label for="date" class="formbold-form-label"
+                      >Ending Date
+                    </label>
+                    <input
+                      type="date"
+                      name="date"
+                      id="date"
+                      class="formbold-form-input"
+                      formControlName="endingDate"
+                    />
+                    <div
+                      *ngIf="
+                        submitted &&
+                        requiredForm.controls['endingDate'].errors &&
+                        requiredForm.controls['endingDate'].errors['required']
+                      "
+                      class="error-text"
+                    >
+                      Ending Date is required*
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full sm:w-half formbold-px-3">
+                  <div class="formbold-mb-5">
+                    <label for="time" class="formbold-form-label"
+                      >Ending Time
+                    </label>
+                    <input
+                      type="time"
+                      name="time"
+                      id="time"
+                      class="formbold-form-input"
+                      formControlName="endingTime"
+                    />
+                    <div
+                      *ngIf="
+                        submitted &&
+                        requiredForm.controls['endingTime'].errors &&
+                        requiredForm.controls['endingTime'].errors['required']
+                      "
+                      class="error-text"
+                    >
+                      Ending Time is required*
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="formbold-mb-5">
+                <label for="timeZone" class="formbold-form-label">
+                  Time Zone
+                </label>
+                <nz-select
+                  nzShowSearch
+                  nzAllowClear
+                  nzPlaceHolder="Select Time Zone"
+                  class="formbold-form-input time-zone-select"
+                  formControlName="timeZone"
+                >
+                  <nz-option
+                    *ngFor="let timeZone of timeZoneOptions"
+                    [nzLabel]="timeZone"
+                    [nzValue]="timeZone"
+                  ></nz-option>
+                </nz-select>
+                <div
+                  *ngIf="
+                    submitted &&
+                    requiredForm.controls['timeZone'].errors &&
+                    requiredForm.controls['timeZone'].errors['required']
+                  "
+                  class="error-text"
+                >
+                  Time Zone is required*
+                </div>
+              </div>
+              <div class="formbold-mb-5">
+                <label for="recurrence" class="formbold-form-label">
+                  Recurrence
+                </label>
+                <nz-segmented
+                  class="formbold-form-input"
+                  [nzOptions]="recurrenceOptions"
+                  id="recurrence"
+                  formControlName="recurrence"
+                ></nz-segmented>
+                <div
+                  *ngIf="
+                    submitted &&
+                    requiredForm.controls['recurrence'].errors &&
+                    requiredForm.controls['recurrence'].errors['required']
+                  "
+                  class="error-text"
+                >
+                  Recurrence is required*
+                </div>
+              </div>
+              <div>
+                <button class="formbold-btn">Schedule Meeting</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nz-card>
+</div>

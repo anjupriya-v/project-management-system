@@ -1332,7 +1332,13 @@
   <ng-container *nzDrawerContent>
     <div class="meeting-container">
       <div class="create-meeting-button">
-        <button nz-button nzType="primary">
+        <button
+          nz-button
+          nzType="primary"
+          [routerLink]="[
+            '/projects/project-dashboard/' + projectId + '/schedule-meeting'
+          ]"
+        >
           Schedule meeting
           <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
         </button>

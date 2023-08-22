@@ -99,12 +99,12 @@ async function createEvent(auth) {
     description: "A chance to hear more about Google's developer products.",
     start: {
       dateTime: "2023-08-21T12:00:00.007Z",
-      timeZone: "IST",
+      timeZone: "Asia/Kolkata",
     },
 
     end: {
       dateTime: "2023-08-21T12:00:00.007Z",
-      timeZone: "IST",
+      timeZone: "Asia/Kolkata",
     },
 
     recurrence: false,
