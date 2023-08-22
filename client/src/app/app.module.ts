@@ -66,6 +66,8 @@ import { HighlightedDatesComponent } from './components/highlighted-dates/highli
 import { PassKeySystemComponent } from './components/pass-key-system/pass-key-system.component';
 import { ProjectGuard } from './guards/project-guard.service';
 import { BnNgIdleService } from 'bn-ng-idle';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+
 const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
 @NgModule({
   declarations: [
@@ -122,6 +124,7 @@ const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
     NzPopoverModule,
     FullCalendarModule,
     NgApexchartsModule,
+    NzTabsModule,
   ],
   providers: [
     AuthGuard,

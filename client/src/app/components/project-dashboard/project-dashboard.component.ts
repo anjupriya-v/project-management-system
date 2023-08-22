@@ -40,6 +40,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   isUploadWorkModalVisible = false;
   isViewUploadModalVisible = false;
   isApproveTaskModalVisible = false;
+  isMeetingsDrawerVisible = true;
   projectTitle: any;
   projectDescription: any;
   deadline: any;
@@ -127,8 +128,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
           this.projectId,
           this.projectTitle,
           {
-            inActive:
-              'Due to the inactivity of 5 mins, you have been logged out!',
+            inActive: 'Due to 5 mins of inactivity, you have been logged out!',
           },
         ]);
       }
@@ -237,6 +237,12 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.getProjectDetails();
     }, 500);
+  }
+  showMeetingsDrawer() {
+    this.isMeetingsDrawerVisible = true;
+  }
+  closeMeetingsDrawer() {
+    this.isMeetingsDrawerVisible = false;
   }
   isKeyInArray(array: any[], key: any) {
     return array.some((obj) => obj.hasOwnProperty(key));

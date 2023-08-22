@@ -3,8 +3,13 @@
   margin-top: 5em;
   margin-right: 3em;
 }
-.project-title-container {
+.project-header-container {
   margin-top: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+.assign-task button i {
+  margin-left: 0.5em;
 }
 .project-details {
   display: flex;
@@ -35,6 +40,12 @@
 .mark-as-complete-button {
   background-color: rgb(7, 179, 7);
   color: white;
+}
+.mark-as-complete-button:hover,
+.mark-as-complete-button:focus {
+  background-color: rgb(33, 178, 33);
+  color: white;
+  border-color: white;
 }
 .delete-button {
   background-color: red;
@@ -185,6 +196,10 @@
 .task-list-quick-tool-container {
   display: flex;
   align-items: baseline;
+}
+.task-list-quick-tool-container .current-user-task-count-container,
+.task-list-quick-tool-container .filter-container .filter-tag {
+  margin-right: 0.7em;
 }
 .task-list-quick-tool-container .search-container {
   margin-left: 1em;
@@ -506,4 +521,39 @@
 .forum-iframe {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+.create-meeting-button {
+  display: flex;
+  justify-content: flex-end;
+}
+.create-meeting-button button i {
+  margin-left: 1em;
+}
+.meetings-container {
+  margin-top: 1.5em;
+}
+.meetings-card {
+  margin-bottom: 0.7em;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+.meetings-content-header {
+  display: flex;
+  justify-content: space-between;
+}
+.meetings-content-header .meeting-options-container i {
+  cursor: pointer;
+}
+.meeting-options-container {
+  display: flex;
+  align-items: baseline;
+}
+.meeting-options-container .meeting-options {
+  margin-left: 0.9em;
+}
+.meetings-content-options {
+  display: flex;
+  justify-content: space-between;
+}
+.ant-tag {
+  margin: 0px;
 }

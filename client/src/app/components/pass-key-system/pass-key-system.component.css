@@ -17,6 +17,9 @@
   margin: 30px 0;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
+.pass-key-card {
+  margin: 1em;
+}
 .reset-pass-key-card,
 .verify-email-card {
   background-color: rgb(244, 255, 244);
