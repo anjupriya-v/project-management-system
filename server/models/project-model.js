@@ -25,6 +25,21 @@ var projectSchema = new Schema({
     type: String,
     required: true,
   },
+  meetings: [
+    {
+      _id: false,
+      meetingId: String,
+      summary: String,
+      description: String,
+      startingDate: String,
+      startingTime: String,
+      endingDate: String,
+      endingTime: String,
+      timeZone: String,
+      recurrence: String,
+      cancelled: Boolean,
+    },
+  ],
   activeDays: [
     {
       _id: false,

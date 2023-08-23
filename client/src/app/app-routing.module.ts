@@ -42,7 +42,7 @@ const routes: Routes = [
     canActivate: [ProjectGuard],
   },
   {
-    path: 'projects/project-dashboard/:projectId/schedule-meeting',
+    path: 'projects/project-dashboard/:projectId/schedule-meeting/:projectTitle',
     component: ScheduleMeetingComponent,
     canActivate: [ProjectGuard],
   },

@@ -1,6 +1,6 @@
 .schedule-meeting-container {
   margin-left: 7em;
-  margin-top: 5em;
+  margin-top: 6em;
   margin-right: 3em;
   padding-bottom: 3em;
   display: flex;
@@ -9,12 +9,22 @@
   flex-direction: column;
 }
 .meeting-image-container {
-  background-image: url("https://images.pexels.com/photos/3183172/pexels-photo-3183172.jpeg?cs=srgb&dl=pexels-fauxels-3183172.jpg&fm=jpg");
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("https://images.pexels.com/photos/3183172/pexels-photo-3183172.jpeg?cs=srgb&dl=pexels-fauxels-3183172.jpg&fm=jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
+.meeting-image-container p {
+  color: rgb(222, 222, 222);
+  text-align: center;
+  margin: 0.5em;
+  font-size: 3em;
+  font-family: serif;
+}
 .formbold-mb-5 {
   margin-bottom: 20px;
 }
@@ -108,6 +118,15 @@
 }
 .error-text {
   color: red;
+}
+.back-button-container {
+  margin-top: 1.5em;
+  display: flex;
+  justify-content: center;
+}
+.back-button {
+  color: blue;
+  text-align: center;
 }
 @media (min-width: 540px) {
   .sm\:w-half {

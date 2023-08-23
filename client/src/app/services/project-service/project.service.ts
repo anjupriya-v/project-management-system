@@ -392,4 +392,28 @@ export class ProjectService {
     };
     return this.httpClient.post(this.server + 'reset-pass-key/', formData);
   }
+  public scheduleMeeting(projectId: any, meetingDetails: any) {
+    const {
+      summary,
+      description,
+      startingDate,
+      startingTime,
+      endingDate,
+      endingTime,
+      timeZone,
+      recurrence,
+    } = meetingDetails;
+    var formData = {
+      projectId: projectId,
+      summary: summary,
+      description: description,
+      startingDate: startingDate,
+      startingTime: startingTime,
+      endingDate: endingDate,
+      endingTime: endingTime,
+      recurrence: recurrence,
+      timeZone: timeZone,
+    };
+    return this.httpClient.post(this.server + 'schedule-meeting/', formData);
+  }
 }

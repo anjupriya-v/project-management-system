@@ -209,4 +209,8 @@ router
   .route("/reset-pass-key", passport.authenticate("jwt", { session: false }))
   .post(projectController.resetPassKeyController);
 
+router
+  .route("/schedule-meeting", passport.authenticate("jwt", { session: false }))
+  .post(projectController.scheduleMeetingController);
+
 module.exports = router;

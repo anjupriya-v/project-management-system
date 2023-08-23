@@ -7,11 +7,15 @@ var fs = require("fs");
 key = "12345678rehtbetbejktejt";
 var encryptor = require("simple-encryptor")(key);
 const jwt = require("jsonwebtoken");
+const { google } = require("googleapis");
+const authorize = require("../helpers/authorize-google-user");
+const moment = require("moment");
 require("dotenv").config({ path: __dirname + "../.env" });
 var token = "";
 var verificationCode;
 var verified = false;
 var validCode = false;
+var event = {};
 var readHTMLFile = function (path, callback) {
   fs.readFile(path, { encoding: "utf-8" }, function (err, html) {
     if (err) {
@@ -152,6 +156,7 @@ const getMailData = (projectDetailsArr) => {
     mailList,
   ];
 };
+
 module.exports.projectCreationService = (projectDetails) => {
   return new Promise(function projectService(resolve, reject) {
     try {
@@ -1849,7 +1854,6 @@ module.exports.verifyEmailService = (projectDetails) => {
 };
 
 module.exports.resetPassKeyService = (projectDetails) => {
-  console.log(projectDetails);
   var objectId = new mongoose.Types.ObjectId(projectDetails.projectId);
   var encryptedPassKey = encryptor.encrypt(projectDetails.passKey);
   return new Promise(function projectService(resolve, reject) {
@@ -1906,6 +1910,150 @@ module.exports.resetPassKeyService = (projectDetails) => {
         status: false,
         msg: `unable to reset the pass key...Please restart your email verification`,
       });
+    }
+  });
+};
+module.exports.scheduleMeetingService = (meetingDetails) => {
+  var objectId = new mongoose.Types.ObjectId(meetingDetails.projectId);
+  var id = new mongoose.Types.ObjectId();
+  var doc = {
+    meetingId: JSON.stringify(id.getTimestamp()),
+    summary: meetingDetails.summary,
+    description: meetingDetails.description,
+    startingDate: meetingDetails.startingDate,
+    startingTime: meetingDetails.startingTime,
+    endingDate: meetingDetails.endingDate,
+    endingTime: meetingDetails.endingTime,
+    timeZone: meetingDetails.timeZone,
+    recurrence: meetingDetails.recurrence,
+  };
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      projectModel
+        .findByIdAndUpdate(
+          {
+            _id: objectId,
+          },
+          {
+            $push: {
+              meetings: doc,
+            },
+          },
+          { new: true }
+        )
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to schedule the meeting",
+            });
+          } else {
+            var mailList = [];
+            var attendees = [];
+            result.teamMembers.forEach((teamMember) => {
+              var attendeeEmail = {
+                email: teamMember.email,
+              };
+              mailList.push(teamMember.email);
+              attendees.push(attendeeEmail);
+            });
+            var startDateTime = new Date(
+              meetingDetails.startingDate +
+                " " +
+                meetingDetails.startingTime +
+                ":00"
+            );
+            var endDateTime = new Date(
+              meetingDetails.endingDate +
+                " " +
+                meetingDetails.endingTime +
+                ":00"
+            );
+            var recurrenceVal;
+            switch (meetingDetails.recurrence) {
+              case "Once":
+                recurrenceVal = false;
+                break;
+              case "Daily":
+                recurrenceVal = ["RRULE:FREQ=DAILY"];
+                break;
+              case "Weekly":
+                recurrenceVal = ["RRULE:FREQ=WEEKLY"];
+                break;
+              case "Monthly":
+                recurrenceVal = ["RRULE:FREQ=MONTHLY"];
+                break;
+              case "Yearly":
+                recurrenceVal = ["RRULE:FREQ=YEARLY"];
+                break;
+            }
+            event = {
+              summary: meetingDetails.summary,
+              description: meetingDetails.description,
+              start: {
+                dateTime: moment(startDateTime).format(),
+                timeZone: meetingDetails.timeZone,
+              },
+
+              end: {
+                dateTime: moment(endDateTime).format(),
+                timeZone: meetingDetails.timeZone,
+              },
+
+              recurrence: recurrenceVal,
+              attendees: attendees,
+              reminders: {
+                useDefault: false,
+                overrides: [
+                  { method: "email", minutes: 24 * 60 },
+                  { method: "popup", minutes: 10 },
+                ],
+              },
+              conferenceData: {
+                createRequest: {
+                  conferenceSolutionKey: {
+                    type: "hangoutsMeet",
+                  },
+                  requestId: doc.meetingId,
+                },
+              },
+            };
+            authorize()
+              .then((auth) => {
+                const calendar = google.calendar({ version: "v3", auth });
+                calendar.events.insert(
+                  {
+                    auth: auth,
+                    calendarId: "primary",
+                    resource: event,
+                    conferenceDataVersion: 1,
+                    sendNotifications: true,
+                  },
+                  function (err, event) {
+                    if (err) {
+                      resolve({
+                        status: false,
+                        msg:
+                          "There was an error contacting the Calendar service: " +
+                          err,
+                      });
+                    } else {
+                      resolve({
+                        status: true,
+                        msg: `Meeting has been scheduled!`,
+                      });
+                    }
+                  }
+                );
+              })
+              .catch(console.error);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
     }
   });
 };

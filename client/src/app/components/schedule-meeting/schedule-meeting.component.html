@@ -12,7 +12,12 @@
         [nzXs]="24"
         [nzMd]="12"
         [nzLg]="12"
-      ></div>
+      >
+        <p>
+          Let's have a collaboration,<br />
+          Schedule your meeting here!
+        </p>
+      </div>
       <div
         class="meeting-form-container"
         nz-col
@@ -23,8 +28,6 @@
         [nzLg]="12"
       >
         <div class="formbold-main-wrapper">
-          <h1>Schedule your meeting!</h1>
-
           <div class="formbold-form-wrapper">
             <form
               (ngSubmit)="scheduleMeeting($event)"
@@ -247,6 +250,14 @@
               </div>
               <div>
                 <button class="formbold-btn">Schedule Meeting</button>
+              </div>
+              <div class="back-button-container">
+                <a
+                  class="back-button"
+                  [routerLink]="['/projects/project-dashboard/' + projectId]"
+                  ><i class="fa fa-arrow-left" aria-hidden="true"></i> Back to
+                  Project Dashboard</a
+                >
               </div>
             </form>
           </div>
