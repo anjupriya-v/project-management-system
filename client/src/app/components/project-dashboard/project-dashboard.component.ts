@@ -40,7 +40,10 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   isUploadWorkModalVisible = false;
   isViewUploadModalVisible = false;
   isApproveTaskModalVisible = false;
-  isMeetingsDrawerVisible = true;
+  isMeetingScheduled: any = this.route.snapshot.paramMap.get(
+    'isMeetingDrawerVisible'
+  );
+  isMeetingsDrawerVisible = this.isMeetingScheduled ? true : false;
   projectTitle: any;
   projectDescription: any;
   deadline: any;
@@ -91,6 +94,8 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   lastActiveMemberRole: any;
   lastActiveMemberProfileImage: any;
   chartProcessed: boolean = false;
+  meetings: any[] = [];
+  getDateAndTimeVal: any;
   projectProgress: any = 'projectProgress';
   @ViewChild('forumsSection')
   forumsSection!: ElementRef;
@@ -120,19 +125,21 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   }
   ngOnInit() {
     localStorage.setItem('projectId', this.projectId);
-
-    this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
-      if (isTimedOut) {
-        this.router.navigate([
-          '/projects/auth/pass-key-system',
-          this.projectId,
-          this.projectTitle,
-          {
-            inActive: 'Due to 5 mins of inactivity, you have been logged out!',
-          },
-        ]);
-      }
-    });
+    setInterval(() => {
+      this.getDateAndTimeVal = this.getDay() + ' ' + this.getDateAndTime();
+    }, 60);
+    // this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
+    //   if (isTimedOut) {
+    //     this.router.navigate([
+    //       '/projects/auth/pass-key-system',
+    //       this.projectId,
+    //       this.projectTitle,
+    //       {
+    //         inActive: 'Due to 5 mins of inactivity, you have been logged out!',
+    //       },
+    //     ]);
+    //   }
+    // });
 
     setTimeout(() => {
       this.getProjectDetails();
@@ -154,7 +161,10 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
       comments: [''],
     });
   }
-
+  getDay() {
+    var day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
+    return day[new Date().getDay()];
+  }
   taskCommentForm() {
     this.taskCommentRequiredForm = this.fb.group({
       taskComment: ['', Validators.required],
@@ -810,11 +820,24 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
         }
       });
   }
-  getDateAndTime() {
-    var dateObj = new Date();
+  getTime(dateObj: any) {
     var hours = dateObj.getHours();
     var minutes: any = dateObj.getMinutes();
     var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return hours + ':' + minutes + ' ' + ampm;
+  }
+  getDateFormat() {
+    var dateObj = new Date();
+    var date = dateObj.getDate();
+    var month = dateObj.getMonth() + 1;
+    var year = dateObj.getFullYear();
+    return year + '-' + month + '-' + date;
+  }
+  getDate() {
+    var dateObj = new Date();
     const monthNames = [
       'Jan',
       'Feb',
@@ -829,24 +852,16 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
       'Nov',
       'Dec',
     ];
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0' + minutes : minutes;
     var date = dateObj.getDate();
     var month = monthNames[dateObj.getMonth()];
     var year = dateObj.getFullYear();
-    var strTime =
-      hours +
-      ':' +
-      minutes +
-      ' ' +
-      ampm +
-      ' ' +
-      date +
-      ' ' +
-      month +
-      ' ' +
-      year;
+    return date + ' ' + month + ' ' + year;
+  }
+  getDateAndTime() {
+    var dateObj = new Date();
+    var date = this.getDate();
+    var time = this.getTime(dateObj);
+    var strTime = date + ' ' + time;
     return strTime;
   }
   submitTaskCommentForm(event: Event) {
@@ -986,6 +1001,12 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
     var timeinmilisec = date_to_reply.getTime() - today.getTime();
     return Math.ceil(timeinmilisec / (500 * 60 * 60 * 24));
   }
+  getDateObj(date: any): any {
+    if (date == 'now') {
+      return new Date();
+    }
+    return new Date(date);
+  }
   getProjectDetails = () => {
     this.projectService.getProjectDetails().subscribe((data: any) => {
       if (data.status) {
@@ -1016,6 +1037,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
             this.projectStatus = project.status;
             this.displayTeamMembers = project.teamMembers;
             this.progressDoneArray = project.activeDays;
+            this.meetings = project.meetings;
             this.sortBasedOnPriority('High Priority', project.tasks);
             this.sortBasedOnPriority('Medium Priority', project.tasks);
             this.sortBasedOnPriority('Low Priority', project.tasks);

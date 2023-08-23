@@ -156,7 +156,51 @@ const getMailData = (projectDetailsArr) => {
     mailList,
   ];
 };
-
+function getMonthNames() {
+  return [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+}
+function getDateAndTime(dateVal) {
+  var dateObj = new Date(dateVal);
+  var hours = dateObj.getHours();
+  var minutes = dateObj.getMinutes();
+  var ampm = hours >= 12 ? "pm" : "am";
+  var monthNames = getMonthNames();
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  var date = dateObj.getDate();
+  var month = monthNames[dateObj.getMonth()];
+  var year = dateObj.getFullYear();
+  var strTime =
+    date + " " + month + " " + year + " " + hours + ":" + minutes + " " + ampm;
+  return strTime;
+}
+function getOrdinals(date) {
+  if (date > 3 && date < 21) return "th";
+  switch (date % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
+  }
+}
 module.exports.projectCreationService = (projectDetails) => {
   return new Promise(function projectService(resolve, reject) {
     try {
@@ -1916,46 +1960,29 @@ module.exports.resetPassKeyService = (projectDetails) => {
 module.exports.scheduleMeetingService = (meetingDetails) => {
   var objectId = new mongoose.Types.ObjectId(meetingDetails.projectId);
   var id = new mongoose.Types.ObjectId();
-  var doc = {
-    meetingId: JSON.stringify(id.getTimestamp()),
-    summary: meetingDetails.summary,
-    description: meetingDetails.description,
-    startingDate: meetingDetails.startingDate,
-    startingTime: meetingDetails.startingTime,
-    endingDate: meetingDetails.endingDate,
-    endingTime: meetingDetails.endingTime,
-    timeZone: meetingDetails.timeZone,
-    recurrence: meetingDetails.recurrence,
-  };
+
   return new Promise(function projectService(resolve, reject) {
     try {
       projectModel
-        .findByIdAndUpdate(
-          {
-            _id: objectId,
-          },
-          {
-            $push: {
-              meetings: doc,
-            },
-          },
-          { new: true }
-        )
+        .findById({
+          _id: objectId,
+        })
         .then((result, error) => {
           if (error) {
             reject({
               status: false,
-              msg: "Unable to schedule the meeting",
+              msg: "Unable to fetch the project details",
             });
           } else {
-            var mailList = [];
             var attendees = [];
+            var mailList = [];
+
             result.teamMembers.forEach((teamMember) => {
               var attendeeEmail = {
                 email: teamMember.email,
               };
-              mailList.push(teamMember.email);
               attendees.push(attendeeEmail);
+              mailList.push(teamMember.email);
             });
             var startDateTime = new Date(
               meetingDetails.startingDate +
@@ -1970,25 +1997,78 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                 ":00"
             );
             var recurrenceVal;
+            var happens;
             switch (meetingDetails.recurrence) {
               case "Once":
+                happens = getDateAndTime(startDateTime);
                 recurrenceVal = false;
                 break;
               case "Daily":
+                happens = "Daily";
                 recurrenceVal = ["RRULE:FREQ=DAILY"];
                 break;
               case "Weekly":
+                switch (startDateTime.getDay()) {
+                  case 0:
+                    happens = "Every Sunday";
+                    break;
+                  case 1:
+                    happens = "Every Monday";
+                    break;
+                  case 2:
+                    happens = "Every Tuesday";
+                    break;
+                  case 3:
+                    happens = "Every Wednesday";
+                    break;
+                  case 4:
+                    happens = "Every Thursday";
+                    break;
+                  case 5:
+                    happens = "Every Friday";
+                    break;
+                  case 6:
+                    happens = "Every Saturday";
+                    break;
+                }
                 recurrenceVal = ["RRULE:FREQ=WEEKLY"];
                 break;
               case "Monthly":
+                var date = startDateTime.getDate();
+                if (date > 3 && date < 21) {
+                  happens = date + "th of every month";
+                }
+                switch (date % 10) {
+                  case 1:
+                    happens = date + getOrdinals(date) + " of every month";
+                    break;
+                  case 2:
+                    happens = date + getOrdinals(date) + " of every month";
+                    break;
+                  case 3:
+                    happens = date + getOrdinals(date) + " of every month";
+                    break;
+                  default:
+                    happens = date + getOrdinals(date) + " of every month";
+                }
+
                 recurrenceVal = ["RRULE:FREQ=MONTHLY"];
                 break;
               case "Yearly":
+                var date = startDateTime.getDate();
+                var month = startDateTime.getMonth();
+                var monthNames = getMonthNames();
+                happens =
+                  "Every Year " +
+                  date +
+                  getOrdinals(date) +
+                  "Of" +
+                  monthNames[month];
                 recurrenceVal = ["RRULE:FREQ=YEARLY"];
                 break;
             }
             event = {
-              summary: meetingDetails.summary,
+              summary: result.projectTitle + "-" + meetingDetails.summary,
               description: meetingDetails.description,
               start: {
                 dateTime: moment(startDateTime).format(),
@@ -2014,7 +2094,7 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                   conferenceSolutionKey: {
                     type: "hangoutsMeet",
                   },
-                  requestId: doc.meetingId,
+                  requestId: "meeting-at-pms-platform",
                 },
               },
             };
@@ -2038,10 +2118,60 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                           err,
                       });
                     } else {
-                      resolve({
-                        status: true,
-                        msg: `Meeting has been scheduled!`,
-                      });
+                      console.log(event);
+                      var doc = {
+                        meetingId: JSON.stringify(id.getTimestamp()),
+                        summary: meetingDetails.summary,
+                        description: meetingDetails.description,
+                        startingDate: meetingDetails.startingDate,
+                        startingTime: meetingDetails.startingTime,
+                        endingDate: meetingDetails.endingDate,
+                        endingTime: meetingDetails.endingTime,
+                        timeZone: meetingDetails.timeZone,
+                        recurrence: meetingDetails.recurrence,
+                        meetingLink: event.data.hangoutLink,
+                        happens: happens,
+                        cancelled: false,
+                      };
+                      var mailData = {
+                        projectTitle: result.projectTitle,
+                        meetingDetails: doc,
+                        startDateTime: startDateTime,
+                        endDateTime: endDateTime,
+                      };
+                      mailServiceForProject(
+                        mailList,
+                        mailData,
+                        "email-templates/schedule-meeting.html",
+                        "Meeting Scheduled - PMS Service"
+                      );
+                      projectModel
+                        .findByIdAndUpdate(
+                          {
+                            _id: objectId,
+                          },
+                          {
+                            $push: {
+                              meetings: doc,
+                            },
+                          }
+                        )
+                        .then((result, error) => {
+                          if (error) {
+                            reject({
+                              status: false,
+                              msg: "Unable to update the meeting details in database",
+                            });
+                          } else {
+                            resolve({
+                              status: true,
+                              msg: `Meeting has been scheduled!`,
+                            });
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(err);
+                        });
                     }
                   }
                 );

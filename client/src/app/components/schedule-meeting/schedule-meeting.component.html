@@ -249,7 +249,19 @@
                 </div>
               </div>
               <div>
-                <button class="formbold-btn">Schedule Meeting</button>
+                <button
+                  class="formbold-btn"
+                  [disabled]="scheduleMeetingBtnLoading"
+                  [ngClass]="{
+                    'schedule-meeting-btn-loading': scheduleMeetingBtnLoading
+                  }"
+                >
+                  {{
+                    scheduleMeetingBtnLoading
+                      ? "Scheduling..."
+                      : "Schedule Meeting"
+                  }}
+                </button>
               </div>
               <div class="back-button-container">
                 <a

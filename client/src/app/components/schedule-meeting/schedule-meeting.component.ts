@@ -4,6 +4,7 @@ import { BnNgIdleService } from 'bn-ng-idle';
 import { timeZones } from './time-zones/time-zones';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project-service/project.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
   selector: 'app-schedule-meeting',
   templateUrl: './schedule-meeting.component.html',
@@ -17,13 +18,15 @@ export class ScheduleMeetingComponent implements OnInit {
   recurrenceOptions = ['Once', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
   timeZoneOptions = timeZones;
   submitted: boolean = false;
+  scheduleMeetingBtnLoading: boolean = false;
   requiredForm!: FormGroup;
   constructor(
     private router: Router,
     private bnIdle: BnNgIdleService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private messageService: NzMessageService
   ) {
     this.myForm();
   }
@@ -75,13 +78,23 @@ export class ScheduleMeetingComponent implements OnInit {
   scheduleMeeting(event: Event) {
     this.submitted = true;
     if (this.requiredForm.valid) {
+      this.scheduleMeetingBtnLoading = true;
       this.getRecurrence(this.requiredForm.controls['recurrence'].value);
       this.projectService
         .scheduleMeeting(this.projectId, this.requiredForm.value)
         .subscribe((data: any) => {
           if (data.status) {
-            console.log(data.message);
+            this.router.navigate([
+              '/projects/project-dashboard/' + this.projectId,
+              {
+                isMeetingDrawerVisible: true,
+              },
+            ]);
+            this.scheduleMeetingBtnLoading = false;
           } else {
+            this.messageService.create('error', data.message);
+
+            this.scheduleMeetingBtnLoading = false;
           }
         });
     } else {

@@ -37,7 +37,9 @@ var projectSchema = new Schema({
       endingTime: String,
       timeZone: String,
       recurrence: String,
+      happens: String,
       cancelled: Boolean,
+      meetingLink: String,
     },
   ],
   activeDays: [

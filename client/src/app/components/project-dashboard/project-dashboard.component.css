@@ -522,12 +522,28 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+.ant-drawer-body {
+  overflow: hidden !important;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.ant-drawer-body::-webkit-scrollbar {
+  display: none;
+}
 .create-meeting-button {
   display: flex;
   justify-content: flex-end;
 }
 .create-meeting-button button i {
   margin-left: 1em;
+}
+.upcoming-meetings-container,
+.past-meetings-container {
+  height: 500px;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  overflow-y: auto;
+  padding-bottom: 1.5em;
 }
 .meetings-container {
   margin-top: 1.5em;
@@ -556,4 +572,8 @@
 }
 .ant-tag {
   margin: 0px;
+}
+.date-and-time {
+  font-size: 1.5em;
+  font-weight: bold;
 }

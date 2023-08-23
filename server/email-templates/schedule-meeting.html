@@ -1,0 +1,23 @@
+<div>
+  <h1>{{projectTitle}}</h1>
+  <br />
+  <h3>
+    Meeting has been scheduled by your team lead for the project
+    {{projectTitle}}
+  </h3>
+  <br />
+  <h3>Find your meeting details here</h3>
+  <p>Meeting Summary: {{meetingDetails.summary}}</p>
+  <p>Meeting Description: {{meetingDetails.description}}</p>
+  <p>
+    Starts At: {{ meetingDetails.startingDate}}
+    {{meetingDetails.startingTime}}:00
+  </p>
+  <p>
+    Ends At: {{ meetingDetails.endingDate }} {{meetingDetails.endingTime}}:00
+  </p>
+  <p>Recurrence : {{meetingDetails.recurrence}}</p>
+  <p>TimeZone : {{meetingDetails.timeZone}}</p>
+
+  <p>Meeting Link: {{meetingDetails.meetingLink}}</p>
+</div>
