@@ -1353,7 +1353,23 @@
           nzShowIcon
           nzCloseable
         ></nz-alert>
+        <nz-alert
+          *ngIf="isMeetingCancelled"
+          nzType="error"
+          [nzMessage]="'You cancelled the meet ' + cancelledMeetingSummary"
+          nzShowIcon
+          nzCloseable
+        >
+        </nz-alert>
 
+        <nz-alert
+          *ngIf="isMeetingDeleted"
+          nzType="error"
+          [nzMessage]="'You deleted the meet' + deletedMeetingSummary"
+          nzShowIcon
+          nzCloseable
+        >
+        </nz-alert>
         <nz-tabset nzCentered>
           <nz-tab nzTitle="Upcoming Meetings">
             <div class="upcoming-meetings-container">
@@ -1382,7 +1398,12 @@
                           nzTooltipTitle="Join Meet"
                           ><i class="fa fa-video-camera" aria-hidden="true"></i
                         ></a>
-                        <div class="meeting-options">
+                        <div
+                          class="meeting-options"
+                          *ngIf="
+                            meeting.hostUserName == currentUser['userName']
+                          "
+                        >
                           <a
                             nz-dropdown
                             [nzDropdownMenu]="upcomingMeetingOptionsMenu"
@@ -1416,12 +1437,28 @@
                                   )
                                 "
                                 nz-menu-item
-                                (click)="cancelMeeting(meeting.meetingId)"
+                                (click)="
+                                  cancelMeeting(
+                                    meeting.meetingId,
+                                    meeting.summary
+                                  )
+                                "
                               >
                                 Cancel Meeting
                               </li>
 
-                              <li nz-menu-item nzDanger>Delete Meeting</li>
+                              <li
+                                nz-menu-item
+                                nzDanger
+                                (click)="
+                                  deleteMeeting(
+                                    meeting.meetingId,
+                                    meeting.summary
+                                  )
+                                "
+                              >
+                                Delete Meeting
+                              </li>
                             </ul>
                           </nz-dropdown-menu>
                         </div>
@@ -1517,6 +1554,14 @@
                             : ""
                         }}</nz-tag
                       >
+                      <nz-tag [nzColor]="'blue'">
+                        Host : {{ meeting.hostFullName }}
+                        {{
+                          meeting.hostUserName == currentUser["userName"]
+                            ? "(You)"
+                            : ""
+                        }}
+                      </nz-tag>
                     </div>
                   </nz-card>
                 </ng-container>
@@ -1545,7 +1590,10 @@
                         nzTooltipTitle="Join Meet"
                         ><i class="fa fa-video-camera" aria-hidden="true"></i>
                       </a>
-                      <div class="meeting-options">
+                      <div
+                        class="meeting-options"
+                        *ngIf="meeting.hostUserName == currentUser['userName']"
+                      >
                         <a
                           nz-dropdown
                           [nzDropdownMenu]="pastMeetingsOptionsMenu"
@@ -1558,7 +1606,18 @@
                           #pastMeetingsOptionsMenu="nzDropdownMenu"
                         >
                           <ul nz-menu nzSelectable>
-                            <li nz-menu-item nzDanger>Delete Meeting</li>
+                            <li
+                              nz-menu-item
+                              nzDanger
+                              (click)="
+                                deleteMeeting(
+                                  meeting.meetingId,
+                                  meeting.summary
+                                )
+                              "
+                            >
+                              Delete Meeting
+                            </li>
                           </ul>
                         </nz-dropdown-menu>
                       </div>

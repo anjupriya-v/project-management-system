@@ -217,4 +217,11 @@ router
   .route("/cancel-meeting", passport.authenticate("jwt", { session: false }))
   .put(projectController.cancelMeetingController);
 
+router
+  .route(
+    "/delete-meeting/:projectId/:meetingId",
+    passport.authenticate("jwt", { session: false })
+  )
+  .delete(projectController.deleteMeetingController);
+
 module.exports = router;

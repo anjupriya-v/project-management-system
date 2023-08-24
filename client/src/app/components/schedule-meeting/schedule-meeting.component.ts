@@ -5,6 +5,7 @@ import { timeZones } from './time-zones/time-zones';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project-service/project.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { AuthService } from 'src/app/services/authentication-service/auth.service';
 @Component({
   selector: 'app-schedule-meeting',
   templateUrl: './schedule-meeting.component.html',
@@ -20,13 +21,15 @@ export class ScheduleMeetingComponent implements OnInit {
   submitted: boolean = false;
   scheduleMeetingBtnLoading: boolean = false;
   requiredForm!: FormGroup;
+  currentUser: any = JSON.parse(this.auth.getCurrentUser() || '{}');
   constructor(
     private router: Router,
     private bnIdle: BnNgIdleService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private projectService: ProjectService,
-    private messageService: NzMessageService
+    private messageService: NzMessageService,
+    private auth: AuthService
   ) {
     this.myForm();
   }
@@ -81,7 +84,12 @@ export class ScheduleMeetingComponent implements OnInit {
       this.scheduleMeetingBtnLoading = true;
       this.getRecurrence(this.requiredForm.controls['recurrence'].value);
       this.projectService
-        .scheduleMeeting(this.projectId, this.requiredForm.value)
+        .scheduleMeeting(
+          this.projectId,
+          this.requiredForm.value,
+          this.currentUser['fullName'],
+          this.currentUser['userName']
+        )
         .subscribe((data: any) => {
           if (data.status) {
             this.router.navigate([

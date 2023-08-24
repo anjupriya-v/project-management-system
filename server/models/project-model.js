@@ -40,6 +40,8 @@ var projectSchema = new Schema({
       happens: String,
       cancelled: Boolean,
       meetingLink: String,
+      hostFullName: String,
+      hostUserName: String,
     },
   ],
   activeDays: [

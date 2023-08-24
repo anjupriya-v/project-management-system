@@ -2131,12 +2131,15 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                         meetingLink: event.data.hangoutLink,
                         happens: happens,
                         cancelled: false,
+                        hostFullName: meetingDetails.hostFullName,
+                        hostUserName: meetingDetails.hostUserName,
                       };
                       var mailData = {
                         projectTitle: result.projectTitle,
                         meetingDetails: doc,
                         startDateTime: startDateTime,
                         endDateTime: endDateTime,
+                        hostFullName: meetingDetails.hostFullName,
                       };
                       mailServiceForProject(
                         mailList,
@@ -2225,7 +2228,6 @@ module.exports.cancelMeetingService = (meetingDetails) => {
             });
             result.meetings.forEach((meeting) => {
               if (meeting.meetingId == meetingDetails.meetingId) {
-                console.log(meeting);
                 mailData = {
                   projectTitle: result.projectTitle,
                   meetingSummary: meeting.summary,
@@ -2242,6 +2244,40 @@ module.exports.cancelMeetingService = (meetingDetails) => {
             resolve({
               status: true,
               msg: `Meeting has been Cancelled!`,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+};
+module.exports.deleteMeetingService = (meetingDetails) => {
+  var objectId = new mongoose.Types.ObjectId(meetingDetails.projectId);
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      projectModel
+        .findByIdAndUpdate(
+          {
+            _id: objectId,
+          },
+          { $pull: { meetings: { meetingId: meetingDetails.meetingId } } },
+
+          { new: true }
+        )
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to delete the meeting",
+            });
+          } else {
+            resolve({
+              status: true,
+              msg: `Meeting has been deleted!`,
             });
           }
         })

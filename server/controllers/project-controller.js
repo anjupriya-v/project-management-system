@@ -554,6 +554,22 @@ var cancelMeetingController = async (req, res) => {
     res.send({ status: false, message: error.msg });
   }
 };
+var deleteMeetingController = async (req, res) => {
+  var result = null;
+  try {
+    result = await projectService.deleteMeetingService(req.params);
+    if (result.status) {
+      res.send({
+        status: true,
+        message: result.msg,
+      });
+    } else {
+      res.send({ status: false, message: result.msg });
+    }
+  } catch (error) {
+    res.send({ status: false, message: error.msg });
+  }
+};
 module.exports = {
   projectCreationController,
   getProjectDetailsController,
@@ -588,4 +604,5 @@ module.exports = {
   resetPassKeyController,
   scheduleMeetingController,
   cancelMeetingController,
+  deleteMeetingController,
 };

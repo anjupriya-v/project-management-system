@@ -97,6 +97,10 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   meetings: any[] = [];
   getDateAndTimeVal: any;
   projectProgress: any = 'projectProgress';
+  isMeetingCancelled: boolean = false;
+  cancelledMeetingSummary: any;
+  isMeetingDeleted: boolean = false;
+  deletedMeetingSummary: any;
   @ViewChild('forumsSection')
   forumsSection!: ElementRef;
   @ViewChild('inputFile', { static: false })
@@ -127,7 +131,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
     localStorage.setItem('projectId', this.projectId);
     setInterval(() => {
       this.getDateAndTimeVal = this.getDay() + ' ' + this.getDateAndTime();
-    }, 60);
+    }, 1000);
     // this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
     //   if (isTimedOut) {
     //     this.router.navigate([
@@ -988,12 +992,35 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
         }
       });
   }
-  cancelMeeting(meetingId: any) {
+  cancelMeeting(meetingId: any, meetingSummary: any) {
     this.projectService
       .cancelMeeting(this.projectId, meetingId)
       .subscribe((data: any) => {
         if (data.status) {
+          this.isMeetingCancelled = data.status;
+          this.cancelledMeetingSummary = meetingSummary;
+          this.getProjectDetails();
+          setTimeout(() => {
+            this.isMeetingCancelled = false;
+          }, 5000);
         } else {
+          console.log(data.message);
+        }
+      });
+  }
+  deleteMeeting(meetingId: any, meetingSummary: any) {
+    this.projectService
+      .deleteMeeting(this.projectId, meetingId)
+      .subscribe((data: any) => {
+        if (data.status) {
+          this.isMeetingDeleted = data.status;
+          this.deletedMeetingSummary = meetingSummary;
+          this.getProjectDetails();
+          setTimeout(() => {
+            this.isMeetingDeleted = false;
+          }, 5000);
+        } else {
+          console.log(data.message);
         }
       });
   }
