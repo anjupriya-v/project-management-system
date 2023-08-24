@@ -559,6 +559,9 @@
 .meetings-content-header .meeting-options-container i {
   cursor: pointer;
 }
+.meeting-cancelled {
+  text-decoration: line-through;
+}
 .meeting-options-container {
   display: flex;
   align-items: baseline;

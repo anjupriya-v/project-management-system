@@ -2118,7 +2118,6 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                           err,
                       });
                     } else {
-                      console.log(event);
                       var doc = {
                         meetingId: JSON.stringify(id.getTimestamp()),
                         summary: meetingDetails.summary,
@@ -2177,6 +2176,73 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                 );
               })
               .catch(console.error);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+};
+module.exports.cancelMeetingService = (meetingDetails) => {
+  var objectId = new mongoose.Types.ObjectId(meetingDetails.projectId);
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      projectModel
+        .findByIdAndUpdate(
+          {
+            _id: objectId,
+          },
+          {
+            $set: {
+              "meetings.$[item].cancelled": true,
+            },
+          },
+          {
+            arrayFilters: [
+              {
+                "item.meetingId": {
+                  $eq: meetingDetails.meetingId,
+                },
+              },
+            ],
+          },
+          { new: true }
+        )
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to Cancel the meeting",
+            });
+          } else {
+            var mailList = [];
+            var mailData = {};
+            result.teamMembers.forEach((teamMember) => {
+              mailList.push(teamMember.email);
+            });
+            result.meetings.forEach((meeting) => {
+              if (meeting.meetingId == meetingDetails.meetingId) {
+                console.log(meeting);
+                mailData = {
+                  projectTitle: result.projectTitle,
+                  meetingSummary: meeting.summary,
+                };
+              }
+            });
+
+            mailServiceForProject(
+              mailList,
+              mailData,
+              "email-templates/cancel-meeting.html",
+              "Meeting Cancelled - PMS Service"
+            );
+            resolve({
+              status: true,
+              msg: `Meeting has been Cancelled!`,
+            });
           }
         })
         .catch((err) => {

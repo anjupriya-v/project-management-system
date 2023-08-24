@@ -988,6 +988,15 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
         }
       });
   }
+  cancelMeeting(meetingId: any) {
+    this.projectService
+      .cancelMeeting(this.projectId, meetingId)
+      .subscribe((data: any) => {
+        if (data.status) {
+        } else {
+        }
+      });
+  }
   sortBasedOnPriority(priority: any, tasks: any[]) {
     tasks.forEach((task) => {
       if (task.priority == priority) {

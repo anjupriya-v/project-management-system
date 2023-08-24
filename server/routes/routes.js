@@ -213,4 +213,8 @@ router
   .route("/schedule-meeting", passport.authenticate("jwt", { session: false }))
   .post(projectController.scheduleMeetingController);
 
+router
+  .route("/cancel-meeting", passport.authenticate("jwt", { session: false }))
+  .put(projectController.cancelMeetingController);
+
 module.exports = router;

@@ -416,4 +416,11 @@ export class ProjectService {
     };
     return this.httpClient.post(this.server + 'schedule-meeting/', formData);
   }
+  public cancelMeeting(projectId: any, meetingId: any) {
+    var formData = {
+      projectId: projectId,
+      meetingId: meetingId,
+    };
+    return this.httpClient.put(this.server + 'cancel-meeting/', formData);
+  }
 }

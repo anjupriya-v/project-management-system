@@ -1369,7 +1369,11 @@
                     "
                   >
                     <div class="meetings-content-header">
-                      <h3>{{ meeting.summary }}</h3>
+                      <h3
+                        [ngClass]="{ 'meeting-cancelled': meeting.cancelled }"
+                      >
+                        {{ meeting.summary }}
+                      </h3>
                       <div class="meeting-options-container">
                         <a
                           [href]="meeting.meetingLink"
@@ -1392,8 +1396,27 @@
                           >
                             <ul nz-menu nzSelectable>
                               <li
-                                *ngIf="meeting.recurrence == 'Once'"
+                                *ngIf="
+                                  meeting.recurrence == 'Once' &&
+                                  !(
+                                    getDateObj('now') >
+                                      getDateObj(
+                                        meeting.startingDate +
+                                          ' ' +
+                                          meeting.startingTime +
+                                          ':00'
+                                      ) &&
+                                    getDateObj('now') <
+                                      getDateObj(
+                                        meeting.endingDate +
+                                          ' ' +
+                                          meeting.endingTime +
+                                          ':00'
+                                      )
+                                  )
+                                "
                                 nz-menu-item
+                                (click)="cancelMeeting(meeting.meetingId)"
                               >
                                 Cancel Meeting
                               </li>
@@ -1410,12 +1433,29 @@
                           meeting.cancelled == false ? 'yellow' : 'red'
                         "
                         *ngIf="
-                          getDateObj(
-                            meeting.startingDate +
-                              ' ' +
-                              meeting.startingTime +
-                              ':00'
-                          ) > getDateObj('now')
+                          meeting.recurrence == 'Once'
+                            ? getDateObj(
+                                meeting.startingDate +
+                                  ' ' +
+                                  meeting.startingTime +
+                                  ':00'
+                              ) > getDateObj('now')
+                            : !(
+                                getDateObj('now') >
+                                  getDateObj(
+                                    getDateFormat() +
+                                      ' ' +
+                                      meeting.startingTime +
+                                      ':00'
+                                  ) &&
+                                getDateObj('now') <
+                                  getDateObj(
+                                    getDateFormat() +
+                                      ' ' +
+                                      meeting.endingTime +
+                                      ':00'
+                                  )
+                              )
                         "
                         >{{
                           meeting.recurrence == "Once"
@@ -1438,6 +1478,7 @@
                             : ""
                         }}</nz-tag
                       >
+
                       <nz-tag
                         [nzColor]="'green'"
                         *ngIf="
@@ -1462,7 +1503,7 @@
                             )
                         "
                       >
-                        Occurring Now: {{ meeting.happens }}
+                        Occurring Now : {{ meeting.happens }}
                         {{
                           meeting.recurrence != "Once"
                             ? getTime(
