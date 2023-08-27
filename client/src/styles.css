@@ -13,3 +13,20 @@ body {
 a {
   color: black;
 }
+.fc-event {
+  display: flex !important;
+  align-items: center;
+  padding: 0.3em;
+  overflow-x: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.fc-event:hover {
+  color: black;
+}
+.fc-event-main {
+  margin-left: 0.4em;
+}
+.fc-event::-webkit-scrollbar {
+  display: none;
+}

@@ -289,10 +289,16 @@
         <div *ngIf="chartProcessed">
           <canvas id="MyChart" width="100%" height="210px">{{ chart }}</canvas>
         </div>
-        <div *ngIf="chartProcessed == false ? true : false">
-          Chart Not processed
-          <br />
-          Assign Task to see the progress
+        <div
+          *ngIf="chartProcessed == false ? true : false"
+          class="chart-not-processed"
+        >
+          <i class="fa fa-line-chart" aria-hidden="true"></i>
+          <span>
+            Chart not processed
+            <br />
+            Assign Task to see the progress
+          </span>
         </div>
       </nz-card>
     </div>
@@ -1323,7 +1329,7 @@
   </div></ng-container
 >
 <nz-drawer
-  [nzWidth]="500"
+  [nzWidth]="600"
   [nzVisible]="isMeetingsDrawerVisible"
   nzPlacement="right"
   nzTitle="Meetings"
@@ -1378,11 +1384,7 @@
                 <ng-container *ngFor="let meeting of meetings">
                   <nz-card
                     class="meetings-card"
-                    *ngIf="
-                      getDateObj(
-                        meeting.endingDate + ' ' + meeting.endingTime + ':00'
-                      ) >= getDateObj('now')
-                    "
+                    *ngIf="meeting.recurrence != 'Once'"
                   >
                     <div class="meetings-content-header">
                       <h3
@@ -1465,6 +1467,14 @@
                       </div>
                     </div>
                     <div class="meetings-content-options">
+                      <nz-tag [nzColor]="'blue'">
+                        Host : {{ meeting.hostFullName }}
+                        {{
+                          meeting.hostUserName == currentUser["userName"]
+                            ? "(You)"
+                            : ""
+                        }}
+                      </nz-tag>
                       <nz-tag
                         [nzColor]="
                           meeting.cancelled == false ? 'yellow' : 'red'
@@ -1554,14 +1564,6 @@
                             : ""
                         }}</nz-tag
                       >
-                      <nz-tag [nzColor]="'blue'">
-                        Host : {{ meeting.hostFullName }}
-                        {{
-                          meeting.hostUserName == currentUser["userName"]
-                            ? "(You)"
-                            : ""
-                        }}
-                      </nz-tag>
                     </div>
                   </nz-card>
                 </ng-container>
@@ -1624,6 +1626,14 @@
                     </div>
                   </div>
                   <div class="meetings-content-options">
+                    <nz-tag [nzColor]="'blue'">
+                      Host : {{ meeting.hostFullName }}
+                      {{
+                        meeting.hostUserName == currentUser["userName"]
+                          ? "(You)"
+                          : ""
+                      }}
+                    </nz-tag>
                     <nz-tag [nzColor]="meeting.cancelled ? 'red' : 'orange'"
                       >{{ meeting.cancelled ? "Cancelled" : "Occurred on" }}:
                       {{ meeting.happens }}</nz-tag

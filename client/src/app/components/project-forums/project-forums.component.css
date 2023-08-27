@@ -1,5 +1,6 @@
 .project-forums-container {
   margin: 1em;
+  padding-bottom: 1em;
 }
 .forum-options {
   margin-bottom: 1em;
@@ -92,12 +93,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 85vh;
+  flex-direction: column;
+  height: 80vh;
   border: 1px dashed gray;
   background-color: white;
   margin-top: 1.5em;
 }
-
+.no-forums-posted i {
+  font-size: 3em;
+  margin-bottom: 0.4em;
+}
+.no-forums-posted p {
+  text-align: center;
+}
 .add-comment-container {
   margin-top: 1em;
   display: none;

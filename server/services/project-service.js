@@ -2062,7 +2062,7 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                   "Every Year " +
                   date +
                   getOrdinals(date) +
-                  "Of" +
+                  " Of " +
                   monthNames[month];
                 recurrenceVal = ["RRULE:FREQ=YEARLY"];
                 break;

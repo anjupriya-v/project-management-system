@@ -171,7 +171,12 @@
     class="no-forums-posted"
     *ngIf="!noSearchDataFound && forumDetails.length == 0"
   >
-    <p>No Forums Posted yet! Be the first to post</p>
+    <i class="fa fa-comments forums-icon" aria-hidden="true"></i>
+
+    <p>
+      No forums has been posted yet!<br />
+      Be the first to post
+    </p>
   </div>
   <nz-drawer
     [nzBodyStyle]="{ overflow: 'auto' }"

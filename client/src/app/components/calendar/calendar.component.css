@@ -32,16 +32,16 @@
   border: 1px solid rgb(161, 161, 161);
 }
 .task-deadline {
-  background-color: rgb(255, 212, 133);
+  background-color: rgb(255, 201, 99);
 }
 .project-deadline {
-  background-color: rgb(255, 183, 183);
+  background-color: rgb(255, 106, 106);
 }
 .task-deadline-ended {
   border-radius: 50%;
-  background-color: rgb(71, 30, 255);
+  background-color: rgb(254, 232, 190);
 }
 .project-deadline-ended {
   border-radius: 50%;
-  background-color: red;
+  background-color: rgb(255, 170, 170);
 }

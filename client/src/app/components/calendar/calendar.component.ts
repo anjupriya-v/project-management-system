@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import rrulePlugin from '@fullcalendar/rrule';
 import { AuthService } from 'src/app/services/authentication-service/auth.service';
 import { ProjectService } from 'src/app/services/project-service/project.service';
 @Component({
@@ -12,7 +13,7 @@ export class CalendarComponent implements OnInit {
   filledNav: String = 'filled-nav';
   filledNavUserContentColor: any = 'filled-nav-user-content-color';
   currentUser: any = JSON.parse(this.auth.getCurrentUser() || '{}');
-  deadlineList: any[] = [];
+  eventList: any[] = [];
   constructor(
     private projectService: ProjectService,
     private auth: AuthService
@@ -21,9 +22,14 @@ export class CalendarComponent implements OnInit {
     this.getProjectDetails();
   }
   calendarOptions: CalendarOptions = {
-    plugins: [dayGridPlugin],
+    plugins: [rrulePlugin, dayGridPlugin],
     initialView: 'dayGridMonth',
-    height: 590,
+    height: 600,
+    eventClick: (event: any): any => {
+      event.jsEvent.preventDefault();
+      window.open(event.event.url, '_blank');
+      return false;
+    },
   };
   daysLeftFunc(deadline: any) {
     var today = new Date();
@@ -31,9 +37,21 @@ export class CalendarComponent implements OnInit {
     var timeinmilisec = date_to_reply.getTime() - today.getTime();
     return Math.ceil(timeinmilisec / (500 * 60 * 60 * 24));
   }
+  convertTime(time: any) {
+    time = time
+      .toString()
+      .match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+    if (time.length > 1) {
+      time = time.slice(1);
+      time[5] = +time[0] < 12 ? 'AM' : 'PM';
+      time[0] = +time[0] % 12 || 12;
+    }
+    return time.join('');
+  }
   getProjectDetails() {
     this.projectService.getProjectDetails().subscribe((data: any) => {
-      this.deadlineList = [];
+      this.eventList = [];
       if (data.status) {
         data.projectDetails.forEach((project: any) => {
           project.teamMembers.forEach((teamMember: any) => {
@@ -43,13 +61,15 @@ export class CalendarComponent implements OnInit {
                 this.daysLeftFunc(project.deadline) >= 0
               ) {
                 var projectDeadline = {
+                  className: 'fa fa-clock-o',
                   title: `${project.projectTitle}`,
-                  start: new Date(),
-                  end: new Date(project.deadline),
-                  backgroundColor: 'rgb(255, 183, 183)',
-                  textColor: 'black',
+                  backgroundColor: 'rgb(255, 106, 106)',
+                  start: project.deadline,
+                  url:
+                    'http://localhost:4200/projects/project-dashboard/' +
+                    project._id,
                 };
-                this.deadlineList.push(projectDeadline);
+                this.eventList.push(projectDeadline);
               }
               if (
                 project.status != 'Completed' &&
@@ -57,12 +77,109 @@ export class CalendarComponent implements OnInit {
               ) {
                 var dealine = {
                   title: `${project.projectTitle}`,
-                  start: new Date(project.deadline),
-                  end: new Date(project.deadline),
-                  color: 'red',
+                  start: project.deadline,
+                  className: 'fa fa-clock-o',
+                  backgroundColor: 'rgb(255, 170, 170)',
+                  url:
+                    'http://localhost:4200/projects/project-dashboard/' +
+                    project._id,
+                  textColor: 'black',
                 };
-                this.deadlineList.push(dealine);
+                this.eventList.push(dealine);
               }
+              project.meetings.forEach((meeting: any) => {
+                var meetingObj = {};
+                if (meeting.recurrence == 'Once') {
+                  meetingObj = {
+                    className: 'fa fa-video-camera',
+                    title:
+                      project.projectTitle +
+                      ' - ' +
+                      meeting.summary +
+                      ' ( ' +
+                      this.convertTime(meeting.startingTime) +
+                      ' )',
+                    backgroundColor: 'rgb(149, 81, 214)',
+                    url: meeting.meetingLink,
+                    start: meeting.startingDate,
+                  };
+                }
+                if (meeting.recurrence == 'Daily') {
+                  meetingObj = {
+                    className: 'fa fa-video-camera',
+                    title:
+                      project.projectTitle +
+                      ' - ' +
+                      meeting.summary +
+                      ' ( ' +
+                      this.convertTime(meeting.startingTime) +
+                      ' )',
+                    backgroundColor: 'rgb(149, 81, 214)',
+                    url: meeting.meetingLink,
+                    rrule: {
+                      freq: 'daily',
+                      dtstart: meeting.startingDate,
+                    },
+                  };
+                }
+                if (meeting.recurrence == 'Weekly') {
+                  meetingObj = {
+                    className: 'fa fa-video-camera',
+                    title:
+                      project.projectTitle +
+                      ' - ' +
+                      meeting.summary +
+                      ' ( ' +
+                      this.convertTime(meeting.startingTime) +
+                      ' )',
+                    backgroundColor: 'rgb(149, 81, 214)',
+                    url: meeting.meetingLink,
+                    rrule: {
+                      freq: 'weekly',
+                      byweekday: [new Date(meeting.startingDate).getDay()],
+                      dtstart: meeting.startingDate,
+                    },
+                  };
+                }
+                if (meeting.recurrence == 'Monthly') {
+                  meetingObj = {
+                    className: 'fa fa-video-camera',
+                    title:
+                      project.projectTitle +
+                      ' - ' +
+                      meeting.summary +
+                      ' ( ' +
+                      this.convertTime(meeting.startingTime) +
+                      ' )',
+                    backgroundColor: 'rgb(149, 81, 214)',
+                    url: meeting.meetingLink,
+                    rrule: {
+                      freq: 'monthly',
+                      dtstart: meeting.startingDate,
+                    },
+                  };
+                }
+                if (meeting.recurrence == 'Yearly') {
+                  meetingObj = {
+                    className: 'fa fa-video-camera',
+                    title:
+                      project.projectTitle +
+                      ' - ' +
+                      meeting.summary +
+                      ' ( ' +
+                      this.convertTime(meeting.startingTime) +
+                      ' )',
+                    backgroundColor: 'rgb(149, 81, 214)',
+                    url: meeting.meetingLink,
+                    rrule: {
+                      freq: 'yearly',
+                      dtstart: meeting.startingDate,
+                    },
+                  };
+                }
+                this.eventList.push(meetingObj);
+                meetingObj = {};
+              });
             }
           });
           project.tasks.forEach((task: any) => {
@@ -72,13 +189,15 @@ export class CalendarComponent implements OnInit {
                 this.daysLeftFunc(task.deadline) >= 0
               ) {
                 var taskDeadline = {
+                  className: 'fa fa-check-square-o',
                   title: `${task.taskName}`,
-                  start: new Date(),
-                  end: new Date(task.deadline),
-                  backgroundColor: 'rgb(255, 212, 133)',
-                  textColor: 'black',
+                  start: task.deadline,
+                  backgroundColor: 'rgb(255, 201, 99)',
+                  url:
+                    'http://localhost:4200/projects/project-dashboard/' +
+                    project._id,
                 };
-                this.deadlineList.push(taskDeadline);
+                this.eventList.push(taskDeadline);
               }
             }
             if (
@@ -86,17 +205,21 @@ export class CalendarComponent implements OnInit {
               this.daysLeftFunc(task.deadline) < 0
             ) {
               var deadline = {
+                className: 'fa fa-check-square-o',
                 title: `${task.taskName}`,
-                start: new Date(task.deadline),
-                end: new Date(task.deadline),
-                color: 'rgb(71, 30, 255)',
+                start: task.deadline,
+                backgroundColor: 'rgb(254, 232, 190)',
+                textColor: 'black',
+                url:
+                  'http://localhost:4200/projects/project-dashboard/' +
+                  project._id,
               };
-              this.deadlineList.push(deadline);
+              this.eventList.push(deadline);
             }
           });
         });
         this.calendarOptions = {
-          events: this.deadlineList,
+          events: this.eventList,
         };
       }
     });

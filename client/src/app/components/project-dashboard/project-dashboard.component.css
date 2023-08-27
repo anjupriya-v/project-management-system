@@ -128,8 +128,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px dashed gray;
-  background-color: rgb(244, 244, 244);
+  background-color: rgb(247, 247, 254);
+}
+.chart-not-processed i {
+  display: block;
+  font-size: 3em;
+  margin-bottom: 0.3em;
 }
 .team-member-container {
   display: flex;
@@ -215,7 +219,7 @@
 .task-container {
   height: 40em;
   overflow-y: auto;
-  background-color: rgb(250, 250, 250);
+  background-color: rgb(247, 247, 254);
   padding: 1em;
   padding-bottom: 1em;
   margin-bottom: 3em;
@@ -514,6 +518,7 @@
 }
 .forum-iframe {
   overflow-y: auto;
+  background-color: rgb(247, 247, 254) !important;
 }
 .forum-iframe::-webkit-scrollbar {
   display: none;
