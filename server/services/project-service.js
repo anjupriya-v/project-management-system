@@ -1959,7 +1959,6 @@ module.exports.resetPassKeyService = (projectDetails) => {
 };
 module.exports.scheduleMeetingService = (meetingDetails) => {
   var objectId = new mongoose.Types.ObjectId(meetingDetails.projectId);
-  var id = new mongoose.Types.ObjectId();
 
   return new Promise(function projectService(resolve, reject) {
     try {
@@ -2119,7 +2118,7 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                       });
                     } else {
                       var doc = {
-                        meetingId: JSON.stringify(id.getTimestamp()),
+                        meetingId: event.data.id,
                         summary: meetingDetails.summary,
                         description: meetingDetails.description,
                         startingDate: meetingDetails.startingDate,
@@ -2259,27 +2258,51 @@ module.exports.deleteMeetingService = (meetingDetails) => {
   var objectId = new mongoose.Types.ObjectId(meetingDetails.projectId);
   return new Promise(function projectService(resolve, reject) {
     try {
-      projectModel
-        .findByIdAndUpdate(
-          {
-            _id: objectId,
-          },
-          { $pull: { meetings: { meetingId: meetingDetails.meetingId } } },
-
-          { new: true }
-        )
-        .then((result, error) => {
-          if (error) {
-            reject({
-              status: false,
-              msg: "Unable to delete the meeting",
-            });
-          } else {
-            resolve({
-              status: true,
-              msg: `Meeting has been deleted!`,
-            });
-          }
+      authorize()
+        .then((auth) => {
+          var params = {
+            calendarId: "primary",
+            eventId: meetingDetails.meetingId,
+          };
+          const calendar = google.calendar({ version: "v3", auth });
+          calendar.events.delete(params, function (err) {
+            if (err) {
+              resolve({
+                status: false,
+                msg: `Unable to delete the meeting`,
+              });
+              return;
+            } else {
+              projectModel
+                .findByIdAndUpdate(
+                  {
+                    _id: objectId,
+                  },
+                  {
+                    $pull: {
+                      meetings: { meetingId: meetingDetails.meetingId },
+                    },
+                  },
+                  { new: true }
+                )
+                .then((result, error) => {
+                  if (error) {
+                    reject({
+                      status: false,
+                      msg: "Unable to delete the meeting",
+                    });
+                  } else {
+                    resolve({
+                      status: true,
+                      msg: `Meeting has been deleted!`,
+                    });
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          });
         })
         .catch((err) => {
           console.log(err);

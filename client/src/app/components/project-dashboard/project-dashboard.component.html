@@ -694,6 +694,7 @@
                             [nzDropdownMenu]="taskOptions"
                             nzTrigger="click"
                             nzPlacement="bottomRight"
+                            class="task-more-options"
                           >
                             More
                           </a>
@@ -1371,7 +1372,7 @@
         <nz-alert
           *ngIf="isMeetingDeleted"
           nzType="error"
-          [nzMessage]="'You deleted the meet' + deletedMeetingSummary"
+          [nzMessage]="'You deleted the meeting ' + deletedMeetingSummary"
           nzShowIcon
           nzCloseable
         >
@@ -1384,7 +1385,12 @@
                 <ng-container *ngFor="let meeting of meetings">
                   <nz-card
                     class="meetings-card"
-                    *ngIf="meeting.recurrence != 'Once'"
+                    *ngIf="
+                      meeting.recurrence != 'Once' ||
+                      getDateObj(
+                        meeting.endingDate + ' ' + meeting.endingTime + ':00'
+                      ) > getDateObj('now')
+                    "
                   >
                     <div class="meetings-content-header">
                       <h3
@@ -1583,7 +1589,9 @@
                   "
                 >
                   <div class="meetings-content-header">
-                    <h3>{{ meeting.summary }}</h3>
+                    <h3 [ngClass]="{ 'meeting-cancelled': meeting.cancelled }">
+                      {{ meeting.summary }}
+                    </h3>
                     <div class="meeting-options-container">
                       <a
                         [href]="meeting.meetingLink"

@@ -402,6 +402,9 @@
 .rejected-icon {
   font-size: 1.5em;
 }
+.task-more-options {
+  color: blue;
+}
 .task-option span {
   cursor: pointer;
 }

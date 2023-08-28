@@ -148,6 +148,9 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.getProjectDetails();
     }, 500);
+    setTimeout(() => {
+      this.isMeetingScheduled = null;
+    }, 5000);
   }
 
   ngAfterViewInit() {
@@ -1020,7 +1023,11 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
             this.isMeetingDeleted = false;
           }, 5000);
         } else {
-          console.log(data.message);
+          this.isMeetingDeleted = data.status;
+          this.deletedMeetingSummary = data.message;
+          setTimeout(() => {
+            this.isMeetingDeleted = false;
+          }, 5000);
         }
       });
   }
