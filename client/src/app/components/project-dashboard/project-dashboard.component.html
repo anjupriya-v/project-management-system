@@ -1370,9 +1370,9 @@
         </nz-alert>
 
         <nz-alert
-          *ngIf="isMeetingDeleted"
+          *ngIf="displayDeleteMeetingAlert"
           nzType="error"
-          [nzMessage]="'You deleted the meeting ' + deletedMeetingSummary"
+          [nzMessage]="meetingDeletedText"
           nzShowIcon
           nzCloseable
         >
@@ -1382,211 +1382,9 @@
             <div class="upcoming-meetings-container">
               <h3>Upcoming Meetings</h3>
               <div class="upcoming-meetings-content">
-                <ng-container *ngFor="let meeting of meetings">
-                  <nz-card
-                    class="meetings-card"
-                    *ngIf="
-                      meeting.recurrence != 'Once' ||
-                      getDateObj(
-                        meeting.endingDate + ' ' + meeting.endingTime + ':00'
-                      ) > getDateObj('now')
-                    "
-                  >
-                    <div class="meetings-content-header">
-                      <h3
-                        [ngClass]="{ 'meeting-cancelled': meeting.cancelled }"
-                      >
-                        {{ meeting.summary }}
-                      </h3>
-                      <div class="meeting-options-container">
-                        <a
-                          [href]="meeting.meetingLink"
-                          target="_blank"
-                          nz-tooltip
-                          nzTooltipTitle="Join Meet"
-                          ><i class="fa fa-video-camera" aria-hidden="true"></i
-                        ></a>
-                        <div
-                          class="meeting-options"
-                          *ngIf="
-                            meeting.hostUserName == currentUser['userName']
-                          "
-                        >
-                          <a
-                            nz-dropdown
-                            [nzDropdownMenu]="upcomingMeetingOptionsMenu"
-                            nzTrigger="click"
-                            class="options-icon"
-                          >
-                            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                          </a>
-                          <nz-dropdown-menu
-                            #upcomingMeetingOptionsMenu="nzDropdownMenu"
-                          >
-                            <ul nz-menu nzSelectable>
-                              <li
-                                *ngIf="
-                                  meeting.recurrence == 'Once' &&
-                                  !(
-                                    getDateObj('now') >
-                                      getDateObj(
-                                        meeting.startingDate +
-                                          ' ' +
-                                          meeting.startingTime +
-                                          ':00'
-                                      ) &&
-                                    getDateObj('now') <
-                                      getDateObj(
-                                        meeting.endingDate +
-                                          ' ' +
-                                          meeting.endingTime +
-                                          ':00'
-                                      )
-                                  )
-                                "
-                                nz-menu-item
-                                (click)="
-                                  cancelMeeting(
-                                    meeting.meetingId,
-                                    meeting.summary
-                                  )
-                                "
-                              >
-                                Cancel Meeting
-                              </li>
-
-                              <li
-                                nz-menu-item
-                                nzDanger
-                                (click)="
-                                  deleteMeeting(
-                                    meeting.meetingId,
-                                    meeting.summary
-                                  )
-                                "
-                              >
-                                Delete Meeting
-                              </li>
-                            </ul>
-                          </nz-dropdown-menu>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="meetings-content-options">
-                      <nz-tag [nzColor]="'blue'">
-                        Host : {{ meeting.hostFullName }}
-                        {{
-                          meeting.hostUserName == currentUser["userName"]
-                            ? "(You)"
-                            : ""
-                        }}
-                      </nz-tag>
-                      <nz-tag
-                        [nzColor]="
-                          meeting.cancelled == false ? 'yellow' : 'red'
-                        "
-                        *ngIf="
-                          meeting.recurrence == 'Once'
-                            ? getDateObj(
-                                meeting.startingDate +
-                                  ' ' +
-                                  meeting.startingTime +
-                                  ':00'
-                              ) > getDateObj('now')
-                            : !(
-                                getDateObj('now') >
-                                  getDateObj(
-                                    getDateFormat() +
-                                      ' ' +
-                                      meeting.startingTime +
-                                      ':00'
-                                  ) &&
-                                getDateObj('now') <
-                                  getDateObj(
-                                    getDateFormat() +
-                                      ' ' +
-                                      meeting.endingTime +
-                                      ':00'
-                                  )
-                              )
-                        "
-                        >{{
-                          meeting.recurrence == "Once"
-                            ? meeting.cancelled == true
-                              ? "Cancelled"
-                              : "Will Occur on"
-                            : "Occurs"
-                        }}
-                        : {{ meeting.happens }}
-                        {{
-                          meeting.recurrence != "Once"
-                            ? getTime(
-                                getDateObj(
-                                  meeting.startingDate +
-                                    " " +
-                                    meeting.startingTime +
-                                    ":00"
-                                )
-                              )
-                            : ""
-                        }}</nz-tag
-                      >
-
-                      <nz-tag
-                        [nzColor]="'green'"
-                        *ngIf="
-                          meeting.cancelled == false &&
-                          getDateObj('now') >
-                            getDateObj(
-                              (meeting.recurrence == 'Once'
-                                ? meeting.startingDate
-                                : getDateFormat()) +
-                                ' ' +
-                                meeting.startingTime +
-                                ':00'
-                            ) &&
-                          getDateObj('now') <
-                            getDateObj(
-                              (meeting.recurrence == 'Once'
-                                ? meeting.endingDate
-                                : getDateFormat()) +
-                                ' ' +
-                                meeting.endingTime +
-                                ':00'
-                            )
-                        "
-                      >
-                        Occurring Now : {{ meeting.happens }}
-                        {{
-                          meeting.recurrence != "Once"
-                            ? getTime(
-                                getDateObj(
-                                  meeting.startingDate +
-                                    " " +
-                                    meeting.startingTime +
-                                    ":00"
-                                )
-                              )
-                            : ""
-                        }}</nz-tag
-                      >
-                    </div>
-                  </nz-card>
-                </ng-container>
-              </div>
-            </div></nz-tab
-          >
-          <nz-tab nzTitle="Past Meetings"
-            ><div class="past-meetings-container">
-              <h3>Past Meetings</h3>
-              <ng-container *ngFor="let meeting of meetings">
                 <nz-card
                   class="meetings-card"
-                  *ngIf="
-                    getDateObj(
-                      meeting.endingDate + ' ' + meeting.endingTime + ':00'
-                    ) < getDateObj('now') && meeting.recurrence == 'Once'
-                  "
+                  *ngFor="let meeting of upcomingMeetings"
                 >
                   <div class="meetings-content-header">
                     <h3 [ngClass]="{ 'meeting-cancelled': meeting.cancelled }">
@@ -1598,24 +1396,55 @@
                         target="_blank"
                         nz-tooltip
                         nzTooltipTitle="Join Meet"
-                        ><i class="fa fa-video-camera" aria-hidden="true"></i>
-                      </a>
+                        ><i class="fa fa-video-camera" aria-hidden="true"></i
+                      ></a>
                       <div
                         class="meeting-options"
                         *ngIf="meeting.hostUserName == currentUser['userName']"
                       >
                         <a
                           nz-dropdown
-                          [nzDropdownMenu]="pastMeetingsOptionsMenu"
+                          [nzDropdownMenu]="upcomingMeetingOptionsMenu"
                           nzTrigger="click"
                           class="options-icon"
                         >
                           <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                         </a>
                         <nz-dropdown-menu
-                          #pastMeetingsOptionsMenu="nzDropdownMenu"
+                          #upcomingMeetingOptionsMenu="nzDropdownMenu"
                         >
                           <ul nz-menu nzSelectable>
+                            <li
+                              *ngIf="
+                                meeting.recurrence == 'Once' &&
+                                !(
+                                  getDateObj('now') >
+                                    getDateObj(
+                                      meeting.startingDate +
+                                        ' ' +
+                                        meeting.startingTime +
+                                        ':00'
+                                    ) &&
+                                  getDateObj('now') <
+                                    getDateObj(
+                                      meeting.endingDate +
+                                        ' ' +
+                                        meeting.endingTime +
+                                        ':00'
+                                    )
+                                )
+                              "
+                              nz-menu-item
+                              (click)="
+                                cancelMeeting(
+                                  meeting.meetingId,
+                                  meeting.summary
+                                )
+                              "
+                            >
+                              Cancel Meeting
+                            </li>
+
                             <li
                               nz-menu-item
                               nzDanger
@@ -1642,15 +1471,176 @@
                           : ""
                       }}
                     </nz-tag>
-                    <nz-tag [nzColor]="meeting.cancelled ? 'red' : 'orange'"
-                      >{{ meeting.cancelled ? "Cancelled" : "Occurred on" }}:
-                      {{ meeting.happens }}</nz-tag
+                    <nz-tag
+                      [nzColor]="meeting.cancelled == false ? 'yellow' : 'red'"
+                      *ngIf="
+                        meeting.recurrence == 'Once'
+                          ? getDateObj(
+                              meeting.startingDate +
+                                ' ' +
+                                meeting.startingTime +
+                                ':00'
+                            ) > getDateObj('now')
+                          : !(
+                              getDateObj('now') >
+                                getDateObj(
+                                  getDateFormat() +
+                                    ' ' +
+                                    meeting.startingTime +
+                                    ':00'
+                                ) &&
+                              getDateObj('now') <
+                                getDateObj(
+                                  getDateFormat() +
+                                    ' ' +
+                                    meeting.endingTime +
+                                    ':00'
+                                )
+                            )
+                      "
+                      >{{
+                        meeting.recurrence == "Once"
+                          ? meeting.cancelled == true
+                            ? "Cancelled"
+                            : "Will Occur on"
+                          : "Occurs"
+                      }}
+                      : {{ meeting.happens }}
+                      {{
+                        meeting.recurrence != "Once"
+                          ? getTime(
+                              getDateObj(
+                                meeting.startingDate +
+                                  " " +
+                                  meeting.startingTime +
+                                  ":00"
+                              )
+                            )
+                          : ""
+                      }}</nz-tag
+                    >
+
+                    <nz-tag
+                      [nzColor]="'green'"
+                      *ngIf="
+                        meeting.cancelled == false &&
+                        getDateObj('now') >
+                          getDateObj(
+                            (meeting.recurrence == 'Once'
+                              ? meeting.startingDate
+                              : getDateFormat()) +
+                              ' ' +
+                              meeting.startingTime +
+                              ':00'
+                          ) &&
+                        getDateObj('now') <
+                          getDateObj(
+                            (meeting.recurrence == 'Once'
+                              ? meeting.endingDate
+                              : getDateFormat()) +
+                              ' ' +
+                              meeting.endingTime +
+                              ':00'
+                          )
+                      "
+                    >
+                      Occurring Now : {{ meeting.happens }}
+                      {{
+                        meeting.recurrence != "Once"
+                          ? getTime(
+                              getDateObj(
+                                meeting.startingDate +
+                                  " " +
+                                  meeting.startingTime +
+                                  ":00"
+                              )
+                            )
+                          : ""
+                      }}</nz-tag
                     >
                   </div>
                 </nz-card>
+              </div>
+              <ng-container *ngIf="upcomingMeetings.length == 0">
+                <div class="no-meetings-div">
+                  <i class="fa fa-video-camera" aria-hidden="true"></i>
+                  <span> No Upcoming Meetings</span>
+                </div>
               </ng-container>
-            </div></nz-tab
-          >
+            </div>
+          </nz-tab>
+          <nz-tab nzTitle="Past Meetings"
+            ><div class="past-meetings-container">
+              <h3>Past Meetings</h3>
+              <nz-card
+                class="meetings-card"
+                *ngFor="let meeting of pastMeetings"
+              >
+                <div class="meetings-content-header">
+                  <h3 [ngClass]="{ 'meeting-cancelled': meeting.cancelled }">
+                    {{ meeting.summary }}
+                  </h3>
+                  <div class="meeting-options-container">
+                    <a
+                      [href]="meeting.meetingLink"
+                      target="_blank"
+                      nz-tooltip
+                      nzTooltipTitle="Join Meet"
+                      ><i class="fa fa-video-camera" aria-hidden="true"></i>
+                    </a>
+                    <div
+                      class="meeting-options"
+                      *ngIf="meeting.hostUserName == currentUser['userName']"
+                    >
+                      <a
+                        nz-dropdown
+                        [nzDropdownMenu]="pastMeetingsOptionsMenu"
+                        nzTrigger="click"
+                        class="options-icon"
+                      >
+                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                      </a>
+                      <nz-dropdown-menu
+                        #pastMeetingsOptionsMenu="nzDropdownMenu"
+                      >
+                        <ul nz-menu nzSelectable>
+                          <li
+                            nz-menu-item
+                            nzDanger
+                            (click)="
+                              deleteMeeting(meeting.meetingId, meeting.summary)
+                            "
+                          >
+                            Delete Meeting
+                          </li>
+                        </ul>
+                      </nz-dropdown-menu>
+                    </div>
+                  </div>
+                </div>
+                <div class="meetings-content-options">
+                  <nz-tag [nzColor]="'blue'">
+                    Host : {{ meeting.hostFullName }}
+                    {{
+                      meeting.hostUserName == currentUser["userName"]
+                        ? "(You)"
+                        : ""
+                    }}
+                  </nz-tag>
+                  <nz-tag [nzColor]="meeting.cancelled ? 'red' : 'orange'"
+                    >{{ meeting.cancelled ? "Cancelled" : "Occurred on" }}:
+                    {{ meeting.happens }}</nz-tag
+                  >
+                </div>
+              </nz-card>
+            </div>
+            <ng-container *ngIf="pastMeetings.length == 0">
+              <div class="no-meetings-div">
+                <i class="fa fa-video-camera" aria-hidden="true"></i>
+                <span> No Past Meetings</span>
+              </div>
+            </ng-container>
+          </nz-tab>
         </nz-tabset>
       </div>
     </div>

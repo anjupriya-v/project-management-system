@@ -588,3 +588,17 @@
   font-size: 1.5em;
   font-weight: bold;
 }
+.no-meetings-div {
+  margin-top: 0.8em;
+  border: 1px dashed black;
+  background-color: rgb(247, 247, 254);
+  height: 9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.no-meetings-div i {
+  font-size: 2em;
+  margin-bottom: 0.3em;
+}

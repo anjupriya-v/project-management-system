@@ -94,13 +94,14 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   lastActiveMemberRole: any;
   lastActiveMemberProfileImage: any;
   chartProcessed: boolean = false;
-  meetings: any[] = [];
+  upcomingMeetings: any[] = [];
+  pastMeetings: any[] = [];
   getDateAndTimeVal: any;
   projectProgress: any = 'projectProgress';
   isMeetingCancelled: boolean = false;
   cancelledMeetingSummary: any;
-  isMeetingDeleted: boolean = false;
-  deletedMeetingSummary: any;
+  displayDeleteMeetingAlert: boolean = false;
+  meetingDeletedText: any = 'Deleting...';
   @ViewChild('forumsSection')
   forumsSection!: ElementRef;
   @ViewChild('inputFile', { static: false })
@@ -1012,21 +1013,20 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
       });
   }
   deleteMeeting(meetingId: any, meetingSummary: any) {
+    this.displayDeleteMeetingAlert = true;
     this.projectService
       .deleteMeeting(this.projectId, meetingId)
       .subscribe((data: any) => {
         if (data.status) {
-          this.isMeetingDeleted = data.status;
-          this.deletedMeetingSummary = meetingSummary;
+          this.meetingDeletedText = 'You deleted the meeting ' + meetingSummary;
           this.getProjectDetails();
           setTimeout(() => {
-            this.isMeetingDeleted = false;
+            this.displayDeleteMeetingAlert = false;
           }, 5000);
         } else {
-          this.isMeetingDeleted = data.status;
-          this.deletedMeetingSummary = data.message;
+          this.meetingDeletedText = data.message;
           setTimeout(() => {
-            this.isMeetingDeleted = false;
+            this.displayDeleteMeetingAlert = false;
           }, 5000);
         }
       });
@@ -1080,7 +1080,6 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
             this.projectStatus = project.status;
             this.displayTeamMembers = project.teamMembers;
             this.progressDoneArray = project.activeDays;
-            this.meetings = project.meetings;
             this.sortBasedOnPriority('High Priority', project.tasks);
             this.sortBasedOnPriority('Medium Priority', project.tasks);
             this.sortBasedOnPriority('Low Priority', project.tasks);
@@ -1122,6 +1121,25 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
             this.lastActiveMemberRole = result.role;
             this.progressDoneArray.forEach((projectActiveDay: any) => {
               this.activeDays.push(projectActiveDay.timeStamp);
+            });
+
+            project.meetings.forEach((meeting: any) => {
+              if (
+                meeting.recurrence != 'Once' ||
+                this.getDateObj(
+                  meeting.endingDate + ' ' + meeting.endingTime + ':00'
+                ) > this.getDateObj('now')
+              ) {
+                this.upcomingMeetings.push(meeting);
+              }
+              if (
+                this.getDateObj(
+                  meeting.endingDate + ' ' + meeting.endingTime + ':00'
+                ) < this.getDateObj('now') &&
+                meeting.recurrence == 'Once'
+              ) {
+                this.pastMeetings.push(meeting);
+              }
             });
           }
         });

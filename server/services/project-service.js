@@ -2164,6 +2164,15 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                               msg: "Unable to update the meeting details in database",
                             });
                           } else {
+                            var progressStatus = {
+                              timeStamp: new Date(),
+                              progressDone: `"${meetingDetails.hostUserName}"  has scheduled the meeting "${meetingDetails.summary}"`,
+                            };
+                            markActiveDays(
+                              progressStatus,
+                              objectId,
+                              meetingDetails.hostUserName
+                            );
                             resolve({
                               status: true,
                               msg: `Meeting has been scheduled!`,
@@ -2222,11 +2231,13 @@ module.exports.cancelMeetingService = (meetingDetails) => {
           } else {
             var mailList = [];
             var mailData = {};
+            var meetingHostUserName;
             result.teamMembers.forEach((teamMember) => {
               mailList.push(teamMember.email);
             });
             result.meetings.forEach((meeting) => {
               if (meeting.meetingId == meetingDetails.meetingId) {
+                meetingHostUserName = meeting.hostFullName;
                 mailData = {
                   projectTitle: result.projectTitle,
                   meetingSummary: meeting.summary,
@@ -2240,6 +2251,11 @@ module.exports.cancelMeetingService = (meetingDetails) => {
               "email-templates/cancel-meeting.html",
               "Meeting Cancelled - PMS Service"
             );
+            var progressStatus = {
+              timeStamp: new Date(),
+              progressDone: `"${meetingHostUserName}"  has cancelled the meeting "${meetingDetails.summary}"`,
+            };
+            markActiveDays(progressStatus, objectId, meetingHostUserName);
             resolve({
               status: true,
               msg: `Meeting has been Cancelled!`,
@@ -2292,6 +2308,22 @@ module.exports.deleteMeetingService = (meetingDetails) => {
                       msg: "Unable to delete the meeting",
                     });
                   } else {
+                    var meetingHostUserName, meetingSummary;
+                    result.meetings.forEach((meeting) => {
+                      if (meeting.meetingId == meetingDetails.meetingId) {
+                        meetingHostUserName = meeting.hostFullName;
+                        meetingSummary = meeting.summary;
+                      }
+                    });
+                    var progressStatus = {
+                      timeStamp: new Date(),
+                      progressDone: `"${meetingHostUserName}"  has deleted the meeting "${meetingSummary}"`,
+                    };
+                    markActiveDays(
+                      progressStatus,
+                      objectId,
+                      meetingHostUserName
+                    );
                     resolve({
                       status: true,
                       msg: `Meeting has been deleted!`,
