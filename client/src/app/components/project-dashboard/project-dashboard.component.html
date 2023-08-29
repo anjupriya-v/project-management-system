@@ -1633,13 +1633,13 @@
                   >
                 </div>
               </nz-card>
+              <ng-container *ngIf="pastMeetings.length == 0">
+                <div class="no-meetings-div">
+                  <i class="fa fa-video-camera" aria-hidden="true"></i>
+                  <span> No Past Meetings</span>
+                </div>
+              </ng-container>
             </div>
-            <ng-container *ngIf="pastMeetings.length == 0">
-              <div class="no-meetings-div">
-                <i class="fa fa-video-camera" aria-hidden="true"></i>
-                <span> No Past Meetings</span>
-              </div>
-            </ng-container>
           </nz-tab>
         </nz-tabset>
       </div>

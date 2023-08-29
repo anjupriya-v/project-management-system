@@ -71,7 +71,7 @@ export class LoginComponent {
         } else {
           this.loginMsg = data.message;
           this.loginStatus = data.status;
-          this.isLoggingIn = true;
+          this.isLoggingIn = false;
         }
       });
     } else {

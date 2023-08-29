@@ -31,6 +31,9 @@ export class UserDashboardComponent implements OnInit {
   activeDays: any[] = [];
   contributionCount: any[] = [];
   overAllRating: any = 0;
+  pieChartNotProcessed: boolean = false;
+  multiBarChartNotProcessed: boolean = false;
+  scatterChartNotProcessed: boolean = false;
   constructor(
     protected projectService: ProjectService,
     private auth: AuthService
@@ -276,11 +279,34 @@ export class UserDashboardComponent implements OnInit {
         });
         this.overAllRating = this.ratingSum / this.ratingCount;
 
-        setTimeout(() => {
-          this.getPieChart();
-          this.getMultiBarChart();
-          this.getScatterChart();
-        }, 1000);
+        //pie chart
+        if (this.taskAssignedCount != 0 || this.taskCompletedCount != 0) {
+          this.pieChartNotProcessed = false;
+          setTimeout(() => {
+            this.getPieChart();
+          }, 1000);
+        } else {
+          this.pieChartNotProcessed = true;
+        }
+        //multibar chart
+        if (this.projectAssignedCount != 0 || this.projectCompletedCount != 0) {
+          this.multiBarChartNotProcessed = false;
+          setTimeout(() => {
+            this.getMultiBarChart();
+          }, 1000);
+        } else {
+          this.multiBarChartNotProcessed = true;
+        }
+
+        //scatter chart
+        if (this.contributionCount.length != 0) {
+          this.scatterChartNotProcessed = false;
+          setTimeout(() => {
+            this.getScatterChart();
+          }, 1000);
+        } else {
+          this.scatterChartNotProcessed = true;
+        }
       }
     });
   }

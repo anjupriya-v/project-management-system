@@ -199,22 +199,22 @@ export class CalendarComponent implements OnInit {
                 };
                 this.eventList.push(taskDeadline);
               }
-            }
-            if (
-              task.approvalStatus != 'Approved' &&
-              this.daysLeftFunc(task.deadline) < 0
-            ) {
-              var deadline = {
-                className: 'fa fa-check-square-o',
-                title: `${task.taskName}`,
-                start: task.deadline,
-                backgroundColor: 'rgb(254, 232, 190)',
-                textColor: 'black',
-                url:
-                  'http://localhost:4200/projects/project-dashboard/' +
-                  project._id,
-              };
-              this.eventList.push(deadline);
+              if (
+                task.approvalStatus != 'Approved' &&
+                this.daysLeftFunc(task.deadline) < 0
+              ) {
+                var deadline = {
+                  className: 'fa fa-check-square-o',
+                  title: `${task.taskName}`,
+                  start: task.deadline,
+                  backgroundColor: 'rgb(254, 232, 190)',
+                  textColor: 'black',
+                  url:
+                    'http://localhost:4200/projects/project-dashboard/' +
+                    project._id,
+                };
+                this.eventList.push(deadline);
+              }
             }
           });
         });

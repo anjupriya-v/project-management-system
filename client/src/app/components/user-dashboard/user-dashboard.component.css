@@ -37,19 +37,38 @@
 .multi-bar-chart-container {
   height: 280px;
 }
+.pie-chart-not-processed-div,
+.pie-chart-not-processed,
+.multi-bar-chart-not-processed-div,
+.multi-bar-chart-not-processed,
+.scatter-chart-not-processed-div,
+.scatter-chart-not-processed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(247, 247, 254);
+}
+.pie-chart-not-processed,
+.multi-bar-chart-not-processed,
+.scatter-chart-not-processed {
+  flex-direction: column;
+}
+.pie-chart-not-processed i,
+.multi-bar-chart-not-processed i,
+.scatter-chart-not-processed span:nth-child(1) {
+  display: block;
+  font-size: 3em;
+  margin-bottom: 0.3em;
+}
+.pie-chart-not-processed span,
+.multi-bar-chart-not-processed span,
+.scatter-chart-not-processed span:nth-child(2) {
+  text-align: center;
+}
 .user-dashboard-section-two {
   margin-top: 0.5em;
 }
-.active-days-card-container {
-  margin-bottom: 0.5em;
-}
-.scatter-chart-container {
-  height: 365px;
-}
 
-.user-dashboard-section-three {
-  margin-top: 0.3em;
-}
 .current-tasks-header {
   margin-bottom: 1em;
 }
@@ -67,6 +86,9 @@
 .current-tasks-content::-webkit-scrollbar {
   display: none;
 }
+.no-tasks-assigned-bg {
+  background-color: rgb(247, 247, 254);
+}
 .current-task-card {
   border-left: 5px solid orange;
   margin-bottom: 1em;
@@ -82,9 +104,22 @@
   display: flex;
   justify-content: space-between;
 }
-.current-task-card-header i,
-.completed-projects-header i {
-  cursor: pointer;
+.no-tasks-assigned {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.active-days-card-container {
+  margin-bottom: 0.5em;
+}
+.scatter-chart-container {
+  height: 365px;
+}
+
+.user-dashboard-section-three {
+  margin-top: 0.3em;
 }
 
 .current-projects-header hr,
@@ -151,4 +186,12 @@
 .custom-date-class {
   background: orange !important;
   border-radius: 100% !important;
+}
+.no-current-projects-assigned-div {
+  min-height: 400px;
+  max-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(247, 247, 254);
 }

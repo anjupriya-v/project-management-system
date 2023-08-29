@@ -21,7 +21,7 @@
       <h1>My Dashboard</h1>
 
       <nz-tag [nzColor]="'yellow'" class="over-all-rating"
-        >OverAll Rating: ({{ overAllRating }})
+        >OverAll Rating: ({{ overAllRating ? overAllRating : 0 }})
         <i class="fa fa-star" aria-hidden="true"></i
       ></nz-tag>
     </div>
@@ -209,10 +209,23 @@
           [nzMd]="12"
           [nzLg]="7"
         >
-          <nz-card class="pie-chart-container">
-            <canvas id="pieChart" width="100%" height="240px">{{
-              pieChart
-            }}</canvas>
+          <nz-card
+            class="pie-chart-container"
+            [ngClass]="{ 'pie-chart-not-processed-div': pieChartNotProcessed }"
+          >
+            <div *ngIf="!pieChartNotProcessed">
+              <canvas id="pieChart" width="100%" height="240px">{{
+                pieChart
+              }}</canvas>
+            </div>
+            <div *ngIf="pieChartNotProcessed" class="pie-chart-not-processed">
+              <i class="fa fa-pie-chart" aria-hidden="true"></i>
+              <span>
+                Chart not processed
+                <br />
+                No assigned and completed tasks available
+              </span>
+            </div>
           </nz-card>
         </div>
         <div
@@ -223,10 +236,28 @@
           [nzMd]="12"
           [nzLg]="7"
         >
-          <nz-card class="multi-bar-chart-container">
-            <canvas id="multiBarChart" width="100%" height="240px">{{
-              multiBarChart
-            }}</canvas>
+          <nz-card
+            class="multi-bar-chart-container"
+            [ngClass]="{
+              'multi-bar-chart-not-processed-div': multiBarChartNotProcessed
+            }"
+          >
+            <div *ngIf="!multiBarChartNotProcessed">
+              <canvas id="multiBarChart" width="100%" height="240px">{{
+                multiBarChart
+              }}</canvas>
+            </div>
+            <div
+              *ngIf="multiBarChartNotProcessed"
+              class="multi-bar-chart-not-processed"
+            >
+              <i class="fa fa-bar-chart" aria-hidden="true"></i>
+              <span>
+                Chart not processed
+                <br />
+                No assigned and completed projects available
+              </span>
+            </div>
           </nz-card>
         </div>
       </div>
@@ -249,63 +280,79 @@
                 <h2>Your Current Tasks</h2>
                 <hr />
               </div>
-              <div class="current-tasks-content">
-                <nz-card
-                  [ngClass]="{
-                    'task-deadline-ended': daysLeftFunc(task.deadline) < 0
-                  }"
-                  class="current-task-card"
-                  *ngFor="let task of currentTasks"
-                >
-                  <div class="current-task-card-header">
-                    <h3>{{ task.taskName }}</h3>
-                    <div class="current-task-side-menu">
-                      <div
-                        *ngIf="daysLeftFunc(task.deadline) < 0"
-                        class="deadline-ended-text"
-                      >
-                        Deadline ended
+              <div
+                class="current-tasks-content"
+                [ngClass]="{ 'no-tasks-assigned-bg': currentTasks.length == 0 }"
+              >
+                <ng-container *ngIf="currentTasks.length != 0">
+                  <nz-card
+                    [ngClass]="{
+                      'task-deadline-ended': daysLeftFunc(task.deadline) < 0
+                    }"
+                    class="current-task-card"
+                    *ngFor="let task of currentTasks"
+                  >
+                    <div class="current-task-card-header">
+                      <h3>{{ task.taskName }}</h3>
+                      <div class="current-task-side-menu">
+                        <div
+                          *ngIf="daysLeftFunc(task.deadline) < 0"
+                          class="deadline-ended-text"
+                        >
+                          Deadline ended
+                        </div>
+                        <i
+                          class="fa fa-external-link"
+                          [routerLink]="
+                            projectService.isPassKeyAuthenticated() == null ||
+                            projectService.isPassKeyAuthenticated() == undefined
+                              ? [
+                                  '/projects/auth/pass-key-system',
+                                  task.projectId,
+                                  task.projectTitle
+                                ]
+                              : ['/projects/project-dashboard', task.projectId]
+                          "
+                          aria-hidden="true"
+                        ></i>
                       </div>
-                      <i
-                        class="fa fa-external-link"
-                        [routerLink]="
-                          projectService.isPassKeyAuthenticated() == null ||
-                          projectService.isPassKeyAuthenticated() == undefined
-                            ? [
-                                '/projects/auth/pass-key-system',
-                                task.projectId,
-                                task.projectTitle
-                              ]
-                            : ['/projects/project-dashboard', task.projectId]
-                        "
-                        aria-hidden="true"
-                      ></i>
                     </div>
-                  </div>
-                  <div>
-                    <nz-tag [nzColor]="'green'"
-                      >Project: {{ task.projectTitle }}</nz-tag
-                    >
-                    <nz-tag [nzColor]="'red'"
-                      >Task Deadline : {{ task.deadline }}</nz-tag
-                    >
-                    <nz-tag
-                      *ngIf="task.progressStatus == 'Not Started'"
-                      [nzColor]="'red'"
-                      >Status : {{ task.progressStatus }}</nz-tag
-                    >
-                    <nz-tag
-                      *ngIf="task.progressStatus == 'In Progress'"
-                      [nzColor]="'blue'"
-                      >Status : {{ task.progressStatus }}</nz-tag
-                    >
-                    <nz-tag
-                      [nzColor]="'orange'"
-                      *ngIf="task.progressStatus == 'Under Review'"
-                      >Status : {{ task.progressStatus }}</nz-tag
-                    >
-                  </div>
-                </nz-card>
+                    <div>
+                      <nz-tag [nzColor]="'green'"
+                        >Project: {{ task.projectTitle }}</nz-tag
+                      >
+                      <nz-tag [nzColor]="'red'"
+                        >Task Deadline : {{ task.deadline }}</nz-tag
+                      >
+                      <nz-tag
+                        *ngIf="task.progressStatus == 'Not Started'"
+                        [nzColor]="'red'"
+                        >Status : {{ task.progressStatus }}</nz-tag
+                      >
+                      <nz-tag
+                        *ngIf="task.progressStatus == 'In Progress'"
+                        [nzColor]="'blue'"
+                        >Status : {{ task.progressStatus }}</nz-tag
+                      >
+                      <nz-tag
+                        [nzColor]="'orange'"
+                        *ngIf="task.progressStatus == 'Under Review'"
+                        >Status : {{ task.progressStatus }}</nz-tag
+                      >
+                    </div>
+                  </nz-card>
+                </ng-container>
+                <div class="no-tasks-assigned">
+                  <nz-empty
+                    *ngIf="currentTasks.length == 0"
+                    nzNotFoundImage="https://www.freeiconspng.com/thumbs/tasks-icon/tasks-icon-9.png"
+                    [nzNotFoundContent]="contentTpl"
+                  >
+                    <ng-template #contentTpl>
+                      <span> Currently, No Tasks assigned to you </span>
+                    </ng-template>
+                  </nz-empty>
+                </div>
               </div>
             </div>
           </nz-card>
@@ -369,11 +416,29 @@
               [nzMd]="12"
               [nzLg]="24"
             >
-              <nz-card class="scatter-chart-container"
-                ><canvas id="scatterChart" width="100%" height="300px">{{
-                  scatterChart
-                }}</canvas></nz-card
+              <nz-card
+                class="scatter-chart-container"
+                [ngClass]="{
+                  'scatter-chart-not-processed-div': scatterChartNotProcessed
+                }"
               >
+                <div *ngIf="!scatterChartNotProcessed">
+                  <canvas id="scatterChart" width="100%" height="300px">{{
+                    scatterChart
+                  }}</canvas>
+                </div>
+                <div
+                  *ngIf="scatterChartNotProcessed"
+                  class="scatter-chart-not-processed"
+                >
+                  <span nz-icon nzType="dot-chart" nzTheme="outline"></span>
+                  <span>
+                    Chart not processed
+                    <br />
+                    You haven't contributed yet in any projects
+                  </span>
+                </div>
+              </nz-card>
             </div>
           </div>
         </div>
@@ -421,7 +486,10 @@
                 </h2>
                 <hr />
               </div>
-              <div class="current-projects-content">
+              <div
+                class="current-projects-content"
+                *ngIf="currentProjects.length != 0"
+              >
                 <nz-card
                   [ngClass]="{
                     'project-deadline-ended': daysLeftFunc(project.deadline) < 0
@@ -511,6 +579,19 @@
                   </div>
                 </nz-card>
               </div>
+              <div
+                class="no-current-projects-assigned-div"
+                *ngIf="currentProjects.length == 0"
+              >
+                <nz-empty
+                  nzNotFoundImage="https://icons.veryicon.com/png/o/brands/special-purpose-icons/ongoing.png"
+                  [nzNotFoundContent]="contentTpl"
+                >
+                  <ng-template #contentTpl>
+                    <span> Currently, No projects alloted to you </span>
+                  </ng-template>
+                </nz-empty>
+              </div>
             </div>
           </nz-card>
         </div>
@@ -531,7 +612,10 @@
                 </h2>
                 <hr />
               </div>
-              <div class="completed-projects-content">
+              <div
+                class="completed-projects-content"
+                *ngIf="currentProjects.length != 0"
+              >
                 <nz-card
                   class="completed-project-card"
                   *ngFor="let project of completedProjects"
@@ -594,6 +678,19 @@
                     </div>
                   </div>
                 </nz-card>
+              </div>
+              <div
+                class="no-current-projects-assigned-div"
+                *ngIf="currentProjects.length == 0"
+              >
+                <nz-empty
+                  nzNotFoundImage="https://cdn2.iconfinder.com/data/icons/greenline/512/check-512.png"
+                  [nzNotFoundContent]="contentTpl"
+                >
+                  <ng-template #contentTpl>
+                    <span> No Projects has been completed </span>
+                  </ng-template>
+                </nz-empty>
               </div>
             </div>
           </nz-card>

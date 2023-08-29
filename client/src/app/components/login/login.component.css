@@ -106,6 +106,15 @@
   background: #727272;
   cursor: not-allowed;
 }
+.contact-admin-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.8em;
+}
+.contact-admin {
+  color: blue;
+}
 @media screen and (max-width: 940px) {
   .content {
     flex-direction: column;
