@@ -28,7 +28,7 @@ const routes: Routes = [
     component: CreateProjectComponent,
     canActivate: [RoleAuthGuard],
     data: {
-      role: `${'Admin' || 'Team Lead'}`,
+      action: 'Create Project',
     },
   },
   {
@@ -51,7 +51,7 @@ const routes: Routes = [
     component: RegisteredUsersComponent,
     canActivate: [RoleAuthGuard],
     data: {
-      role: 'Admin',
+      action: 'Registered Users',
     },
   },
   {

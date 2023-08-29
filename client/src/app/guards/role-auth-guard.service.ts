@@ -11,7 +11,7 @@ export class RoleAuthGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let currentUser = JSON.parse(this.auth.getCurrentUser() || '{}');
-    let expectedRole = route.data['role'];
+    let action = route.data['action'];
     if (
       route &&
       route.routeConfig &&
@@ -21,12 +21,21 @@ export class RoleAuthGuard implements CanActivate {
       sessionStorage.clear();
     }
     if (this.auth.isLoggedIn()) {
-      if (currentUser['role'] == expectedRole) {
-        return true;
-      } else {
-        this.router.navigate(['/']);
-        return false;
+      if (action == 'Create Project') {
+        if (
+          currentUser['role'] == 'Admin' ||
+          currentUser['role'] == 'Team Lead'
+        ) {
+          return true;
+        }
       }
+      if (action == 'Registered Users') {
+        if (currentUser['role'] == 'Admin') {
+          return true;
+        }
+      }
+      this.router.navigate(['/']);
+      return false;
     } else {
       this.router.navigate(['/login'], {
         queryParams: { redirectURL: state.url },
