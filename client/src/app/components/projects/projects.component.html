@@ -319,16 +319,16 @@
           noData: noDataCur
         }"
       ></ng-template>
-      <div *ngIf="currentUser['role'] == 'Employee'">
-        <ng-template
-          [ngTemplateOutlet]="noProjectDataRef"
-          [ngTemplateOutletContext]="{
-            projectDetails: currentProjectDetails,
-            noDataText: 'No Projects assigned to you',
-            noData: noDataCur
-          }"
-        ></ng-template>
-      </div>
+    </div>
+    <div *ngIf="currentUser['role'] == 'Employee'">
+      <ng-template
+        [ngTemplateOutlet]="noProjectDataRef"
+        [ngTemplateOutletContext]="{
+          projectDetails: currentProjectDetails,
+          noDataText: 'No Projects assigned to you',
+          noData: noDataCur
+        }"
+      ></ng-template>
     </div>
   </div>
   <div class="completed-projects-container">

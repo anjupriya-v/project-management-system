@@ -117,7 +117,15 @@
 .scatter-chart-container {
   height: 365px;
 }
-
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.no-participation {
+  font-size: 1em;
+  color: red;
+}
 .user-dashboard-section-three {
   margin-top: 0.3em;
 }
@@ -154,8 +162,8 @@
 }
 .current-projects-content,
 .completed-projects-content {
-  min-height: 400px;
-  max-height: 600px;
+  height: 500px;
+  overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
   padding-top: 1em;
@@ -187,11 +195,14 @@
   background: orange !important;
   border-radius: 100% !important;
 }
-.no-current-projects-assigned-div {
-  min-height: 400px;
-  max-height: 600px;
+.no-current-projects-assigned-div,
+.no-completed-projects-assigned-div {
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgb(247, 247, 254);
+}
+.user-dashboard-tag {
+  margin-right: 0.3em;
 }

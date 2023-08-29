@@ -886,10 +886,16 @@ module.exports.addTaskCommentService = (taskCommentDetails) => {
               msg: "Unable to add the task Comment",
             });
           } else {
-            var progressStatus = {
-              timeStamp: new Date(),
-              progressDone: `${taskComment.commentorUserName} has added the task comment on the task ${task.taskName}`,
-            };
+            var progressStatus = {};
+            result.tasks.forEach((task) => {
+              if (task.taskId == taskCommentDetails.taskId) {
+                progressStatus = {
+                  timeStamp: new Date(),
+                  progressDone: `${taskComment.commentorUserName} has added the task comment on the task ${task.taskName}`,
+                };
+                return;
+              }
+            });
             markActiveDays(
               progressStatus,
               objectId,
@@ -1357,7 +1363,7 @@ module.exports.addProjectForumCommentService = (forumCommentDetails) => {
                 }
               )
               .then((projectResult, error) => {
-                projectResult[0].tasks.forEach((forum) => {
+                projectResult[0].forums.forEach((forum) => {
                   if (forum.forumId == forumCommentDetails.forumId) {
                     var progressStatus = {
                       timeStamp: new Date(),

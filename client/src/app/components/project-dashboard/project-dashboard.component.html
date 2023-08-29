@@ -1224,7 +1224,9 @@
                   </div>
                   <div
                     class="task-comment-delete-container"
-                    *ngIf="data.assignee == currentUser['userName']"
+                    *ngIf="
+                      taskComment.commentorUserName == currentUser['userName']
+                    "
                   >
                     <i
                       class="fa fa-trash"

@@ -197,3 +197,7 @@
   background-color: rgb(244, 244, 244);
   margin-top: 1.5em;
 }
+.react-forum,
+.react-comment {
+  cursor: pointer;
+}

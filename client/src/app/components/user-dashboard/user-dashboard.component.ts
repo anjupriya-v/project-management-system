@@ -54,7 +54,7 @@ export class UserDashboardComponent implements OnInit {
     this.pieChart = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['task Assigned', 'task Completed'],
+        labels: ['Total tasks Assigned', 'Total tasks Completed'],
         datasets: [
           {
             label: 'Tasks',
@@ -183,7 +183,6 @@ export class UserDashboardComponent implements OnInit {
               teamMember.rating == undefined
             ) {
               this.ratingSum += 0;
-              this.ratingCount++;
             }
             if (
               teamMember.userName == this.currentUser['userName'] &&

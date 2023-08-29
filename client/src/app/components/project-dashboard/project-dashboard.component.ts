@@ -1172,7 +1172,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
             this.taskInProgressCount++;
           }
           if (task.progressStatus == 'Under Review') {
-            this.taskInProgressCount++;
+            this.taskUnderReviewCount++;
           }
           if (task.progressStatus == 'Completed') {
             this.taskCompletedCount++;

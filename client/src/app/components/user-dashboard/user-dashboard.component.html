@@ -318,24 +318,27 @@
                       </div>
                     </div>
                     <div>
-                      <nz-tag [nzColor]="'green'"
+                      <nz-tag [nzColor]="'green'" class="user-dashboard-tag"
                         >Project: {{ task.projectTitle }}</nz-tag
                       >
-                      <nz-tag [nzColor]="'red'"
+                      <nz-tag [nzColor]="'red'" class="user-dashboard-tag"
                         >Task Deadline : {{ task.deadline }}</nz-tag
                       >
                       <nz-tag
                         *ngIf="task.progressStatus == 'Not Started'"
                         [nzColor]="'red'"
+                        class="user-dashboard-tag"
                         >Status : {{ task.progressStatus }}</nz-tag
                       >
                       <nz-tag
                         *ngIf="task.progressStatus == 'In Progress'"
                         [nzColor]="'blue'"
+                        class="user-dashboard-tag"
                         >Status : {{ task.progressStatus }}</nz-tag
                       >
                       <nz-tag
                         [nzColor]="'orange'"
+                        class="user-dashboard-tag"
                         *ngIf="task.progressStatus == 'Under Review'"
                         >Status : {{ task.progressStatus }}</nz-tag
                       >
@@ -453,8 +456,12 @@
           <nz-card>
             <div class="calendar-header">
               <h2>Your Active Days</h2>
-              <hr />
+              <span *ngIf="activeDays.length == 0" class="no-participation"
+                >(No Active Participation)</span
+              >
             </div>
+
+            <hr />
             <div>
               <app-highlighted-dates
                 [datesArray]="activeDays"
@@ -554,20 +561,22 @@
                         </div>
                       </div>
                       <div class="project-content-container">
-                        <nz-tag [nzColor]="'red'"
+                        <nz-tag [nzColor]="'red'" class="user-dashboard-tag"
                           >Deadline: {{ project.deadline }}</nz-tag
                         >
-                        <nz-tag [nzColor]="'blue'"
+                        <nz-tag [nzColor]="'blue'" class="user-dashboard-tag"
                           >Your Role : {{ project.yourRole }} 😎</nz-tag
                         >
                         <nz-tag
                           *ngIf="project.taskCount == 0"
                           [nzColor]="'blue'"
+                          class="user-dashboard-tag"
                           >No Tasks Assigned To you</nz-tag
                         >
                         <nz-tag
                           *ngIf="project.taskCount > 0"
                           [nzColor]="'red'"
+                          class="user-dashboard-tag"
                           >{{
                             project.taskCount == 1
                               ? "1 Task is assigned to you"
@@ -614,7 +623,7 @@
               </div>
               <div
                 class="completed-projects-content"
-                *ngIf="currentProjects.length != 0"
+                *ngIf="completedProjects.length != 0"
               >
                 <nz-card
                   class="completed-project-card"
@@ -664,14 +673,14 @@
                         ></i>
                       </div>
                       <div class="project-content-container">
-                        <nz-tag [nzColor]="'yellow'"
+                        <nz-tag [nzColor]="'yellow'" class="user-dashboard-tag"
                           >Your Rating: {{ project.userRating }}
                           <i class="fa fa-star" aria-hidden="true"></i>
                         </nz-tag>
-                        <nz-tag [nzColor]="'blue'"
+                        <nz-tag [nzColor]="'blue'" class="user-dashboard-tag"
                           >Your Role : {{ project.yourRole }} 😎</nz-tag
                         >
-                        <nz-tag [nzColor]="'green'"
+                        <nz-tag [nzColor]="'green'" class="user-dashboard-tag"
                           >Total Tasks Done : {{ project.tasksDone }}</nz-tag
                         >
                       </div>
@@ -680,8 +689,8 @@
                 </nz-card>
               </div>
               <div
-                class="no-current-projects-assigned-div"
-                *ngIf="currentProjects.length == 0"
+                class="no-completed-projects-assigned-div"
+                *ngIf="completedProjects.length == 0"
               >
                 <nz-empty
                   nzNotFoundImage="https://cdn2.iconfinder.com/data/icons/greenline/512/check-512.png"

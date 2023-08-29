@@ -203,7 +203,9 @@ export class ProjectForumsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.status) {
           this.getProjectDetails();
-          this.messageService.create('success', data.message);
+          setTimeout(() => {
+            this.messageService.create('success', data.message);
+          }, 1000);
         } else {
           this.messageService.create(
             'error',
@@ -218,7 +220,9 @@ export class ProjectForumsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.status) {
           this.getProjectDetails();
-          this.messageService.create('success', data.message);
+          setTimeout(() => {
+            this.messageService.create('success', data.message);
+          }, 1000);
         } else {
           this.messageService.create(
             'error',
@@ -245,8 +249,9 @@ export class ProjectForumsComponent implements OnInit {
           if (data.status) {
             this.getProjectDetails();
             this.addCommentBtnLoading = false;
-
-            this.messageService.create('success', data.message);
+            setTimeout(() => {
+              this.messageService.create('success', data.message);
+            }, 1000);
           } else {
             this.addCommentBtnLoading = false;
 
@@ -271,8 +276,9 @@ export class ProjectForumsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.status) {
           this.getProjectDetails();
-
-          this.messageService.create('success', data.message);
+          setTimeout(() => {
+            this.messageService.create('success', data.message);
+          }, 1000);
         } else {
           this.messageService.create(
             'error',
@@ -292,8 +298,9 @@ export class ProjectForumsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.status) {
           this.getProjectDetails();
-
-          this.messageService.create('success', data.message);
+          setTimeout(() => {
+            this.messageService.create('success', data.message);
+          }, 1000);
         } else {
           this.messageService.create(
             'error',
@@ -308,7 +315,9 @@ export class ProjectForumsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.status) {
           this.getProjectDetails();
-          this.messageService.create('success', data.message);
+          setTimeout(() => {
+            this.messageService.create('success', data.message);
+          }, 1000);
         } else {
           this.messageService.create(
             'error',
@@ -323,7 +332,9 @@ export class ProjectForumsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.status) {
           this.getProjectDetails();
-          this.messageService.create('success', data.message);
+          setTimeout(() => {
+            this.messageService.create('success', data.message);
+          }, 1000);
         } else {
           this.messageService.create(
             'error',
