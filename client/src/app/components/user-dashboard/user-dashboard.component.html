@@ -345,9 +345,8 @@
                     </div>
                   </nz-card>
                 </ng-container>
-                <div class="no-tasks-assigned">
+                <div class="no-tasks-assigned" *ngIf="currentTasks.length == 0">
                   <nz-empty
-                    *ngIf="currentTasks.length == 0"
                     nzNotFoundImage="https://www.freeiconspng.com/thumbs/tasks-icon/tasks-icon-9.png"
                     [nzNotFoundContent]="contentTpl"
                   >
