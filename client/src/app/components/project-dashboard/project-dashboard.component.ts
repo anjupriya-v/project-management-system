@@ -133,18 +133,18 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
     setInterval(() => {
       this.getDateAndTimeVal = this.getDay() + ' ' + this.getDateAndTime();
     }, 1000);
-    // this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
-    //   if (isTimedOut) {
-    //     this.router.navigate([
-    //       '/projects/auth/pass-key-system',
-    //       this.projectId,
-    //       this.projectTitle,
-    //       {
-    //         inActive: 'Due to 5 mins of inactivity, you have been logged out!',
-    //       },
-    //     ]);
-    //   }
-    // });
+    this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
+      if (isTimedOut) {
+        this.router.navigate([
+          '/projects/auth/pass-key-system',
+          this.projectId,
+          this.projectTitle,
+          {
+            inActive: 'Due to 5 mins of inactivity, you have been logged out!',
+          },
+        ]);
+      }
+    });
 
     setTimeout(() => {
       this.getProjectDetails();
