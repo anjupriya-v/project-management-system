@@ -85,14 +85,14 @@
 .error-text {
   color: red;
 }
-.login {
+.login-button-container {
   display: flex;
   justify-content: center;
   width: 360px;
   margin-top: 40px;
 }
 
-.login button {
+.login-button-container button {
   margin-top: 5px;
   width: 250px;
   height: 35px;
@@ -102,10 +102,7 @@
   background: #000000;
   cursor: pointer;
 }
-.login .isLoggingIn {
-  background: #727272;
-  cursor: not-allowed;
-}
+
 .contact-admin-div {
   display: flex;
   align-items: center;

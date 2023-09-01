@@ -81,14 +81,13 @@
                 nzMessage="{{ loginMsg }}"
               ></nz-alert>
             </div>
-            <div class="login">
+            <div class="login-button-container">
               <button
                 type="submit"
                 class="login-submit-button"
                 [disabled]="loginLoader ? true : null"
-                [class]="loginLoader ? 'isLoggingIn' : ''"
               >
-                {{ loginLoader ? "Logging in..." : "Login" }}
+                Login
               </button>
             </div>
           </form>
