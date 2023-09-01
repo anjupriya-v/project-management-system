@@ -16,6 +16,7 @@ export class PassKeySystemComponent implements OnInit {
   projectTitle: any = this.route.snapshot.paramMap.get('projectTitle');
   inActiveText: any = this.route.snapshot.paramMap.get('inActive');
   filledNavUserContentColor: any = 'filled-nav-user-content-color';
+  passKeyLoader: boolean = false;
   isResetPassKeyDrawervisible: boolean = false;
   passKeyFormSubmitted: boolean = false;
   emailverificationFormSubmitted: boolean = false;
@@ -53,6 +54,7 @@ export class PassKeySystemComponent implements OnInit {
     this.resetPassKeyForm();
   }
   ngOnInit() {
+    this.passKeyLoader = true;
     this.getCurrentUserRoleInProject();
   }
   passKeyForm() {
@@ -216,6 +218,7 @@ export class PassKeySystemComponent implements OnInit {
       .getCurrentUserRoleInProject(this.projectId, this.currentUser['email'])
       .subscribe((data: any) => {
         if (data.status) {
+          this.passKeyLoader = false;
           if (data.role == 'Admin' || data.role == 'Team Lead') {
             this.currentUserRoleInProject = 'Team Leader';
           } else {

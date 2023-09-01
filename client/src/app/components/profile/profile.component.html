@@ -1,4 +1,4 @@
-<div class="profile">
+<div class="profile" *ngIf="!profileLoader">
   <div class="profile-container">
     <div class="shape">
       <div class="image"><img [src]="profileImage" /></div>
@@ -28,4 +28,7 @@
       </div>
     </div>
   </div>
+</div>
+<div class="profile-loader-container" *ngIf="profileLoader">
+  <nz-spin nzSimple nzTip="Loading profile..." [nzSize]="'large'"></nz-spin>
 </div>

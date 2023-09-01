@@ -15,7 +15,7 @@ export class LoginComponent {
   loginStatus: any = null;
   requiredForm!: FormGroup;
   redirectURL: any;
-  isLoggingIn: boolean = false;
+  loginLoader: boolean = false;
   constructor(
     private auth: AuthService,
     private fb: FormBuilder,
@@ -48,7 +48,7 @@ export class LoginComponent {
   submitLoginForm(e: Event) {
     this.submitted = true;
     if (this.requiredForm.valid) {
-      this.isLoggingIn = true;
+      this.loginLoader = true;
       this.auth.handleLogin(this.requiredForm.value).subscribe((data: any) => {
         if (data.status == true) {
           this.auth.storeUserData(data.token, data.user);
@@ -64,14 +64,13 @@ export class LoginComponent {
           } else {
             this.router.navigate(['/']);
           }
-          this.notification.success('Logged In', data.message, {
+          this.notification.success('Log In', data.message, {
             nzPlacement: 'bottomRight',
           });
-          this.isLoggingIn = false;
         } else {
           this.loginMsg = data.message;
           this.loginStatus = data.status;
-          this.isLoggingIn = false;
+          this.loginLoader = false;
         }
       });
     } else {

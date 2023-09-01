@@ -20,7 +20,7 @@ export class CreateProjectComponent implements OnInit {
   listOfUserNames: any = [];
   currentUser: any = JSON.parse(this.auth.getCurrentUser());
   submissionInProgress: boolean = false;
-
+  createProjectLoader: boolean = false;
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
@@ -31,6 +31,7 @@ export class CreateProjectComponent implements OnInit {
     this.myForm();
   }
   ngOnInit(): void {
+    this.createProjectLoader = true;
     this.fetchUserNames();
   }
 
@@ -47,6 +48,7 @@ export class CreateProjectComponent implements OnInit {
   fetchUserNames() {
     this.auth.fetchUserNames().subscribe((data) => {
       if (data.status) {
+        this.createProjectLoader = false;
         data.userNames.result.forEach((element: any) => {
           return this.listOfUserNames.push(element['userName']);
         });

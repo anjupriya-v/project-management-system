@@ -1,5 +1,5 @@
 <app-navbar [filledNav]="filledNav"></app-navbar>
-<div class="login-container">
+<div class="login-container" *ngIf="!loginLoader">
   <section class="login-section">
     <div class="content">
       <div class="left">
@@ -85,16 +85,17 @@
               <button
                 type="submit"
                 class="login-submit-button"
-                [disabled]="isLoggingIn ? true : null"
-                [class]="isLoggingIn ? 'isLoggingIn' : ''"
+                [disabled]="loginLoader ? true : null"
+                [class]="loginLoader ? 'isLoggingIn' : ''"
               >
-                {{ isLoggingIn ? "Logging in..." : "Login" }}
+                {{ loginLoader ? "Logging in..." : "Login" }}
               </button>
             </div>
           </form>
           <div class="contact-admin-div">
-            <a href="mailto:anjupriyachennai@gmail.com" class="contact-admin">
-              <i class="fa fa-envelope" aria-hidden="true"></i> Contact Admin</a
+            <span class="contact-admin">
+              <i class="fa fa-envelope" aria-hidden="true"></i> Contact admin -
+              anjupriyachennai@gmail.com</span
             >
           </div>
         </div>
@@ -102,3 +103,5 @@
     </div>
   </section>
 </div>
+
+<app-loader *ngIf="loginLoader" loaderText="Logging in..."></app-loader>

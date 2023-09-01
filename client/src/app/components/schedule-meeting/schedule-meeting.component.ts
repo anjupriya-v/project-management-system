@@ -22,6 +22,13 @@ export class ScheduleMeetingComponent {
   scheduleMeetingBtnLoading: boolean = false;
   requiredForm!: FormGroup;
   currentUser: any = JSON.parse(this.auth.getCurrentUser() || '{}');
+  scheduleMeetingLoader: boolean = false;
+  ngOnInit() {
+    this.scheduleMeetingLoader = true;
+    setTimeout(() => {
+      this.scheduleMeetingLoader = false;
+    }, 1000);
+  }
   constructor(
     private router: Router,
     private bnIdle: BnNgIdleService,

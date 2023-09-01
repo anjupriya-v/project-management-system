@@ -14,23 +14,17 @@ export class CalendarComponent implements OnInit {
   filledNavUserContentColor: any = 'filled-nav-user-content-color';
   currentUser: any = JSON.parse(this.auth.getCurrentUser() || '{}');
   eventList: any[] = [];
+  calendarLoader: boolean = false;
+  calendarOptions: CalendarOptions = {};
   constructor(
     private projectService: ProjectService,
     private auth: AuthService
   ) {}
   ngOnInit() {
+    this.calendarLoader = true;
     this.getProjectDetails();
   }
-  calendarOptions: CalendarOptions = {
-    plugins: [rrulePlugin, dayGridPlugin],
-    initialView: 'dayGridMonth',
-    height: 600,
-    eventClick: (event: any): any => {
-      event.jsEvent.preventDefault();
-      window.open(event.event.url, '_blank');
-      return false;
-    },
-  };
+
   daysLeftFunc(deadline: any) {
     var today = new Date();
     var date_to_reply = new Date(deadline);
@@ -53,6 +47,7 @@ export class CalendarComponent implements OnInit {
     this.projectService.getProjectDetails().subscribe((data: any) => {
       this.eventList = [];
       if (data.status) {
+        this.calendarLoader = false;
         data.projectDetails.forEach((project: any) => {
           project.teamMembers.forEach((teamMember: any) => {
             if (teamMember.userName == this.currentUser['userName']) {
@@ -219,7 +214,15 @@ export class CalendarComponent implements OnInit {
           });
         });
         this.calendarOptions = {
+          plugins: [rrulePlugin, dayGridPlugin],
+          initialView: 'dayGridMonth',
+          height: 600,
           events: this.eventList,
+          eventClick: (event: any): any => {
+            event.jsEvent.preventDefault();
+            window.open(event.event.url, '_blank');
+            return false;
+          },
         };
       }
     });

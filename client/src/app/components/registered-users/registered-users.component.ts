@@ -42,6 +42,7 @@ export class RegisteredUsersComponent implements OnInit {
     'https://static.vecteezy.com/system/resources/thumbnails/002/534/006/small/social-media-chatting-online-blank-profile-picture-head-and-body-icon-people-standing-icon-grey-background-free-vector.jpg';
   userProfileImageSrc: any = this.profileImageLink;
   showPassword: boolean = false;
+  registeredUsersLoader: boolean = false;
   updateUserSubscription!: Subscription;
   getRegisteredUsersSubscription!: Subscription;
 
@@ -58,6 +59,7 @@ export class RegisteredUsersComponent implements OnInit {
     this.myForm();
   }
   ngOnInit(): void {
+    this.registeredUsersLoader = true;
     this.getRegisteredUsers();
   }
   ngOnDestroy(): void {
@@ -284,6 +286,7 @@ export class RegisteredUsersComponent implements OnInit {
     this.getRegisteredUsersSubscription = this.auth
       .getRegisteredUsers()
       .subscribe((data: any) => {
+        this.registeredUsersLoader = false;
         if (data.status) {
           this.copyRegisteredUsers = [];
           data.registeredUsers.result.forEach((element: any) => {

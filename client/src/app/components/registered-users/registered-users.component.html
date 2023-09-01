@@ -2,7 +2,7 @@
   [filledNav]="filledNav"
   [filledNavUserContentColor]="filledNavUserContentColor"
 ></app-navbar>
-<div class="registered-users-container">
+<div class="registered-users-container" *ngIf="!registeredUsersLoader">
   <nz-breadcrumb>
     <nz-breadcrumb-item>
       <a [routerLink]="['/']">Home</a>
@@ -489,3 +489,7 @@
     </div>
   </div>
 </div>
+<app-loader
+  *ngIf="registeredUsersLoader"
+  loaderText="Loading Registered Users..."
+></app-loader>

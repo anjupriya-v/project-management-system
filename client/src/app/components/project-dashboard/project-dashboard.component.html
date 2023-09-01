@@ -5,7 +5,7 @@
 
 <div
   class="project-dashboard-container"
-  *ngIf="projectDashboardLoader ? false : true"
+  *ngIf="!projectDashboardLoader"
 >
   <nz-breadcrumb>
     <nz-breadcrumb-item>
@@ -1326,11 +1326,6 @@
   </div>
   <div class="comments-field"></div>
 </ng-template>
-<ng-container
-  ><div *ngIf="projectDashboardLoader ? true : false">
-    Loading...
-  </div></ng-container
->
 <nz-drawer
   [nzWidth]="600"
   [nzVisible]="isMeetingsDrawerVisible"
@@ -1655,3 +1650,7 @@
     </div>
   </ng-template>
 </nz-drawer>
+<app-loader
+  *ngIf="projectDashboardLoader"
+  loaderText="Loading user dashboard..."
+></app-loader>

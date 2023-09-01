@@ -18,6 +18,7 @@ export class ProfileComponent implements OnInit {
   ratingSum: any = 0;
   overAllRating: any = 0;
   currentUser: any = JSON.parse(this.auth.getCurrentUser());
+  profileLoader: boolean = false;
   constructor(
     private auth: AuthService,
     private projectService: ProjectService
@@ -29,11 +30,13 @@ export class ProfileComponent implements OnInit {
     this.profileImage = this.currentUser['profileImage'];
     this.email = this.currentUser['email'];
     this.phoneNumber = this.currentUser['phoneNumber'];
+    this.profileLoader = true;
     this.getProjectDetails();
   }
   getProjectDetails() {
     this.projectService.getProjectDetails().subscribe((data: any) => {
       if (data.status) {
+        this.profileLoader = false;
         data.projectDetails.forEach((project: any) => {
           project.teamMembers.forEach((teamMember: any) => {
             if (
@@ -41,7 +44,6 @@ export class ProfileComponent implements OnInit {
               teamMember.rating == undefined
             ) {
               this.ratingSum += 0;
-              this.ratingCount++;
             }
             if (
               teamMember.userName == this.currentUser['userName'] &&

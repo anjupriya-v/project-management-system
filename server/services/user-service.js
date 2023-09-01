@@ -278,7 +278,7 @@ module.exports.loginUserService = (userDetails) => {
                 token = jwt.sign(userDetails, process.env.SECRETKEY);
                 resolve({
                   status: true,
-                  msg: `User with email "${result.email}" is successfully logged in`,
+                  msg: "Login Successful!",
                   token: token,
                   user: {
                     id: result._id,

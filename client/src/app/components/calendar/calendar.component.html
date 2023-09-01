@@ -2,7 +2,7 @@
   [filledNav]="filledNav"
   [filledNavUserContentColor]="filledNavUserContentColor"
 ></app-navbar>
-<div class="calendar-container">
+<div class="calendar-container" *ngIf="!calendarLoader">
   <nz-breadcrumb>
     <nz-breadcrumb-item>
       <a [routerLink]="['/']">Home</a>
@@ -36,3 +36,7 @@
     <full-calendar [options]="calendarOptions"></full-calendar>
   </div>
 </div>
+<app-loader
+  *ngIf="calendarLoader"
+  loaderText="Loading Calendar..."
+></app-loader>

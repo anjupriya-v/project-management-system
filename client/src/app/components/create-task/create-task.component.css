@@ -1,3 +1,9 @@
+.create-task-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
 #create-task-form {
   background: #fcf5f2;
   padding-left: 80px;

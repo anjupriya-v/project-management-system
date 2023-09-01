@@ -2,7 +2,7 @@
   [filledNav]="filledNav"
   [filledNavUserContentColor]="filledNavUserContentColor"
 ></app-navbar>
-<div class="projects-container">
+<div class="projects-container" *ngIf="!projectsLoader">
   <nz-breadcrumb>
     <nz-breadcrumb-item>
       <a [routerLink]="['../']">Home</a>
@@ -578,3 +578,7 @@
     <span> {{ noDataText }}</span>
   </div>
 </ng-template>
+<app-loader
+  *ngIf="projectsLoader"
+  loaderText="Loading Projects..."
+></app-loader>

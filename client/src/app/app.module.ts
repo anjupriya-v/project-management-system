@@ -57,6 +57,7 @@ import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import en from '@angular/common/locales/en';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 registerLocaleData(en);
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
@@ -69,6 +70,7 @@ import { BnNgIdleService } from 'bn-ng-idle';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
 import { ScheduleMeetingComponent } from './components/schedule-meeting/schedule-meeting.component';
+import { LoaderComponent } from './components/loader/loader.component';
 
 const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
 @NgModule({
@@ -90,6 +92,7 @@ const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
     HighlightedDatesComponent,
     PassKeySystemComponent,
     ScheduleMeetingComponent,
+    LoaderComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -129,6 +132,7 @@ const icons = [StepBackwardOutline, CaretLeftOutline, SettingOutline];
     NgApexchartsModule,
     NzTabsModule,
     NzSegmentedModule,
+    NzSpinModule,
   ],
   providers: [
     AuthGuard,

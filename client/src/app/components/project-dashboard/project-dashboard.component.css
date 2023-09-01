@@ -184,12 +184,7 @@
 .user-content span {
   font-size: 0.8em;
 }
-.create-task-form-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
+
 .project-dashboard-section-two {
   margin-top: 0.8em;
 }
@@ -504,6 +499,9 @@
 .project-dashboard-section-three {
   margin-top: 1em;
   padding-bottom: 2em;
+}
+.project-active-days-container {
+  height: 560px;
 }
 .calendar-header {
   margin-bottom: 1em;

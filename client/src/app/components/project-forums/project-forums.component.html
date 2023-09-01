@@ -1,4 +1,4 @@
-<div class="project-forums-container">
+<div class="project-forums-container" *ngIf="!projectForumsLoader">
   <div class="forum-options">
     <div class="sort-container">
       <nz-tag [nzColor]="'green'"> Sort : {{ selectedForumSort }}</nz-tag>
@@ -366,3 +366,7 @@
     </ng-container>
   </nz-drawer>
 </div>
+<app-loader
+  *ngIf="projectForumsLoader"
+  loaderText="Loading forums..."
+></app-loader>

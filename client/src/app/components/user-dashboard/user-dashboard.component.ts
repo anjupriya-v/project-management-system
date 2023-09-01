@@ -20,7 +20,7 @@ export class UserDashboardComponent implements OnInit {
   taskCompletedCount: any = 0;
   projectAssignedCount: any = 0;
   projectCompletedCount: any = 0;
-  userDashboardLoader: boolean = true;
+  userDashboardLoader: boolean = false;
   todayDate: number = Date.now();
   currentTasks: any[] = [];
   currentProjects: any[] = [];
@@ -39,6 +39,7 @@ export class UserDashboardComponent implements OnInit {
     private auth: AuthService
   ) {}
   ngOnInit() {
+    this.userDashboardLoader = true;
     this.getProjectDetails();
   }
   daysLeftFunc(deadline: any) {
@@ -283,7 +284,7 @@ export class UserDashboardComponent implements OnInit {
           this.pieChartNotProcessed = false;
           setTimeout(() => {
             this.getPieChart();
-          }, 1000);
+          }, 500);
         } else {
           this.pieChartNotProcessed = true;
         }
@@ -292,7 +293,7 @@ export class UserDashboardComponent implements OnInit {
           this.multiBarChartNotProcessed = false;
           setTimeout(() => {
             this.getMultiBarChart();
-          }, 1000);
+          }, 500);
         } else {
           this.multiBarChartNotProcessed = true;
         }
@@ -302,7 +303,7 @@ export class UserDashboardComponent implements OnInit {
           this.scatterChartNotProcessed = false;
           setTimeout(() => {
             this.getScatterChart();
-          }, 1000);
+          }, 500);
         } else {
           this.scatterChartNotProcessed = true;
         }

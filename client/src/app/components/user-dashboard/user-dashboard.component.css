@@ -111,11 +111,14 @@
   height: 300px;
 }
 
-.active-days-card-container {
+.user-active-days-card-container {
   margin-bottom: 0.5em;
 }
 .scatter-chart-container {
   height: 365px;
+}
+.user-active-days-calendar-container {
+  height: 509px;
 }
 .calendar-header {
   display: flex;

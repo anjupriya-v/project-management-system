@@ -21,6 +21,7 @@ export class ProjectForumsComponent implements OnInit {
   noSearchDataFound: any = false;
   selectedForumSort: any = 'default';
   selectedCommentSort: any = 'default';
+  projectForumsLoader: boolean = false;
   @ViewChild('addCommentContainer')
   addCommentContainer!: ElementRef;
   projectId: any = localStorage.getItem('projectId');
@@ -34,6 +35,7 @@ export class ProjectForumsComponent implements OnInit {
     this.myForm();
   }
   ngOnInit() {
+    this.projectForumsLoader = true;
     this.getProjectDetails();
   }
   ngAfterViewInit() {}
@@ -177,6 +179,7 @@ export class ProjectForumsComponent implements OnInit {
   getProjectDetails() {
     this.projectService.getProjectDetails().subscribe((data: any) => {
       if (data.status) {
+        this.projectForumsLoader = false;
         data.projectDetails.forEach((project: any) => {
           if (project._id == this.projectId) {
             this.forumDetails = project.forums;

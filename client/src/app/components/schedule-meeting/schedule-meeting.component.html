@@ -2,7 +2,7 @@
   [filledNav]="filledNav"
   [filledNavUserContentColor]="filledNavUserContentColor"
 ></app-navbar>
-<div class="schedule-meeting-container">
+<div class="schedule-meeting-container" *ngIf="!scheduleMeetingLoader">
   <nz-card style="width: 1000px">
     <div nz-row [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }">
       <div
@@ -278,3 +278,4 @@
     </div>
   </nz-card>
 </div>
+<app-loader *ngIf="scheduleMeetingLoader" loaderText="Loading..."></app-loader>

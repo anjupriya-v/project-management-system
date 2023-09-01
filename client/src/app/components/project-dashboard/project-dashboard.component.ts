@@ -40,6 +40,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   isUploadWorkModalVisible = false;
   isViewUploadModalVisible = false;
   isApproveTaskModalVisible = false;
+  projectDashboardLoader: boolean = true;
   isMeetingScheduled: any = this.route.snapshot.paramMap.get(
     'isMeetingDrawerVisible'
   );
@@ -89,7 +90,6 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   filterNotSatisfiedMembers: any[] = [];
   today = new Date();
   activeDays: any[] = [];
-  projectDashboardLoader: boolean = true;
   lastActiveMemberFullName: any;
   lastActiveMemberRole: any;
   lastActiveMemberProfileImage: any;
@@ -147,6 +147,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
     });
 
     setTimeout(() => {
+      this.projectDashboardLoader = true;
       this.getProjectDetails();
     }, 500);
     setTimeout(() => {
@@ -1053,6 +1054,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   getProjectDetails = () => {
     this.projectService.getProjectDetails().subscribe((data: any) => {
       if (data.status) {
+        this.projectDashboardLoader = false;
         this.teamMembers = [];
         this.taskDetails = [];
         this.taskAssignedSum = 0;
@@ -1202,7 +1204,6 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
           Math.round((this.taskCompletedSum / this.totalTaskSum) * 10) / 10;
         this.completedPercentage = rounded * 100;
         this.daysLeft = this.daysLeftFunc(this.deadline);
-        this.projectDashboardLoader = false;
         if (
           this.taskNotStartedCount != 0 ||
           this.taskInProgressCount != 0 ||
@@ -1215,7 +1216,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
               this.chart.destroy();
             }
             this.getPieChart();
-          }, 2000);
+          }, 500);
         } else {
           this.chartProcessed = false;
         }

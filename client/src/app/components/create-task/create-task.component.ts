@@ -14,6 +14,7 @@ export class CreateTaskComponent implements OnInit {
   teamMembers: any[] = [];
   deadline: any;
   btnLoading: boolean = false;
+  createTaskLoader: boolean = false;
   @Input() projectId = '';
   @Output() taskCreationCompleted = new EventEmitter();
   constructor(
@@ -24,8 +25,10 @@ export class CreateTaskComponent implements OnInit {
     this.myForm();
   }
   ngOnInit() {
+    this.createTaskLoader = true;
     this.projectService.getProjectDetails().subscribe((data: any) => {
       if (data.status) {
+        this.createTaskLoader = false;
         data.projectDetails.forEach((project: any) => {
           if (project._id == this.projectId) {
             this.teamMembers = project.teamMembers;

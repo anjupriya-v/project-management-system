@@ -28,6 +28,7 @@ export class ProjectsComponent implements OnInit {
   todayDate: number = Date.now();
   noDataCur: any = false;
   noDataCom: any = false;
+  projectsLoader: boolean = false;
   constructor(
     protected auth: AuthService,
     protected projectService: ProjectService,
@@ -35,6 +36,7 @@ export class ProjectsComponent implements OnInit {
   ) {}
   currentUser: any = JSON.parse(this.auth.getCurrentUser() || '{}');
   ngOnInit() {
+    this.projectsLoader = true;
     this.getProjectDetails();
   }
   getDate(date: any): any {
@@ -192,6 +194,7 @@ export class ProjectsComponent implements OnInit {
       this.currentProjectDetails = [];
       this.completedProjectDetails = [];
       if (data.status) {
+        this.projectsLoader = false;
         data.projectDetails.forEach((element: any) => {
           element.teamMembers.forEach((teamMember: any) => {
             if (teamMember.userName == this.currentUser['userName']) {

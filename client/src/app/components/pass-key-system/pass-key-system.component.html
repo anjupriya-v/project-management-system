@@ -2,7 +2,7 @@
   [filledNav]="filledNav"
   [filledNavUserContentColor]="filledNavUserContentColor"
 ></app-navbar>
-<div class="pass-key-container">
+<div class="pass-key-container" *ngIf="!passKeyLoader">
   <div *ngIf="inActiveText">
     <nz-alert nzType="error" [nzMessage]="inActiveText"></nz-alert>
   </div>
@@ -110,6 +110,10 @@
           [nzPopoverContent]="whyRequestToChange"
         ></i>
       </div>
+      <span routerLink="/projects">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i> Back to
+        projects</span
+      >
     </div>
   </div>
 </div>
@@ -328,3 +332,4 @@
     </div>
   </ng-container>
 </nz-drawer>
+<app-loader *ngIf="passKeyLoader" loaderText="Loading..."></app-loader>

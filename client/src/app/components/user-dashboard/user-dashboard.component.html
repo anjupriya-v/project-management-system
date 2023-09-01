@@ -2,10 +2,7 @@
   [filledNav]="filledNav"
   [filledNavUserContentColor]="filledNavUserContentColor"
 ></app-navbar>
-<div
-  class="user-dashboard-container"
-  *ngIf="userDashboardLoader ? false : true"
->
+<div class="user-dashboard-container" *ngIf="!userDashboardLoader">
   <nz-breadcrumb>
     <nz-breadcrumb-item>
       <a [routerLink]="['/']">Home</a>
@@ -370,7 +367,7 @@
           <div
             nz-row
             [nzGutter]="{ xs: 24, sm: 24, md: 18, lg: 6 }"
-            class="active-days-card-container"
+            class="user-active-days-card-container"
           >
             <div
               nz-col
@@ -452,7 +449,7 @@
           [nzMd]="24"
           [nzLg]="7"
         >
-          <nz-card>
+          <nz-card class="user-active-days-calendar-container">
             <div class="calendar-header">
               <h2>Your Active Days</h2>
               <span *ngIf="activeDays.length == 0" class="no-participation"
@@ -707,4 +704,7 @@
     </div>
   </div>
 </div>
-<div *ngIf="userDashboardLoader ? true : false">Loading</div>
+<app-loader
+  *ngIf="userDashboardLoader"
+  loaderText="Loading user dashboard..."
+></app-loader>
