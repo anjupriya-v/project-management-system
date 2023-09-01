@@ -64,7 +64,7 @@ export class LoginComponent {
           } else {
             this.router.navigate(['/']);
           }
-          this.notification.success('Log In', data.message, {
+          this.notification.success('Log in', data.message, {
             nzPlacement: 'bottomRight',
           });
         } else {

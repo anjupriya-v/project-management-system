@@ -56,13 +56,13 @@ export class HighlightedDatesComponent {
     });
   }
   getUserActiveDays(event: any) {
-    this.projectService.getProjectDetails().subscribe((data: any) => {
+    this.auth.getRegisteredUsers().subscribe((data: any) => {
       if (data.status) {
         this.userProgressDone = [];
-        data.projectDetails.forEach((project: any) => {
-          this.userActiveDays = project.activeDays;
-          this.userActiveDays.forEach((userActiveDay: any) => {
-            if (userActiveDay.userName == this.currentUser['userName']) {
+        data.registeredUsers.result.forEach((user: any) => {
+          if (user.userName == this.currentUser['userName']) {
+            this.userActiveDays = user.activeDays;
+            this.userActiveDays.forEach((userActiveDay) => {
               if (
                 new Date(userActiveDay.timeStamp).getFullYear() ===
                   new Date(event).getFullYear() &&
@@ -73,8 +73,8 @@ export class HighlightedDatesComponent {
               ) {
                 this.userProgressDone.push(userActiveDay.progressDone);
               }
-            }
-          });
+            });
+          }
         });
       }
     });

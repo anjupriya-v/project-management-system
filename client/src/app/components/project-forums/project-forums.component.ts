@@ -22,6 +22,7 @@ export class ProjectForumsComponent implements OnInit {
   selectedForumSort: any = 'default';
   selectedCommentSort: any = 'default';
   projectForumsLoader: boolean = false;
+  projectForumCommentLoader: boolean = false;
   @ViewChild('addCommentContainer')
   addCommentContainer!: ElementRef;
   projectId: any = localStorage.getItem('projectId');
@@ -111,6 +112,7 @@ export class ProjectForumsComponent implements OnInit {
     }
   }
   openCommentsDrawer(forumId: any): void {
+    this.projectForumCommentLoader = true;
     this.getProjectDetails();
     this.currentForumId = forumId;
     this.visible = true;
@@ -180,6 +182,7 @@ export class ProjectForumsComponent implements OnInit {
     this.projectService.getProjectDetails().subscribe((data: any) => {
       if (data.status) {
         this.projectForumsLoader = false;
+        this.projectForumCommentLoader = false;
         data.projectDetails.forEach((project: any) => {
           if (project._id == this.projectId) {
             this.forumDetails = project.forums;
@@ -250,14 +253,14 @@ export class ProjectForumsComponent implements OnInit {
         )
         .subscribe((data: any) => {
           if (data.status) {
+            this.submitted = false;
             this.getProjectDetails();
             this.addCommentBtnLoading = false;
-            setTimeout(() => {
-              this.messageService.create('success', data.message);
-            }, 1000);
+            this.messageService.create('success', data.message);
+            this.requiredForm.controls['comment'].setValue('');
           } else {
             this.addCommentBtnLoading = false;
-
+            this.submitted = false;
             this.messageService.create(
               'error',
               'Something went wrong! Please try again'
@@ -265,6 +268,7 @@ export class ProjectForumsComponent implements OnInit {
           }
         });
     } else {
+      this.submitted = false;
       console.log('In-Valid');
     }
   }

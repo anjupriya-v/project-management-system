@@ -40,6 +40,7 @@ export class UserDashboardComponent implements OnInit {
   ) {}
   ngOnInit() {
     this.userDashboardLoader = true;
+    this.getCurrentUserActiveDays();
     this.getProjectDetails();
   }
   daysLeftFunc(deadline: any) {
@@ -250,33 +251,29 @@ export class UserDashboardComponent implements OnInit {
               this.completedProjects.push(completedProject);
             }
           });
-          project.activeDays.forEach((activeDay: any) => {
-            if (activeDay.userName == this.currentUser['userName']) {
-              var day = this.getDateFormat(activeDay.timeStamp);
-              if (!this.activeDays.includes(day.toString())) {
-                this.activeDays.push(day);
-              }
-            }
-          });
         });
         this.activeDays.forEach((activeDay) => {
           var count = 0;
           data.projectDetails.forEach((project: any) => {
             project.activeDays.forEach((active: any) => {
               if (
+                active.userName == this.currentUser['userName'] &&
                 this.getDateFormat(activeDay) ==
-                this.getDateFormat(active.timeStamp)
+                  this.getDateFormat(active.timeStamp)
               ) {
                 count++;
               }
             });
           });
+          console.log(count);
           var scatterPlotData = {
             x: new Date(activeDay),
             y: count,
           };
           this.contributionCount.push(scatterPlotData);
         });
+
+        //calculating overall rating
         this.overAllRating = this.ratingSum / this.ratingCount;
 
         //pie chart
@@ -307,6 +304,22 @@ export class UserDashboardComponent implements OnInit {
         } else {
           this.scatterChartNotProcessed = true;
         }
+      }
+    });
+  }
+  getCurrentUserActiveDays() {
+    this.auth.getRegisteredUsers().subscribe((data: any) => {
+      if (data.status) {
+        data.registeredUsers.result.forEach((user: any) => {
+          if (user.userName == this.currentUser['userName']) {
+            user.activeDays.forEach((activeDay: any) => {
+              var day = this.getDateFormat(activeDay.timeStamp);
+              if (!this.activeDays.includes(day.toString())) {
+                this.activeDays.push(day);
+              }
+            });
+          }
+        });
       }
     });
   }

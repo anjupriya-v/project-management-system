@@ -3,10 +3,7 @@
   [filledNavUserContentColor]="filledNavUserContentColor"
 ></app-navbar>
 
-<div
-  class="project-dashboard-container"
-  *ngIf="!projectDashboardLoader"
->
+<div class="project-dashboard-container" *ngIf="!projectDashboardLoader">
   <nz-breadcrumb>
     <nz-breadcrumb-item>
       <a [routerLink]="['/']">Home</a>
@@ -324,8 +321,10 @@
                   <span nz-icon nzType="info-circle" nzTheme="outline"></span>
                   <span>{{
                     currentUserTaskCount > 0
-                      ? "You have Assigned " + currentUserTaskCount + " Tasks"
-                      : "No Tasks Assigned to you"
+                      ? currentUserTaskCount == 1
+                        ? "You have assigned 1 task"
+                        : "You have assigned " + currentUserTaskCount + " tasks"
+                      : "No Tasks assigned to you"
                   }}</span>
                 </nz-tag>
               </div>
@@ -739,6 +738,7 @@
                               </li>
                               <li
                                 nz-menu-item
+                                nzDanger
                                 class="task-option delete-task"
                                 *ngIf="
                                   currentUser['role'] == 'Admin' ||
@@ -830,7 +830,7 @@
         [nzMd]="24"
         [nzLg]="8"
       >
-        <nz-card>
+        <nz-card class="project-active-days-container">
           <div class="calendar-header"><h3>Project Active Days</h3></div>
           <hr />
           <div class="calendar-content">
@@ -1165,6 +1165,13 @@
           </button>
         </div>
       </form>
+      <nz-alert
+        *ngIf="isTaskCommentAdded"
+        [nzType]="taskCommentAddedStatus == 'success' ? 'success' : 'error'"
+        nzMessage="Task comment added successfully!"
+        nzShowIcon
+        nzCloseable
+      ></nz-alert>
     </div>
     <div class="task-comments-list">
       <h4>Task Comments</h4>
@@ -1199,6 +1206,8 @@
                       (click)="likeTaskComment(taskComment.commentId)"
                       class="fa fa-thumbs-o-up"
                       aria-hidden="true"
+                      nz-tooltip
+                      nzTooltipTitle="Like"
                     ></i>
 
                     <ng-container
@@ -1211,6 +1220,8 @@
                         (click)="likeTaskComment(taskComment.commentId)"
                         class="fa fa-thumbs-o-up"
                         aria-hidden="true"
+                        nz-tooltip
+                        nzTooltipTitle="Like"
                       ></i>
                       <i
                         (click)="unLikeTaskComment(taskComment.commentId)"
@@ -1219,6 +1230,8 @@
                         "
                         class="fa fa-thumbs-up"
                         aria-hidden="true"
+                        nz-tooltip
+                        nzTooltipTitle="Unlike"
                       ></i>
                     </ng-container>
                   </div>
@@ -1234,6 +1247,8 @@
                       (click)="
                         deleteTaskComment(data.taskId, taskComment.commentId)
                       "
+                      nz-tooltip
+                      nzTooltipTitle="Delete"
                     ></i>
                   </div>
                 </div>
@@ -1314,14 +1329,15 @@
     <h3>{{ data.taskName }}</h3>
     <div class="task-doc-field">
       <span>Task Work :</span>
-      <a href="{{ data.taskWork }}" target="_blank">View </a>
+      <a href="{{ data.taskWork }}" target="_blank" class="view-task-work"
+        >View
+      </a>
     </div>
     <div
       *ngIf="data.assigneeComments != ''"
       class="assignee-task-comment-field"
     >
-      <span>Task Work </span><br />
-      <span>{{ data.assigneeComments }}</span>
+      <span>Task Comment: {{ data.assigneeComments }}</span>
     </div>
   </div>
   <div class="comments-field"></div>
@@ -1360,7 +1376,7 @@
         <nz-alert
           *ngIf="isMeetingCancelled"
           nzType="error"
-          [nzMessage]="'You cancelled the meet ' + cancelledMeetingSummary"
+          [nzMessage]="meetingCancelledText"
           nzShowIcon
           nzCloseable
         >
@@ -1376,7 +1392,21 @@
         </nz-alert>
         <nz-tabset nzCentered>
           <nz-tab nzTitle="Upcoming Meetings">
-            <div class="upcoming-meetings-container">
+            <div
+              class="meetings-loader-container"
+              *ngIf="projectDashboardLoader"
+            >
+              <nz-spin
+                nzSimple
+                nzTip="Loading upcoming meetings..."
+                [nzSize]="'large'"
+              ></nz-spin>
+            </div>
+
+            <div
+              *ngIf="!projectDashboardLoader"
+              class="upcoming-meetings-container"
+            >
               <h3>Upcoming Meetings</h3>
               <div class="upcoming-meetings-content">
                 <nz-card
@@ -1413,6 +1443,7 @@
                           <ul nz-menu nzSelectable>
                             <li
                               *ngIf="
+                                meeting.cancelled == false &&
                                 meeting.recurrence == 'Once' &&
                                 !(
                                   getDateObj('now') >
@@ -1566,8 +1597,22 @@
               </ng-container>
             </div>
           </nz-tab>
-          <nz-tab nzTitle="Past Meetings"
-            ><div class="past-meetings-container">
+          <nz-tab nzTitle="Past Meetings">
+            <div
+              class="meetings-loader-container"
+              *ngIf="projectDashboardLoader"
+            >
+              <nz-spin
+                nzSimple
+                nzTip="Loading past meetings..."
+                [nzSize]="'large'"
+              ></nz-spin>
+            </div>
+
+            <div
+              *ngIf="!projectDashboardLoader"
+              class="past-meetings-container"
+            >
               <h3>Past Meetings</h3>
               <nz-card
                 class="meetings-card"
@@ -1652,5 +1697,5 @@
 </nz-drawer>
 <app-loader
   *ngIf="projectDashboardLoader"
-  loaderText="Loading user dashboard..."
+  loaderText="Loading project dashboard..."
 ></app-loader>

@@ -25,7 +25,11 @@ var readHTMLFile = function (path, callback) {
     }
   });
 };
-const markActiveDays = (progressStatus, projectId, currentUserUserName) => {
+const markProjectActiveDays = (
+  progressStatus,
+  projectId,
+  currentUserUserName
+) => {
   return new Promise(function projectService(resolve, reject) {
     try {
       userModel
@@ -76,6 +80,40 @@ const markActiveDays = (progressStatus, projectId, currentUserUserName) => {
               .catch((err) => {
                 console.log(err);
               });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+};
+const markUserActiveDays = (progressStatus, currentUserUserName) => {
+  return new Promise(function projectService(resolve, reject) {
+    try {
+      const { timeStamp, progressDone } = progressStatus;
+      var markStatus = {
+        timeStamp: timeStamp,
+        progressDone: progressDone,
+      };
+      userModel
+        .findOneAndUpdate(
+          { userName: currentUserUserName },
+          { $push: { activeDays: markStatus } }
+        )
+        .then((result, error) => {
+          if (error) {
+            reject({
+              status: false,
+              msg: "Unable to push the active days progress",
+            });
+          } else {
+            resolve({
+              status: true,
+              msg: "Active days progress added successfully!",
+            });
           }
         })
         .catch((err) => {
@@ -275,13 +313,21 @@ module.exports.projectCreationService = (projectDetails) => {
                       "Project Creation - PMS Service",
                       content
                     );
-                    var progressStatus = {
+                    var projectProgressStatus = {
                       timeStamp: new Date(),
                       progressDone: "Project Created in this day",
                     };
-                    markActiveDays(
-                      progressStatus,
+                    markProjectActiveDays(
+                      projectProgressStatus,
                       objectId,
+                      projectDetails["currentUserUserName"]
+                    );
+                    var userProgressStatus = {
+                      timeStamp: new Date(),
+                      progressDone: `You created project - ${projectDetails["projectTitle"]}`,
+                    };
+                    markUserActiveDays(
+                      userProgressStatus,
                       projectDetails["currentUserUserName"]
                     );
                     resolve({
@@ -353,13 +399,21 @@ module.exports.changeProjectStatusService = (projectDetails) => {
               "Project Status Updation - PMS Service",
               ""
             );
-            var progressStatus = {
+            var projectProgressStatus = {
               timeStamp: new Date(),
               progressDone: "Project Marked as Complete",
             };
-            markActiveDays(
-              progressStatus,
+            markProjectActiveDays(
+              projectProgressStatus,
               objectId,
+              projectDetails.currentUserUserName
+            );
+            var userProgressStatus = {
+              timeStamp: new Date(),
+              progressDone: `You marked the project - ${projectDetails["projectTitle"]} as complete`,
+            };
+            markUserActiveDays(
+              userProgressStatus,
               projectDetails.currentUserUserName
             );
             resolve({
@@ -434,13 +488,21 @@ module.exports.createTaskService = (taskDetails) => {
               msg: "Unable to assign the task",
             });
           } else {
-            var progressStatus = {
+            var projectProgressStatus = {
               timeStamp: new Date(),
               progressDone: `The task '${task.taskName}' assigned to ${task.assignee}`,
             };
-            markActiveDays(
-              progressStatus,
+            markProjectActiveDays(
+              projectProgressStatus,
               objectId,
+              taskDetails.currentUserUserName
+            );
+            var userProgressStatus = {
+              timeStamp: new Date(),
+              progressDone: `You assigned task '${task.taskName}' to ${task.assignee} in ${result.projectTitle}`,
+            };
+            markUserActiveDays(
+              userProgressStatus,
               taskDetails.currentUserUserName
             );
             resolve({
@@ -499,13 +561,21 @@ module.exports.changeTaskProgressStatusService = (taskDetails) => {
               .then((projectResult, error) => {
                 projectResult[0].tasks.forEach((task) => {
                   if (task.taskId == taskDetails.taskId) {
-                    var progressStatus = {
+                    var projectProgressStatus = {
                       timeStamp: new Date(),
                       progressDone: `The task '${task.taskName}''s progress status changed as '${task.progressStatus}' by ${task.assignee}`,
                     };
-                    markActiveDays(
-                      progressStatus,
+                    markProjectActiveDays(
+                      projectProgressStatus,
                       objectId,
+                      taskDetails.currentUserUserName
+                    );
+                    var userProgressStatus = {
+                      timeStamp: new Date(),
+                      progressDone: `You changed '${task.taskName}''s progress status changed as '${task.progressStatus}' in '${result.projectTitle}'`,
+                    };
+                    markUserActiveDays(
+                      userProgressStatus,
                       taskDetails.currentUserUserName
                     );
                     resolve({
@@ -589,13 +659,21 @@ module.exports.uploadTaskWorkService = (taskWorkDetails, taskWorkFile) => {
               .then((projectResult, error) => {
                 projectResult[0].tasks.forEach((task) => {
                   if (task.taskId == taskWorkDetails.taskId) {
-                    var progressStatus = {
+                    var projectProgressStatus = {
                       timeStamp: new Date(),
                       progressDone: `The work documents for the task "${task.taskName}" is uploaded by "${task.assignee}"`,
                     };
-                    markActiveDays(
-                      progressStatus,
+                    markProjectActiveDays(
+                      projectProgressStatus,
                       objectId,
+                      taskWorkDetails.currentUserUserName
+                    );
+                    var userProgressStatus = {
+                      timeStamp: new Date(),
+                      progressDone: `You uploaded work documents for the task "${task.taskName}" in "${result.projectTitle}"`,
+                    };
+                    markUserActiveDays(
+                      userProgressStatus,
                       taskWorkDetails.currentUserUserName
                     );
                     resolve({
@@ -707,13 +785,21 @@ module.exports.changeTaskApprovalStatusService = (taskApprovalDetails) => {
               .then((projectResult, error) => {
                 projectResult[0].tasks.forEach((task) => {
                   if (task.taskId == taskApprovalDetails.taskId) {
-                    var progressStatus = {
+                    var projectProgressStatus = {
                       timeStamp: new Date(),
                       progressDone: `The approval status for the task "${task.taskName}" is marked as "${task.approvalStatus}"`,
                     };
-                    markActiveDays(
-                      progressStatus,
+                    markProjectActiveDays(
+                      projectProgressStatus,
                       objectId,
+                      taskApprovalDetails.currentUserUserName
+                    );
+                    var userProgressStatus = {
+                      timeStamp: new Date(),
+                      progressDone: `You marked the approval status for the task "${task.taskName} as "${task.approvalStatus}"`,
+                    };
+                    markUserActiveDays(
+                      userProgressStatus,
                       taskApprovalDetails.currentUserUserName
                     );
                     resolve({
@@ -782,18 +868,26 @@ module.exports.reSubmitTaskService = (taskDetails) => {
               .then((projectResult, error) => {
                 projectResult[0].tasks.forEach((task) => {
                   if (task.taskId == taskDetails.taskId) {
-                    var progressStatus = {
+                    var projectProgressStatus = {
                       timeStamp: new Date(),
-                      progressDone: `"${task.assignee}" has resubmitted the task "${task.taskName}`,
+                      progressDone: `"${task.assignee}" has unsubmitted the task "${task.taskName} to resubmit`,
                     };
-                    markActiveDays(
-                      progressStatus,
+                    markProjectActiveDays(
+                      projectProgressStatus,
                       objectId,
+                      taskDetails.currentUserUserName
+                    );
+                    var userProgressStatus = {
+                      timeStamp: new Date(),
+                      progressDone: `You unsubmitted the task "${task.taskName} to resubmit in "${result.projectTitle}"`,
+                    };
+                    markUserActiveDays(
+                      userProgressStatus,
                       taskDetails.currentUserUserName
                     );
                     resolve({
                       status: true,
-                      msg: "The task is resubmitted successfully!",
+                      msg: "Now, You can resubmit your task",
                       taskWorkDetails: result,
                     });
                   }
@@ -830,9 +924,35 @@ module.exports.deleteTaskService = (taskDetails) => {
               msg: "Unable to delete the task",
             });
           } else {
-            resolve({
-              status: true,
-              msg: `Your Task has been deleted`,
+            var projectProgressStatus = {},
+              userProgressStatus = {},
+              taskName = "";
+            result.tasks.forEach((task) => {
+              if (task.taskId == taskDetails.taskId) {
+                taskName = task.taskName;
+                projectProgressStatus = {
+                  timeStamp: new Date(),
+                  progressDone: `Team Lead has deleted the task "${task.taskName}`,
+                };
+
+                userProgressStatus = {
+                  timeStamp: new Date(),
+                  progressDone: `You deleted the task "${task.taskName}" in "${result.projectTitle}"`,
+                };
+                markProjectActiveDays(
+                  projectProgressStatus,
+                  objectId,
+                  taskDetails.currentUserUserName
+                );
+                markUserActiveDays(
+                  userProgressStatus,
+                  taskDetails.currentUserUserName
+                );
+                resolve({
+                  status: true,
+                  msg: `Task '${taskName}' has been deleted`,
+                });
+              }
             });
           }
         })
@@ -886,19 +1006,28 @@ module.exports.addTaskCommentService = (taskCommentDetails) => {
               msg: "Unable to add the task Comment",
             });
           } else {
-            var progressStatus = {};
+            var projectProgressStatus = {},
+              userProgressStatus = {};
             result.tasks.forEach((task) => {
               if (task.taskId == taskCommentDetails.taskId) {
-                progressStatus = {
+                projectProgressStatus = {
                   timeStamp: new Date(),
                   progressDone: `${taskComment.commentorUserName} has added the task comment on the task ${task.taskName}`,
+                };
+                userProgressStatus = {
+                  timeStamp: new Date(),
+                  progressDone: `"${taskComment.commentorUserName}" has added the task comment on the task "${task.taskName}" in "${result.projectTitle}"`,
                 };
                 return;
               }
             });
-            markActiveDays(
-              progressStatus,
+            markProjectActiveDays(
+              projectProgressStatus,
               objectId,
+              taskCommentDetails.currentUserUserName
+            );
+            markUserActiveDays(
+              userProgressStatus,
               taskCommentDetails.currentUserUserName
             );
             resolve({
@@ -1126,16 +1255,23 @@ module.exports.submitUserRatingService = (userRatingDetails) => {
                       msg: "Unable to rate the user",
                     });
                   } else {
-                    var progressStatus = {
+                    var projectProgressStatus = {
                       timeStamp: new Date(),
-                      progressDone: `Team Lead has added ${userRatingDetails.rating} Rating for ${userRatingDetails.userName}`,
+                      progressDone: `Team Lead has rated "${userRatingDetails.rating}" for "${userRatingDetails.userName}"`,
                     };
-                    markActiveDays(
-                      progressStatus,
+                    markProjectActiveDays(
+                      projectProgressStatus,
                       objectId,
                       userRatingDetails.currentUserUserName
                     );
-
+                    var userProgressStatus = {
+                      timeStamp: new Date(),
+                      progressDone: `You rated  "${userRatingDetails.rating}" to ${userRatingDetails.userName} in "${result.projectTitle}"`,
+                    };
+                    markUserActiveDays(
+                      userProgressStatus,
+                      userRatingDetails.currentUserUserName
+                    );
                     resolve({
                       status: true,
                       msg: `You Rated ${userRatingDetails.rating} to the user '${teamMemberResult[0].fullName}'!`,
@@ -1191,13 +1327,21 @@ module.exports.createProjectForumPostService = (forumPostDetails) => {
               msg: "Unable to Create the forum post",
             });
           } else {
-            var progressStatus = {
+            var projectProgressStatus = {
               timeStamp: new Date(),
-              progressDone: `"${forumPostDetails.postedPersonUserName}"  added the forum`,
+              progressDone: `"${forumPostDetails.postedPersonUserName}"  added the forum - "${forumPostDetails.forumTitle}"`,
             };
-            markActiveDays(
-              progressStatus,
+            markProjectActiveDays(
+              projectProgressStatus,
               objectId,
+              forumPostDetails.currentUserUserName
+            );
+            var userProgressStatus = {
+              timeStamp: new Date(),
+              progressDone: `You added the forum - "${forumPostDetails.forumTitle}" in "${result.projectTitle}"`,
+            };
+            markUserActiveDays(
+              userProgressStatus,
               forumPostDetails.currentUserUserName
             );
             resolve({
@@ -1363,23 +1507,38 @@ module.exports.addProjectForumCommentService = (forumCommentDetails) => {
                 }
               )
               .then((projectResult, error) => {
-                projectResult[0].forums.forEach((forum) => {
-                  if (forum.forumId == forumCommentDetails.forumId) {
-                    var progressStatus = {
-                      timeStamp: new Date(),
-                      progressDone: `"${forumCommentDetails.commentorUserName}"  added the comment in the forum "${forum.postedPersonUserName}"`,
-                    };
-                    markActiveDays(
-                      progressStatus,
-                      objectId,
-                      forumCommentDetails.currentUserUserName
-                    );
-                    resolve({
-                      status: true,
-                      msg: "Comment Added Successfully!",
-                    });
-                  }
-                });
+                if (error) {
+                  reject({
+                    status: false,
+                    msg: "Unable to get the forum details",
+                  });
+                } else {
+                  projectResult[0].forums.forEach((forum) => {
+                    if (forum.forumId == forumCommentDetails.forumId) {
+                      var progressStatus = {
+                        timeStamp: new Date(),
+                        progressDone: `"${forumCommentDetails.commentorUserName}"  added the comment on the forum "${forum.postedPersonUserName}"`,
+                      };
+                      markProjectActiveDays(
+                        progressStatus,
+                        objectId,
+                        forumCommentDetails.currentUserUserName
+                      );
+                      var userProgressStatus = {
+                        timeStamp: new Date(),
+                        progressDone: `You added the comment on the forum "${forum.postedPersonUserName}" in "${result.projectTitle}"`,
+                      };
+                      markUserActiveDays(
+                        userProgressStatus,
+                        forumCommentDetails.currentUserUserName
+                      );
+                      resolve({
+                        status: true,
+                        msg: "Comment Added Successfully!",
+                      });
+                    }
+                  });
+                }
               })
               .catch((err) => {
                 console.log(err);
@@ -1520,7 +1679,8 @@ module.exports.deleteProjectForumService = (forumDetails) => {
               },
             },
           },
-          { new: true }
+          false,
+          true
         )
         .then((result, error) => {
           if (error) {
@@ -1529,9 +1689,37 @@ module.exports.deleteProjectForumService = (forumDetails) => {
               msg: "Unable to delete the forum",
             });
           } else {
+            var projectProgressStatus = {},
+              userProgressStatus = {},
+              forumTitle = "";
+
+            result.forums.forEach((forum) => {
+              if (forum.forumId == forumDetails.forumId) {
+                forumTitle = forum.forumTitle;
+                projectProgressStatus = {
+                  timeStamp: new Date(),
+                  progressDone: `"${forumDetails.currentUserUserName}" has deleted the forum "${forum.forumTitle}`,
+                };
+
+                userProgressStatus = {
+                  timeStamp: new Date(),
+                  progressDone: `You deleted the forum "${forum.forumTitle}" in "${result.projectTitle}"`,
+                };
+                markProjectActiveDays(
+                  projectProgressStatus,
+                  objectId,
+                  forumDetails.currentUserUserName
+                );
+                markUserActiveDays(
+                  userProgressStatus,
+                  forumDetails.currentUserUserName
+                );
+              }
+            });
+
             resolve({
               status: true,
-              msg: `Forum is deleted successfully!`,
+              msg: `Forum deleted successfully!`,
             });
           }
         })
@@ -2123,6 +2311,19 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                           err,
                       });
                     } else {
+                      var mailData = {
+                        projectTitle: result.projectTitle,
+                        meetingDetails: doc,
+                        startDateTime: startDateTime,
+                        endDateTime: endDateTime,
+                        hostFullName: meetingDetails.hostFullName,
+                      };
+                      mailServiceForProject(
+                        mailList,
+                        mailData,
+                        "email-templates/schedule-meeting.html",
+                        "Meeting Scheduled - PMS Service"
+                      );
                       var doc = {
                         meetingId: event.data.id,
                         summary: meetingDetails.summary,
@@ -2138,20 +2339,8 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                         cancelled: false,
                         hostFullName: meetingDetails.hostFullName,
                         hostUserName: meetingDetails.hostUserName,
+                        timeStamp: new Date(),
                       };
-                      var mailData = {
-                        projectTitle: result.projectTitle,
-                        meetingDetails: doc,
-                        startDateTime: startDateTime,
-                        endDateTime: endDateTime,
-                        hostFullName: meetingDetails.hostFullName,
-                      };
-                      mailServiceForProject(
-                        mailList,
-                        mailData,
-                        "email-templates/schedule-meeting.html",
-                        "Meeting Scheduled - PMS Service"
-                      );
                       projectModel
                         .findByIdAndUpdate(
                           {
@@ -2170,13 +2359,21 @@ module.exports.scheduleMeetingService = (meetingDetails) => {
                               msg: "Unable to update the meeting details in database",
                             });
                           } else {
-                            var progressStatus = {
+                            var projectProgressStatus = {
                               timeStamp: new Date(),
                               progressDone: `"${meetingDetails.hostUserName}"  has scheduled the meeting "${meetingDetails.summary}"`,
                             };
-                            markActiveDays(
-                              progressStatus,
+                            markProjectActiveDays(
+                              projectProgressStatus,
                               objectId,
+                              meetingDetails.hostUserName
+                            );
+                            var userProgressStatus = {
+                              timeStamp: new Date(),
+                              progressDone: `You scheduled the meeting "${meetingDetails.summary}" in "${result.projectTitle}"`,
+                            };
+                            markUserActiveDays(
+                              userProgressStatus,
                               meetingDetails.hostUserName
                             );
                             resolve({
@@ -2226,7 +2423,8 @@ module.exports.cancelMeetingService = (meetingDetails) => {
               },
             ],
           },
-          { new: true }
+          false,
+          true
         )
         .then((result, error) => {
           if (error) {
@@ -2237,13 +2435,14 @@ module.exports.cancelMeetingService = (meetingDetails) => {
           } else {
             var mailList = [];
             var mailData = {};
-            var meetingHostUserName;
+            var meetingHostUserName, meetingSummary;
             result.teamMembers.forEach((teamMember) => {
               mailList.push(teamMember.email);
             });
             result.meetings.forEach((meeting) => {
               if (meeting.meetingId == meetingDetails.meetingId) {
-                meetingHostUserName = meeting.hostFullName;
+                meetingHostUserName = meeting.hostUserName;
+                meetingSummary = meeting.summary;
                 mailData = {
                   projectTitle: result.projectTitle,
                   meetingSummary: meeting.summary,
@@ -2259,9 +2458,18 @@ module.exports.cancelMeetingService = (meetingDetails) => {
             );
             var progressStatus = {
               timeStamp: new Date(),
-              progressDone: `"${meetingHostUserName}"  has cancelled the meeting "${meetingDetails.summary}"`,
+              progressDone: `"${meetingHostUserName}"  has cancelled the meeting "${meetingSummary}"`,
             };
-            markActiveDays(progressStatus, objectId, meetingHostUserName);
+            markProjectActiveDays(
+              progressStatus,
+              objectId,
+              meetingHostUserName
+            );
+            var userProgressStatus = {
+              timeStamp: new Date(),
+              progressDone: `You cancelled the meeting "${meetingSummary}" in "${result.projectTitle}"`,
+            };
+            markUserActiveDays(userProgressStatus, meetingHostUserName);
             resolve({
               status: true,
               msg: `Meeting has been Cancelled!`,
@@ -2305,7 +2513,8 @@ module.exports.deleteMeetingService = (meetingDetails) => {
                       meetings: { meetingId: meetingDetails.meetingId },
                     },
                   },
-                  { new: true }
+                  false,
+          true
                 )
                 .then((result, error) => {
                   if (error) {
@@ -2317,7 +2526,7 @@ module.exports.deleteMeetingService = (meetingDetails) => {
                     var meetingHostUserName, meetingSummary;
                     result.meetings.forEach((meeting) => {
                       if (meeting.meetingId == meetingDetails.meetingId) {
-                        meetingHostUserName = meeting.hostFullName;
+                        meetingHostUserName = meeting.hostUserName;
                         meetingSummary = meeting.summary;
                       }
                     });
@@ -2325,11 +2534,16 @@ module.exports.deleteMeetingService = (meetingDetails) => {
                       timeStamp: new Date(),
                       progressDone: `"${meetingHostUserName}"  has deleted the meeting "${meetingSummary}"`,
                     };
-                    markActiveDays(
+                    markProjectActiveDays(
                       progressStatus,
                       objectId,
                       meetingHostUserName
                     );
+                    var userProgressStatus = {
+                      timeStamp: new Date(),
+                      progressDone: `You deleted the meeting "${meetingSummary}" in "${result.projectTitle}"`,
+                    };
+                    markUserActiveDays(userProgressStatus, meetingHostUserName);
                     resolve({
                       status: true,
                       msg: `Meeting has been deleted!`,

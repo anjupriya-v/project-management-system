@@ -111,6 +111,7 @@
                       id="date"
                       class="formbold-form-input"
                       formControlName="startingDate"
+                      [min]="getTodaysDate()"
                     />
                     <div
                       *ngIf="
@@ -161,6 +162,7 @@
                       id="date"
                       class="formbold-form-input"
                       formControlName="endingDate"
+                      [min]="getTodaysDate()"
                     />
                     <div
                       *ngIf="

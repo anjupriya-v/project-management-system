@@ -95,7 +95,7 @@ router
   .post(projectController.reSubmitTaskController);
 router
   .route(
-    "/delete-task/:projectId/:taskId",
+    "/delete-task/:projectId/:taskId/:currentUserUserName",
     passport.authenticate("jwt", { session: false })
   )
   .delete(projectController.deleteTaskController);
@@ -162,7 +162,7 @@ router
   .post(projectController.unLikeProjectForumCommentController);
 router
   .route(
-    "/delete-project-forum/:projectId/:forumId",
+    "/delete-project-forum/:projectId/:forumId/:currentUserUserName",
     passport.authenticate("jwt", { session: false })
   )
   .delete(projectController.deleteProjectForumController);

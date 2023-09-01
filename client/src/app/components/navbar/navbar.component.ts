@@ -42,7 +42,7 @@ export class NavbarComponent {
     setTimeout(() => {
       this.auth.handleLogout();
       this.route.navigate(['/login']);
-      this.notification.success('Log Out', 'Logged Out Successfully!', {
+      this.notification.success('Log out', 'Logged Out Successfully!', {
         nzPlacement: 'bottomRight',
       });
     }, 3000);

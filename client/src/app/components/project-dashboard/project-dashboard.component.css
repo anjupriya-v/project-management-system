@@ -359,6 +359,9 @@
   justify-content: center;
   flex-direction: column;
 }
+.view-task-work {
+  color: blue;
+}
 .task-doc-field,
 .assignee-task-comment-field {
   margin-top: 1em;
@@ -407,8 +410,7 @@
   padding-right: 1em;
 }
 .delete-task {
-  background-color: red;
-  color: white;
+  color: red;
 }
 .task-comment-icon {
   cursor: pointer;
@@ -542,6 +544,18 @@
 }
 .create-meeting-button button i {
   margin-left: 1em;
+}
+.meetings-loader-container {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  padding: 30px 50px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 .upcoming-meetings-container,
 .past-meetings-container {

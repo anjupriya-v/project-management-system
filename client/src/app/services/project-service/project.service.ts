@@ -127,8 +127,15 @@ export class ProjectService {
     return this.httpClient.post(this.server + 're-submit-task/', formData);
   }
   public deleteTask(projectId: any, taskId: any) {
+    var currentUserUserName = this.currentUser['userName'];
     return this.httpClient.delete(
-      this.server + 'delete-task/' + projectId + '/' + taskId
+      this.server +
+        'delete-task/' +
+        projectId +
+        '/' +
+        taskId +
+        '/' +
+        currentUserUserName
     );
   }
   public deleteTaskComment(projectId: any, taskId: any, commentId: any) {
@@ -301,8 +308,15 @@ export class ProjectService {
     );
   }
   public deleteProjectForum(projectId: any, forumId: any) {
+    var currentUserUserName = this.currentUser['userName'];
     return this.httpClient.delete(
-      this.server + 'delete-project-forum/' + projectId + '/' + forumId
+      this.server +
+        'delete-project-forum/' +
+        projectId +
+        '/' +
+        forumId +
+        '/' +
+        currentUserUserName
     );
   }
   public deleteProjectForumComment(

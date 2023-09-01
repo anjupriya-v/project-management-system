@@ -29,5 +29,12 @@ var userSchema = new Schema({
     type: String,
     required: true,
   },
+  activeDays: [
+    {
+      _id: false,
+      timeStamp: String,
+      progressDone: String,
+    },
+  ],
 });
 module.exports = mongoose.model("users", userSchema);

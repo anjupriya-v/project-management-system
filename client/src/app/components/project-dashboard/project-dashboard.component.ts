@@ -99,9 +99,12 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
   getDateAndTimeVal: any;
   projectProgress: any = 'projectProgress';
   isMeetingCancelled: boolean = false;
-  cancelledMeetingSummary: any;
+  meetingCancelledText: any = 'Cancelling...';
   displayDeleteMeetingAlert: boolean = false;
   meetingDeletedText: any = 'Deleting...';
+  isTaskCommentAdded: boolean = false;
+  taskCommentAddedStatus: any = '';
+  selectWorkUploadFileType: any;
   @ViewChild('forumsSection')
   forumsSection!: ElementRef;
   @ViewChild('inputFile', { static: false })
@@ -677,6 +680,7 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
       });
   }
   handleSelectFile(selectFileType: any) {
+    this.selectWorkUploadFileType = selectFileType;
     if (selectFileType == 'link') {
       this.requiredForm
         .get('taskWorkURL')
@@ -726,6 +730,9 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
         if (data.status) {
           this.isUploadWorkModalVisible = false;
           this.uploadTaskWorkBtnLoading = false;
+          if (this.selectWorkUploadFileType == 'link') {
+            this.requiredForm.controls['taskWorkURL'].setValue('');
+          }
           this.notification.success('Task Upload', data.message, {
             nzPlacement: 'bottomRight',
           });
@@ -888,25 +895,23 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
           this.getDateAndTime()
         )
         .subscribe((data: any) => {
+          this.addCommentBtnLoading = false;
+          this.isTaskCommentAdded = true;
           if (data.status) {
+            this.taskCommentAddedStatus = 'success';
             this.taskCommentFormSubmitted = false;
             this.taskCommentRequiredForm.controls['taskComment'].setValue('');
-            this.addCommentBtnLoading = false;
-            this.notification.success('Task Comment', data.message, {
-              nzPlacement: 'bottomRight',
-            });
             setTimeout(() => {
               this.getProjectDetails();
-            }, 500);
+            }, 50);
+            setTimeout(() => {
+              this.isTaskCommentAdded = false;
+            }, 3000);
           } else {
-            this.addCommentBtnLoading = false;
-            this.notification.error(
-              'Task Comment',
-              'Something Went Wrong! Please try again',
-              {
-                nzPlacement: 'bottomRight',
-              }
-            );
+            this.taskCommentAddedStatus = 'error';
+            setTimeout(() => {
+              this.isTaskCommentAdded = false;
+            }, 3000);
           }
         });
       console.log('Valid');
@@ -998,18 +1003,23 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
       });
   }
   cancelMeeting(meetingId: any, meetingSummary: any) {
+    this.isMeetingCancelled = true;
     this.projectService
       .cancelMeeting(this.projectId, meetingId)
       .subscribe((data: any) => {
         if (data.status) {
-          this.isMeetingCancelled = data.status;
-          this.cancelledMeetingSummary = meetingSummary;
+          this.meetingCancelledText =
+            'You cancelled the meeting "' + meetingSummary + '"';
           this.getProjectDetails();
           setTimeout(() => {
             this.isMeetingCancelled = false;
           }, 5000);
         } else {
-          console.log(data.message);
+          this.meetingCancelledText =
+            'Unable to cancel the meet "' + meetingSummary + '"';
+          setTimeout(() => {
+            this.isMeetingCancelled = false;
+          }, 5000);
         }
       });
   }
@@ -1019,13 +1029,15 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
       .deleteMeeting(this.projectId, meetingId)
       .subscribe((data: any) => {
         if (data.status) {
-          this.meetingDeletedText = 'You deleted the meeting ' + meetingSummary;
+          this.meetingDeletedText =
+            'You deleted the meeting "' + meetingSummary + '"';
           this.getProjectDetails();
           setTimeout(() => {
             this.displayDeleteMeetingAlert = false;
           }, 5000);
         } else {
-          this.meetingDeletedText = data.message;
+          this.meetingDeletedText =
+            'Unable to delete the meet "' + meetingSummary + '"';
           setTimeout(() => {
             this.displayDeleteMeetingAlert = false;
           }, 5000);
@@ -1069,7 +1081,8 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
         this.taskInProgressCount = 0;
         this.taskUnderReviewCount = 0;
         this.taskCompletedCount = 0;
-
+        this.upcomingMeetings = [];
+        this.pastMeetings = [];
         var assignedTask = 0,
           completedTask = 0;
         var notAssignedMember = '';
@@ -1143,6 +1156,14 @@ export class ProjectDashboardComponent implements OnInit, AfterViewInit {
                 this.pastMeetings.push(meeting);
               }
             });
+            this.upcomingMeetings = this.upcomingMeetings.sort(
+              (a: any, b: any) =>
+                <any>new Date(b.timeStamp) - <any>new Date(a.timeStamp)
+            );
+            this.pastMeetings = this.pastMeetings.sort(
+              (a: any, b: any) =>
+                <any>new Date(b.timeStamp) - <any>new Date(a.timeStamp)
+            );
           }
         });
 

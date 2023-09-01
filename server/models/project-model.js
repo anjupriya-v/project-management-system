@@ -42,6 +42,7 @@ var projectSchema = new Schema({
       meetingLink: String,
       hostFullName: String,
       hostUserName: String,
+      timeStamp: Date,
     },
   ],
   activeDays: [
